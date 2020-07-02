@@ -11,25 +11,22 @@ public class LoginService {
     @Autowired
     private UserRepository userLoginDAO;
 
-    public String login(String username, String password){
+    public String login(String username, String password) {
 
-        String loginstatus="";
-        User sm = null;
-        sm = userLoginDAO.findByUsername(username);
-        if(sm == null){
-
-            loginstatus="Username not found";
-            return loginstatus;
-
+        if(username.isEmpty() || password.isEmpty()){
+            return "Introduce login / password";
         }
 
-        if(!sm.getPassword().equals(password)){
-            loginstatus = "Username or password is wrong. Please try again!";
-            return loginstatus;
+        User authUser = userLoginDAO.findByUsername(username);
 
+        if (authUser == null) {
+            return "Username not found";
         }
-        loginstatus = "Login successful";
-        return loginstatus;
 
+        if (!authUser.getPassword().equals(password)) {
+            return "Username or password is wrong. Please try again!";
+        }
+
+        return "Login successful";
     }
 }

@@ -25,7 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * A new instance of this class is created for every new user and every
  * browser tab/window.
  */
-@Route(" ")
+@Route("")
 @PWA(name = "Vaadin Application",
         shortName = "Vaadin App",
         description = "This is an example Vaadin application.",
@@ -55,7 +55,7 @@ public class MainView extends VerticalLayout {
         Button button = new Button("Login");
         button.addClickListener(e -> {
             Notification.show(service.login(usernameField.getValue(), passwordField.getValue()));
-          //UI.getCurrent().navigate(MainUserView.class);
+            //UI.getCurrent().navigate(MainUserView.class);
         });
 
         button.addClickShortcut(Key.ENTER);
