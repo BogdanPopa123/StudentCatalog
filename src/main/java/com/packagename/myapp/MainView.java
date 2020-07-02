@@ -1,5 +1,6 @@
 package com.packagename.myapp;
 
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.notification.Notification;
@@ -50,7 +51,7 @@ public class MainView extends VerticalLayout {
         passwordField.setMaxLength(50);
 
         Button button = new Button("Login", e->Notification.show(service.login(usernameField.getValue(), passwordField.getValue() )));
-
+        button.addClickShortcut(Key.ENTER);
         add(usernameField, passwordField, button);
 
 

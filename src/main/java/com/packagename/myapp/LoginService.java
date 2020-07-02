@@ -21,7 +21,7 @@ public class LoginService {
             return loginstatus;
         }
 
-        if(sm.getPassword() != password){
+        if(!sm.getPassword().equals(password)){
             loginstatus = "Username or password is wrong. Please try again!";
             return loginstatus;
         }
