@@ -1,5 +1,7 @@
-package com.packagename.myapp;
+package com.packagename.myapp.views.login;
 
+import com.packagename.myapp.views.main.MainUserView;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.notification.Notification;
@@ -22,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * A new instance of this class is created for every new user and every
  * browser tab/window.
  */
-@Route
+@Route(" ")
 @PWA(name = "Vaadin Application",
         shortName = "Vaadin App",
         description = "This is an example Vaadin application.",
@@ -49,14 +51,13 @@ public class MainView extends VerticalLayout {
         passwordField.addThemeName("bordered");
         passwordField.setMaxLength(50);
 
-        Button button = new Button("Login", e->Notification.show(service.login(usernameField.getValue(), passwordField.getValue() )));
+        Button button = new Button("Login");
+        button.addClickListener(e -> {
+            //Notification.show(service.login(usernameField.getValue(), passwordField.getValue()));
+          UI.getCurrent().navigate(MainUserView.class);
+        });
 
         add(usernameField, passwordField, button);
-
-
-
-
-
 
 
 //        // Button click listeners can be defined as lambda expressions
