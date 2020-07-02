@@ -1,4 +1,4 @@
-package com.packagename.myapp;
+package com.packagename.myapp.views.login;
 
 import com.packagename.myapp.dao.UserRepository;
 import com.packagename.myapp.models.User;
@@ -17,13 +17,16 @@ public class LoginService {
         User sm = null;
         sm = userLoginDAO.findByUsername(username);
         if(sm == null){
+
             loginstatus="Username not found";
             return loginstatus;
+
         }
 
         if(!sm.getPassword().equals(password)){
             loginstatus = "Username or password is wrong. Please try again!";
             return loginstatus;
+
         }
         loginstatus = "Login successful";
         return loginstatus;
