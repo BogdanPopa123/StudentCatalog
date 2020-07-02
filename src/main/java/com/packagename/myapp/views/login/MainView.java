@@ -12,6 +12,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.PWA;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 
 /**
  * A sample Vaadin view class.
@@ -32,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
         enableInstallPrompt = false)
 @CssImport("./styles/shared-styles.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
+@CssImport("./styles/main-view-styles.css")
 public class MainView extends VerticalLayout {
 
     /**
@@ -41,22 +43,26 @@ public class MainView extends VerticalLayout {
      *
      * @param service The message service. Automatically injected Spring managed bean.
      */
-    public MainView(@Autowired LoginService service) {
+    public MainView(LoginService service) {
+        addClassName("main-view-form-style");
 
         // Use TextField for standard text input
         TextField usernameField = new TextField("Username");
         usernameField.addThemeName("bordered");
         usernameField.setMaxLength(50);
+        usernameField.addClassName("username-style");
 
         PasswordField passwordField = new PasswordField("Password");
         passwordField.addThemeName("bordered");
         passwordField.setMaxLength(50);
+        passwordField.addClassName("password-style");
 
         Button button = new Button("Login");
         button.addClickListener(e -> {
             Notification.show(service.login(usernameField.getValue(), passwordField.getValue()));
             //UI.getCurrent().navigate(MainUserView.class);
         });
+        button.addClassName("login-button-style");
 
         button.addClickShortcut(Key.ENTER);
         add(usernameField, passwordField, button);
