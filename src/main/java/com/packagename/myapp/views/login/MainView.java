@@ -1,6 +1,7 @@
 package com.packagename.myapp.views.login;
 
 import com.packagename.myapp.views.main.MainUserView;
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -53,12 +54,12 @@ public class MainView extends VerticalLayout {
 
         Button button = new Button("Login");
         button.addClickListener(e -> {
-            //Notification.show(service.login(usernameField.getValue(), passwordField.getValue()));
-          UI.getCurrent().navigate(MainUserView.class);
+            Notification.show(service.login(usernameField.getValue(), passwordField.getValue()));
+          //UI.getCurrent().navigate(MainUserView.class);
         });
 
+        button.addClickShortcut(Key.ENTER);
         add(usernameField, passwordField, button);
-
 
 //        // Button click listeners can be defined as lambda expressions
 //        Button button = new Button("Say hello",
@@ -77,5 +78,4 @@ public class MainView extends VerticalLayout {
 //
 //        add(textField, button);
     }
-
 }
