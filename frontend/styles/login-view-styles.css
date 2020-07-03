@@ -1,0 +1,26 @@
+body {
+    background-color: rgba(9, 255, 0, 0.25);
+}
+
+.main-view-form-style {
+    padding-left: 35%;
+    padding-right: 35%;
+}
+
+.login-form-style {
+    align-items: center;
+    height: 100%;
+    background-color: rgba(17, 15, 15, 0.24);
+}
+
+.username-style {
+    width: 100%;
+}
+
+.password-style {
+    width: 100%;
+}
+
+.login-button-style {
+    width: 100%;
+}

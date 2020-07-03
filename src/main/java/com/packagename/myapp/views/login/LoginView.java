@@ -14,18 +14,6 @@ import com.vaadin.flow.server.PWA;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 
-/**
- * A sample Vaadin view class.
- * <p>
- * To implement a Vaadin view just extend any Vaadin component and
- * use @Route annotation to announce it in a URL as a Spring managed
- * bean.
- * Use the @PWA annotation make the application installable on phones,
- * tablets and some desktop browsers.
- * <p>
- * A new instance of this class is created for every new user and every
- * browser tab/window.
- */
 @Route("")
 @PWA(name = "Vaadin Application",
         shortName = "Vaadin App",
@@ -33,19 +21,14 @@ import org.springframework.context.annotation.Bean;
         enableInstallPrompt = false)
 @CssImport("./styles/shared-styles.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
-@CssImport("./styles/main-view-styles.css")
-public class MainView extends VerticalLayout {
+@CssImport("./styles/login-view-styles.css")
+public class LoginView extends VerticalLayout {
 
-    /**
-     * Construct a new Vaadin view.
-     * <p>
-     * Build the initial UI state for the user accessing the application.
-     *
-     * @param service The message service. Automatically injected Spring managed bean.
-     */
-    public MainView(LoginService service) {
+    public LoginView(LoginService service) {
         addClassName("main-view-form-style");
 
+        VerticalLayout loginForm = new VerticalLayout();
+        loginForm.addClassName("login-form-style");
         // Use TextField for standard text input
         TextField usernameField = new TextField("Username");
         usernameField.addThemeName("bordered");
@@ -65,7 +48,9 @@ public class MainView extends VerticalLayout {
         button.addClassName("login-button-style");
 
         button.addClickShortcut(Key.ENTER);
-        add(usernameField, passwordField, button);
+
+        loginForm.add(usernameField,passwordField,button);
+        add(loginForm);
 
 //        // Button click listeners can be defined as lambda expressions
 //        Button button = new Button("Say hello",
