@@ -9,6 +9,7 @@ import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
+import com.vaadin.flow.spring.annotation.UIScope;
 import com.vaadin.flow.templatemodel.TemplateModel;
 
 @Route(value = "home", layout = MainUserView.class)

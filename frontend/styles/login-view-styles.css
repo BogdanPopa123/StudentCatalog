@@ -3,8 +3,13 @@ body {
 }
 
 .main-view-form-style {
-    padding-left: 35%;
-    padding-right: 35%;
+    max-width: 30rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
 }
 
 .login-form-style {

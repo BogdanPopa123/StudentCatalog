@@ -16,7 +16,7 @@ import com.vaadin.flow.templatemodel.TemplateModel;
 @Tag("catalog-view")
 public class CatalogView extends PolymerTemplate<CatalogViewModel> {
 
-    public static interface CatalogViewModel extends TemplateModel {
+    public interface CatalogViewModel extends TemplateModel {
     }
 
     public CatalogView() {
