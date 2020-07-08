@@ -2,10 +2,9 @@ package com.packagename.myapp.views.login;
 
 import com.packagename.myapp.dao.UserRepository;
 import com.packagename.myapp.models.User;
-import com.packagename.myapp.views.main.MainUserView;
+import com.packagename.myapp.views.home.HomeView;
 import com.vaadin.flow.component.UI;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+import com.vaadin.flow.server.VaadinSession;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,7 +18,7 @@ public class LoginService {
 
     public String login(String username, String password) {
 
-        if(username.isEmpty() || password.isEmpty()){
+        if (username.isEmpty() || password.isEmpty()) {
             return "Introduce login / password";
         }
 
@@ -29,11 +28,14 @@ public class LoginService {
             return "Username not found";
         }
 
-        if (!authUser.getPassword().equals(password)) {
+        if (!authUser.getPassword().equals(HashingService.hashThis(password))) {
             return "Username or password is wrong. Please try again!";
         }
 
-        UI.getCurrent().navigate(MainUserView.class);
+        VaadinSession session = VaadinSession.getCurrent();
+        session.setAttribute("user", authUser);
+
+        UI.getCurrent().navigate(HomeView.class);
         return "Login successful";
     }
 }
