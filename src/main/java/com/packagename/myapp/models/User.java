@@ -161,6 +161,18 @@ public class User {
         return mapper;
     }
 
+
+    public boolean checkAnonymous() {
+        return this.getUsername().equals(getAnonymousUser().getUsername());
+    }
+
+    public static User getAnonymousUser() {
+        User anonymousUser = new User();
+        anonymousUser.setUsername("AnonymousUsername");
+        return anonymousUser;
+    }
+
+
 }
 
 

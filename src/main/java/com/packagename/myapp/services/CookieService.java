@@ -1,4 +1,4 @@
-package com.packagename.myapp.cookies;
+package com.packagename.myapp.services;
 
 import com.packagename.myapp.models.User;
 import com.vaadin.flow.server.VaadinService;
@@ -29,11 +29,9 @@ public class CookieService {
             return User.jsonParse(userCookie.getValue());
         }
 
-        User anonymousUser = new User();
-        anonymousUser.setUsername("AnonymousUser");
-        addUserCookie(anonymousUser);
+        setAnonymousUser();
 
-        return anonymousUser;
+        return User.getAnonymousUser();
     }
 
     public void addUserCookie(User authUser) {
@@ -43,5 +41,7 @@ public class CookieService {
         VaadinService.getCurrentResponse().addCookie(userCookie);
     }
 
-
+    public void setAnonymousUser() {
+        addUserCookie(User.getAnonymousUser());
+    }
 }

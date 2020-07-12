@@ -1,6 +1,5 @@
 package com.packagename.myapp.services;
 
-import com.packagename.myapp.cookies.CookieService;
 import com.packagename.myapp.dao.UserRepository;
 import com.packagename.myapp.models.User;
 import com.vaadin.flow.component.notification.Notification;
@@ -39,6 +38,10 @@ public class LoginService {
         Notification.show("Login successful");
     }
 
+    public void logout() {
+        cookieService.setAnonymousUser();
+    }
+
     public User getAuthenticatedUser() {
         return cookieService.getCurrentUserFromCookies();
     }
@@ -46,9 +49,6 @@ public class LoginService {
     public boolean checkAuth() {
         User authUser = getAuthenticatedUser();
 
-        if (authUser == null || authUser.getUsername().equals("AnonymousUser")) {
-            return false;
-        }
-        return true;
+        return authUser != null && !authUser.checkAnonymous();
     }
 }
