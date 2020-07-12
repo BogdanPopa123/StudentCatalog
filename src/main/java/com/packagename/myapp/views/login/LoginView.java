@@ -33,6 +33,7 @@ public class LoginView extends VerticalLayout {
 
     @PostConstruct
     private void init() {
+
         addClassName("main-view-form-style");
 
         VerticalLayout loginForm = new VerticalLayout();
@@ -57,7 +58,6 @@ public class LoginView extends VerticalLayout {
             loginService.login(username, password);
 
             UI.getCurrent().getPage().reload();
-            UI.getCurrent().navigate(HomeView.class);
         });
 
         button.addClickShortcut(Key.ENTER);
@@ -69,6 +69,8 @@ public class LoginView extends VerticalLayout {
 
     @Override
     protected void onAttach(AttachEvent attachEvent) {
-
+        if (loginService.checkAuth()) {
+            UI.getCurrent().navigate(HomeView.class);
+        }
     }
 }
