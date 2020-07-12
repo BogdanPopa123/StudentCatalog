@@ -1,8 +1,7 @@
-package com.packagename.myapp.views.home;
+package com.packagename.myapp.views;
 
 import com.packagename.myapp.services.LoginService;
-import com.packagename.myapp.views.login.LoginView;
-import com.packagename.myapp.views.main.MainLayout;
+import com.packagename.myapp.views.layout.MainLayout;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.CssImport;

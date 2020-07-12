@@ -1,7 +1,7 @@
-package com.packagename.myapp.views.login;
+package com.packagename.myapp.views;
 
 import com.packagename.myapp.services.LoginService;
-import com.packagename.myapp.views.home.HomeView;
+import com.packagename.myapp.views.HomeView;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;

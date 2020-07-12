@@ -1,9 +1,9 @@
-package com.packagename.myapp.views.main;
+package com.packagename.myapp.views.layout;
 
 import com.packagename.myapp.services.LoginService;
-import com.packagename.myapp.views.catalog.CatalogView;
-import com.packagename.myapp.views.contulmeu.MyAccountView;
-import com.packagename.myapp.views.home.HomeView;
+import com.packagename.myapp.views.CatalogView;
+import com.packagename.myapp.views.MyAccountView;
+import com.packagename.myapp.views.HomeView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
