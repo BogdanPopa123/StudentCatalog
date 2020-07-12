@@ -1,16 +1,14 @@
 package com.packagename.myapp.servelets;
 
 import com.packagename.myapp.models.User;
-import com.vaadin.flow.router.BeforeEnterObserver;
-import com.vaadin.flow.server.*;
-import org.springframework.boot.autoconfigure.session.SessionProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
+import com.vaadin.flow.server.SessionDestroyEvent;
+import com.vaadin.flow.server.SessionInitEvent;
+import com.vaadin.flow.server.VaadinServlet;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
+//@Component
 @WebServlet(asyncSupported = true, urlPatterns = "/*")
 public class SessionInitializer extends VaadinServlet {
 
