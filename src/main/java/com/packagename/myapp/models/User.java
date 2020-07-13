@@ -1,5 +1,8 @@
 package com.packagename.myapp.models;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
@@ -130,6 +133,46 @@ public class User {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
     }
+
+    public String toJSON() {
+        try {
+            return getMapper().writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            return "";
+        }
+    }
+
+    public static User jsonParse(String jsonString) {
+        try {
+            return getMapper().readValue(jsonString, User.class);
+        } catch (JsonProcessingException e) {
+            return new User();
+        }
+    }
+
+
+    private static ObjectMapper mapper;
+
+    private static ObjectMapper getMapper() {
+        if (mapper == null) {
+            mapper = new ObjectMapper();
+        }
+
+        return mapper;
+    }
+
+
+    public boolean checkAnonymous() {
+        return this.getUsername().equals(getAnonymousUser().getUsername());
+    }
+
+    public static User getAnonymousUser() {
+        User anonymousUser = new User();
+        anonymousUser.setUsername("AnonymousUsername");
+        return anonymousUser;
+    }
+
+
 }
 
 
