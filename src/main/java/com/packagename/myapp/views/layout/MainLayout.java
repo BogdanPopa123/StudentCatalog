@@ -1,6 +1,7 @@
 package com.packagename.myapp.views.layout;
 
 import com.packagename.myapp.services.LoginService;
+import com.packagename.myapp.views.AdminPanelView;
 import com.packagename.myapp.views.CatalogView;
 import com.packagename.myapp.views.MyAccountView;
 import com.packagename.myapp.views.HomeView;
@@ -44,7 +45,8 @@ public class MainLayout extends AppLayout {
         logoutButton.addClassName("logout-button");
         logoutButton.addClickListener(event -> {
             loginService.logout();
-            UI.getCurrent().getPage().reload();
+            //UI.getCurrent().getPage().reload();
+            UI.getCurrent().navigate("login");
         });
 
         HorizontalLayout header = new HorizontalLayout();
@@ -57,11 +59,17 @@ public class MainLayout extends AppLayout {
     }
 
     private void createDrawer() {
+
         addToDrawer(new VerticalLayout(
                 new H5("Menu"),
                 new RouterLink("Home", HomeView.class),
                 new RouterLink("Contul meu", MyAccountView.class),
                 new RouterLink("Catalog", CatalogView.class)
         ));
+        String userRole =  loginService.getAuthenticatedUser().getRole().toString();
+        if(userRole.equals("ADMIN")){
+            addToDrawer(new VerticalLayout(new RouterLink(" AdminPanel", AdminPanelView.class)));
+        }
+
     }
 }

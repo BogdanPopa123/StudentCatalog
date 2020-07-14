@@ -10,6 +10,7 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.PWA;
 
@@ -57,7 +58,7 @@ public class LoginView extends VerticalLayout {
 
             loginService.login(username, password);
 
-            UI.getCurrent().getPage().reload();
+            UI.getCurrent().navigate("cont");
         });
 
         button.addClickShortcut(Key.ENTER);
