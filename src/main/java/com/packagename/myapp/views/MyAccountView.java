@@ -10,8 +10,8 @@ import com.vaadin.flow.router.Route;
 
 import javax.annotation.PostConstruct;
 
-@Route(value = "cont", layout = MainLayout.class)
-@PageTitle("Contul meu")
+@Route(value = "account", layout = MainLayout.class)
+@PageTitle("My account")
 @CssImport("./styles/shared-styles.css")
 public class MyAccountView extends VerticalLayout {
     public MyAccountView() {

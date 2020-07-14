@@ -7,9 +7,10 @@ import com.packagename.myapp.models.UserRole;
 import com.packagename.myapp.services.HashingService;
 import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.views.layout.MainLayout;
+import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.H5;
@@ -24,154 +25,149 @@ import com.vaadin.flow.router.Route;
 
 import javax.annotation.PostConstruct;
 
-@Route(value = "adminpanel", layout = MainLayout.class)
+@Route(value = "admin", layout = MainLayout.class)
 @PageTitle("AdminPanel")
 @CssImport("./styles/shared-styles.css")
 public class AdminPanelView extends VerticalLayout {
 
     private final LoginService loginService;
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    public AdminPanelView(LoginService loginService, UserRepository userRepository){
+    public AdminPanelView(LoginService loginService, UserRepository userRepository) {
         this.loginService = loginService;
         this.userRepository = userRepository;
     }
 
     @PostConstruct
-    private void init(){
-        if(loginService.getAuthenticatedUser().getRole().toString()!="ADMIN"){
-            add(new H5("You don't have admin role"));
-        }
-        else{
+    private void init() {
+        TextField newUsernameField = new TextField("Username *", "username");
+        EmailField newEmailField = new EmailField("Email", "email");
+        TextField newNameField = new TextField("Name *", "name");
+        TextField newSurnameField = new TextField("Surname *", "surname");
+        TextField newPhoneNumber = new TextField("Phone Number", "phone number");
+        PasswordField newPasswordField = new PasswordField("Password *", "password");
+        PasswordField newConfirmField = new PasswordField("Confirm your password *", "confirm your password");
+        TextField newDateOfBirthField = new TextField("Date of birth", "DD.MM.YYYY");
+        ListBox<UserRole> newUserRoleListBox = new ListBox<>();
+        newUserRoleListBox.setItems(UserRole.ADMIN, UserRole.TEACHER, UserRole.STUDENT);
 
+        String warningText = "";
 
-            TextField newUsernameField = new TextField("Username *", "username");
-            EmailField newEmailField = new EmailField("Email", "email");
-            TextField newNameField = new TextField("Name *", "name");
-            TextField newSurnameField = new TextField("Surname *", "surname");
-            TextField newPhoneNumber = new TextField("Phone Number", "phone number");
-            PasswordField newPasswordField = new PasswordField("Password *", "password");
-            PasswordField newConfirmField = new PasswordField("Confirm your password *", "confirm your password");
-            TextField newDateOfBirthField = new TextField("Date of birth", "DD.MM.YYYY");
-            ListBox<UserRole> newUserRoleListBox = new ListBox<>();
-            newUserRoleListBox.setItems(UserRole.ADMIN, UserRole.TEACHER, UserRole.STUDENT);
+        Button addUserButton = new Button("Add user", event -> {
+            User user = new User();
+            User testUser = new User();
 
-            String warningText = "";
+            user.setUsername(newUsernameField.getValue());
+            user.setEmail(newEmailField.getValue());
+            user.setName(newNameField.getValue());
+            user.setSurname(newSurnameField.getValue());
+            user.setPhoneNumber(newPhoneNumber.getValue());
+            user.setPassword(HashingService.hashThis(newPasswordField.getValue()));
+            user.setBirthDay(newDateOfBirthField.getValue());
+            user.setRole(newUserRoleListBox.getValue());
 
-            Button addUserButton = new Button("Add user", event->{
-                User user = new User();
-                User testUser = new User();
+            boolean isok = true;
 
-                user.setUsername(newUsernameField.getValue());
-                user.setEmail(newEmailField.getValue());
-                user.setName(newNameField.getValue());
-                user.setSurname(newSurnameField.getValue());
-                user.setPhoneNumber(newPhoneNumber.getValue());
-                user.setPassword(HashingService.hashThis(newPasswordField.getValue()));
-                user.setBirthDay(newDateOfBirthField.getValue());
-                user.setRole(newUserRoleListBox.getValue());
+            if (newUsernameField.getValue() == null ||
+                    // newEmailField.getValue()==null ||
+                    newNameField.getValue() == null ||
+                    newSurnameField.getValue() == null ||
+                    // newPhoneNumber.getValue()==null ||
+                    newPasswordField.getValue() == null ||
+                    newConfirmField.getValue() == null ||
+                    // newDateOfBirthField.getValue()==null ||
+                    newUserRoleListBox.getDataProvider() == null ||
 
-                boolean isok=true;
-
-                if(newUsernameField.getValue()==null ||
-               // newEmailField.getValue()==null ||
-                newNameField.getValue()==null ||
-                newSurnameField.getValue()==null ||
-               // newPhoneNumber.getValue()==null ||
-                newPasswordField.getValue()==null ||
-                newConfirmField.getValue()==null ||
-               // newDateOfBirthField.getValue()==null ||
-                newUserRoleListBox.getDataProvider()==null||
-
-                        newUsernameField.getValue()=="" ||
-                        // newEmailField.getValue()=="" ||
-                        newNameField.getValue()=="" ||
-                        newSurnameField.getValue()=="" ||
-                        // newPhoneNumber.getValue()=="" ||
-                        newPasswordField.getValue()=="" ||
-                        newConfirmField.getValue()==""
-                        // newDateOfBirthField.getValue()=="" ||
-                 ){
-                    //warningText.concat("Fields marked with * are mandatory\n");
-                    Notification.show("Fields marked with * are mandatory\n");
-                    isok=false;
+                    newUsernameField.getValue().equals("") ||
+                    // newEmailField.getValue()=="" ||
+                    newNameField.getValue().equals("") ||
+                    newSurnameField.getValue().equals("") ||
+                    // newPhoneNumber.getValue()=="" ||
+                    newPasswordField.getValue().equals("") ||
+                    newConfirmField.getValue().equals("")
+                // newDateOfBirthField.getValue()=="" ||
+            ) {
+                //warningText.concat("Fields marked with * are mandatory\n");
+                Notification.show("Fields marked with * are mandatory\n");
+                isok = false;
+            } else {
+                if (!newPasswordField.getValue().equals(newConfirmField.getValue())) {
+                    //warningText.concat("Your password fields don't match. Re-enter your password again.\n");
+                    Notification.show("Your password fields don't match. Re-enter your password again.\n");
+                    isok = false;
                 }
-                else{
-                    if(!newPasswordField.getValue().equals(newConfirmField.getValue())){
-                        //warningText.concat("Your password fields don't match. Re-enter your password again.\n");
-                        Notification.show("Your password fields don't match. Re-enter your password again.\n");
-                        isok=false;
-                    }
-                    if(!user.getEmail().equals(null) && !user.getEmail().equals("")){
-                        Boolean emailTestUser;
-                        emailTestUser=userRepository.existsByEmail(user.getEmail());
-                        if(emailTestUser==true && user.getEmail()!=null)
-                        {
-                            //warningText.concat("This email has already been used!\n");
-                            Notification.show("This email has already been used!\n");
-                            isok=false;
-                        }
-                    }
-
-                    if(!user.getPhoneNumber().equals(null) && !user.getPhoneNumber().equals("")){
-                        Boolean phoneNumberTestUser;
-                        phoneNumberTestUser=userRepository.existsByPhoneNumber(user.getPhoneNumber());
-                        if(phoneNumberTestUser==true){
-                           // warningText.concat("This phone number has already been used!\n");
-                            Notification.show("This phone number has already been used!\n");
-                            isok=false;
-                        }
-                    }
-                    Boolean usernameTestUser;
-                    usernameTestUser = userRepository.existsByUsername(user.getUsername());
-                    if(usernameTestUser==true){
-                        //warningText.concat("This username has already been used!\n");
-                        Notification.show("This username has already been used!\n");
-                        isok=false;
-                    }
-                    if(newUserRoleListBox.getValue()==null)
-                    {
-                        Notification.show("You must select a role");
-                        isok=false;
-                    }
-
-                    if(isok==true){
-                        testUser = userRepository.save(user);
-
-                        if(testUser!=null){
-                            Notification.show("User saved successfully");
-                        }
-                        else{
-                            Notification.show("Something went wrong. Please try again!");
-                        }
+                if (user.getEmail() != null && !user.getEmail().equals("")) {
+                    Boolean emailTestUser;
+                    emailTestUser = userRepository.existsByEmail(user.getEmail());
+                    if (emailTestUser == true && user.getEmail() != null) {
+                        //warningText.concat("This email has already been used!\n");
+                        Notification.show("This email has already been used!\n");
+                        isok = false;
                     }
                 }
-            });
-            addUserButton.addClickShortcut(Key.ENTER);
 
-            VerticalLayout addUserLayout = new VerticalLayout();
+                if (user.getPhoneNumber() != null && !user.getPhoneNumber().equals("")) {
+                    Boolean phoneNumberTestUser;
+                    phoneNumberTestUser = userRepository.existsByPhoneNumber(user.getPhoneNumber());
+                    if (phoneNumberTestUser == true) {
+                        // warningText.concat("This phone number has already been used!\n");
+                        Notification.show("This phone number has already been used!\n");
+                        isok = false;
+                    }
+                }
+                Boolean usernameTestUser;
+                usernameTestUser = userRepository.existsByUsername(user.getUsername());
+                if (usernameTestUser == true) {
+                    //warningText.concat("This username has already been used!\n");
+                    Notification.show("This username has already been used!\n");
+                    isok = false;
+                }
+                if (newUserRoleListBox.getValue() == null) {
+                    Notification.show("You must select a role");
+                    isok = false;
+                }
 
-            addUserLayout.add(new H3("Add a new user"),
-                    newUsernameField,
-                    newEmailField,
-                    newNameField,
-                    newSurnameField,
-                    newPhoneNumber,
-                    newPasswordField,
-                    newConfirmField,
-                    newDateOfBirthField,
-                    new H5("Select a role *"),
-                    newUserRoleListBox,
-                    new H5("* - Mandatory field"),
-                    addUserButton
-            );
+                if (isok == true) {
+                    testUser = userRepository.save(user);
 
-            add(addUserLayout);
+                    if (testUser != null) {
+                        Notification.show("User saved successfully");
+                    } else {
+                        Notification.show("Something went wrong. Please try again!");
+                    }
+                }
+            }
+        });
+        addUserButton.addClickShortcut(Key.ENTER);
+
+        VerticalLayout addUserLayout = new VerticalLayout();
+
+        addUserLayout.add(new H3("Add a new user"),
+                newUsernameField,
+                newEmailField,
+                newNameField,
+                newSurnameField,
+                newPhoneNumber,
+                newPasswordField,
+                newConfirmField,
+                newDateOfBirthField,
+                new H5("Select a role *"),
+                newUserRoleListBox,
+                new H5("* - Mandatory field"),
+                addUserButton
+        );
+
+        add(addUserLayout);
 
 
-        }
+    }
 
 
+    @Override
+    protected void onAttach(AttachEvent attachEvent) {
+        if (!loginService.checkAuth()) {
+            UI.getCurrent().navigate(LoginView.class);
         }
     }
+}
 
