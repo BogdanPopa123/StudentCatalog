@@ -1,7 +1,6 @@
 package com.packagename.myapp.views;
 
 import com.packagename.myapp.services.LoginService;
-import com.packagename.myapp.views.HomeView;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
@@ -16,11 +15,6 @@ import com.vaadin.flow.server.PWA;
 import javax.annotation.PostConstruct;
 
 @Route("login")
-@PWA(name = "Vaadin Application",
-        shortName = "Vaadin App",
-        description = "This is an example Vaadin application.",
-        enableInstallPrompt = false)
-@CssImport("./styles/shared-styles.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
 @CssImport("./styles/login-view-styles.css")
 public class LoginView extends VerticalLayout {
@@ -49,9 +43,9 @@ public class LoginView extends VerticalLayout {
         passwordField.addThemeName("bordered");
         passwordField.setMaxLength(50);
 
-        Button button = new Button("Login");
-        button.addClassName("login-button-style");
-        button.addClickListener(e -> {
+        Button loginButton = new Button("Login");
+        loginButton.addClassName("login-button-style");
+        loginButton.addClickListener(e -> {
             String username = usernameField.getValue();
             String password = passwordField.getValue();
 
@@ -59,10 +53,16 @@ public class LoginView extends VerticalLayout {
 
             UI.getCurrent().getPage().reload();
         });
+        loginButton.addClickShortcut(Key.ENTER);
 
-        button.addClickShortcut(Key.ENTER);
+        Button registerButton = new Button("Register");
+        registerButton.addClassName("register-button-style");
+        registerButton.addClickListener(e -> {
+            UI.getCurrent().navigate(RegisterView.class);
+        });
 
-        loginForm.add(usernameField, passwordField, button);
+
+        loginForm.add(usernameField, passwordField, loginButton, registerButton);
 
         add(loginForm);
     }
