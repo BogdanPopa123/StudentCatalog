@@ -56,9 +56,9 @@ public class LoginView extends VerticalLayout {
             String username = usernameField.getValue();
             String password = passwordField.getValue();
 
-            loginService.login(username, password);
-
-            UI.getCurrent().getPage().reload();
+            if(loginService.login(username, password)){
+                UI.getCurrent().getPage().reload();
+            }
         });
 
         button.addClickShortcut(Key.ENTER);

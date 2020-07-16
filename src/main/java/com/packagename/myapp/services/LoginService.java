@@ -16,26 +16,27 @@ public class LoginService {
         this.cookieService = cookieService;
     }
 
-    public void login(String username, String password) {
+    public boolean login(String username, String password) {
         if (username.isEmpty() || password.isEmpty()) {
             Notification.show("Introduce login / password");
-            return;
+            return false;
         }
 
         User authUser = userLoginDAO.findByUsername(username);
 
         if (authUser == null) {
             Notification.show("Username not found");
-            return;
+            return false;
         }
 
         if (!authUser.getPassword().equals(HashingService.hashThis(password))) {
             Notification.show("Username or password is wrong. Please try again!");
-            return;
+            return false;
         }
 
         cookieService.addUserCookie(authUser);
         Notification.show("Login successful");
+        return true;
     }
 
     public void logout() {

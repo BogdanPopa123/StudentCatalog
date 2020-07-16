@@ -6,6 +6,7 @@ import com.packagename.myapp.views.AdminPanelView;
 import com.packagename.myapp.views.CatalogView;
 import com.packagename.myapp.views.HomeView;
 import com.packagename.myapp.views.MyAccountView;
+import com.packagename.myapp.views.customComponents.NavigateButton;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -17,8 +18,6 @@ import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.HighlightConditions;
-import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 
@@ -60,10 +59,12 @@ public class MainLayout extends AppLayout {
         addToNavbar(header);
     }
 
+    Button lastPressedButton;
+
     private void createDrawer() {
-        RouterLink home = new RouterLink("Home", HomeView.class);
-        RouterLink myAccount = new RouterLink("My account", MyAccountView.class);
-        RouterLink catalog = new RouterLink("Catalog", CatalogView.class);
+        Button home = new NavigateButton("Home", HomeView.class);
+        Button myAccount = new NavigateButton("My account", MyAccountView.class);
+        Button catalog = new NavigateButton("Catalog", CatalogView.class);
 
 //        home.setHighlightCondition(HighlightConditions.sameLocation());
 //        myAccount.setHighlightCondition(HighlightConditions.sameLocation());
@@ -82,10 +83,11 @@ public class MainLayout extends AppLayout {
 
     }
 
+
     @Override
     protected void onAttach(AttachEvent attachEvent) {
         if (UserRole.ADMIN.equals(loginService.getAuthenticatedUser().getRole())) {
-            addToDrawer(new VerticalLayout(new RouterLink("AdminPanel", AdminPanelView.class)));
+            addToDrawer(new VerticalLayout(new NavigateButton("AdminPanel", AdminPanelView.class)));
         }
 //        // Check current link
 //        UI.getCurrent().getPage().executeJs(

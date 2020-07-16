@@ -28,7 +28,6 @@ public class CookieService {
         if (userCookie != null) {
             return User.jsonParse(userCookie.getValue());
         }
-
         setAnonymousUser();
 
         return User.getAnonymousUser();
