@@ -11,3 +11,9 @@
     margin-top: 0;
     margin-bottom: 0;
 }
+
+.active-link {
+    color: #8800ff;
+    font-size: larger;
+}
+

@@ -1,9 +1,13 @@
 package com.packagename.myapp.views.layout;
 
+import com.packagename.myapp.models.UserRole;
 import com.packagename.myapp.services.LoginService;
+import com.packagename.myapp.views.AdminPanelView;
 import com.packagename.myapp.views.CatalogView;
-import com.packagename.myapp.views.MyAccountView;
 import com.packagename.myapp.views.HomeView;
+import com.packagename.myapp.views.MyAccountView;
+import com.packagename.myapp.views.customComponents.NavigateButton;
+import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -14,7 +18,6 @@ import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 
@@ -56,12 +59,43 @@ public class MainLayout extends AppLayout {
         addToNavbar(header);
     }
 
+    Button lastPressedButton;
+
     private void createDrawer() {
+        Button home = new NavigateButton("Home", HomeView.class);
+        Button myAccount = new NavigateButton("My account", MyAccountView.class);
+        Button catalog = new NavigateButton("Catalog", CatalogView.class);
+
+//        home.setHighlightCondition(HighlightConditions.sameLocation());
+//        myAccount.setHighlightCondition(HighlightConditions.sameLocation());
+//        catalog.setHighlightCondition(HighlightConditions.sameLocation());
+//
+//        home.setHighlightAction((routerLink, highlight) -> routerLink.addClassName("active-link"));
+//        myAccount.setHighlightAction((routerLink, highlight) -> routerLink.addClassName("active-link"));
+//        catalog.setHighlightAction((routerLink, highlight) -> routerLink.addClassName("active-link"));
+
         addToDrawer(new VerticalLayout(
                 new H5("Menu"),
-                new RouterLink("Home", HomeView.class),
-                new RouterLink("Contul meu", MyAccountView.class),
-                new RouterLink("Catalog", CatalogView.class)
+                home,
+                myAccount,
+                catalog
         ));
+
+    }
+
+
+    @Override
+    protected void onAttach(AttachEvent attachEvent) {
+        if (UserRole.ADMIN.equals(loginService.getAuthenticatedUser().getRole())) {
+            addToDrawer(new VerticalLayout(new NavigateButton("AdminPanel", AdminPanelView.class)));
+        }
+//        // Check current link
+//        UI.getCurrent().getPage().executeJs(
+//                 "var links = document.getElementsByTagName(\"a\");\n" +
+//                            "for (i = 0; i < links.length; i++) {\n" +
+//                            "    if (links[i].href === window.location.href) {\n" +
+//                            "        links[i].classList.add('active-link')\n" +
+//                            "    }\n" +
+//                            "}\n");
     }
 }
