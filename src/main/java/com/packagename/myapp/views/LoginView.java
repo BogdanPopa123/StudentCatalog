@@ -10,7 +10,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.PWA;
 
 import javax.annotation.PostConstruct;
 
@@ -36,11 +35,13 @@ public class LoginView extends VerticalLayout {
         TextField usernameField = new TextField("Username");
         usernameField.addClassName("username-style");
         usernameField.addThemeName("bordered");
+        usernameField.setRequired(true);
         usernameField.setMaxLength(50);
 
         PasswordField passwordField = new PasswordField("Password");
         passwordField.addClassName("password-style");
         passwordField.addThemeName("bordered");
+        passwordField.setRequired(true);
         passwordField.setMaxLength(50);
 
         Button loginButton = new Button("Login");
@@ -49,17 +50,15 @@ public class LoginView extends VerticalLayout {
             String username = usernameField.getValue();
             String password = passwordField.getValue();
 
-            loginService.login(username, password);
-
-            UI.getCurrent().getPage().reload();
+            if (loginService.login(username, password)) {
+                UI.getCurrent().getPage().reload();
+            }
         });
         loginButton.addClickShortcut(Key.ENTER);
 
         Button registerButton = new Button("Register");
         registerButton.addClassName("register-button-style");
-        registerButton.addClickListener(e -> {
-            UI.getCurrent().navigate(RegisterView.class);
-        });
+        registerButton.addClickListener(e -> UI.getCurrent().navigate(RegisterView.class));
 
 
         loginForm.add(usernameField, passwordField, loginButton, registerButton);
