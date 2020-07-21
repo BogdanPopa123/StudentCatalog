@@ -26,6 +26,15 @@ body {
     width: 100%;
 }
 
-.login-button-style {
+.login-button-style, .register-button-style {
     width: 100%;
+}
+
+.login-button-style{
+    background-color: rgba(0, 123, 255, 0.89);
+    color: white;
+}
+
+.register-button-style{
+
 }

@@ -2,6 +2,9 @@ package com.packagename.myapp.models;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -15,17 +18,24 @@ public class User {
     private int id;
 
     @NotNull
+    @NotEmpty
     private String username;
 
+    @NotNull
+    @NotEmpty
+    @Email
     private String email;
 
     @NotNull
+    @NotEmpty
     private String password;
 
     @NotNull
+    @NotEmpty
     private String name;
 
     @NotNull
+    @NotEmpty
     private String surname;
 
     private String birthDay;

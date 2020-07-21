@@ -1,0 +1,40 @@
+.register-view-form-style {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.register-form-style{
+    padding: 2rem;
+    align-items: center;
+    height: 100%;
+    background-color: rgba(17, 15, 15, 0.24);
+}
+
+.register-column-style {
+    width: 100%;
+}
+
+.register-field-style {
+    width: 15rem;
+}
+
+.login-back-button-style, .register-user-button-style {
+    width: 100%;
+}
+
+.register-user-button-style {
+    background-color: rgba(0, 123, 255, 0.89);
+    color: white;
+}
+
+.login-back-button-style {
+
+}
+
+:host (.birth-date-style) {
+    background-color: red;
+}
