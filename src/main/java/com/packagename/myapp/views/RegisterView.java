@@ -135,6 +135,8 @@ public class RegisterView extends FormLayout {
         binder.forField(username)
                 .withValidator(text -> !loginService.checkUsername(text), "The username already exists.")
                 .bind(User::getUsername, User::setUsername);
+
+//        binder.forField(email)
     }
 
     private void register(ClickEvent<Button> e) {

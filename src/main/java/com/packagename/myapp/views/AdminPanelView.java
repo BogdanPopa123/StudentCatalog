@@ -49,7 +49,7 @@ public class AdminPanelView extends VerticalLayout {
         PasswordField newConfirmField = new PasswordField("Confirm your password *", "confirm your password");
         TextField newDateOfBirthField = new TextField("Date of birth", "DD.MM.YYYY");
         ListBox<UserRole> newUserRoleListBox = new ListBox<>();
-        newUserRoleListBox.setItems(UserRole.ADMIN, UserRole.TEACHER, UserRole.STUDENT);
+        newUserRoleListBox.setItems(UserRole.TEACHER, UserRole.STUDENT);
 
         String warningText = "";
 

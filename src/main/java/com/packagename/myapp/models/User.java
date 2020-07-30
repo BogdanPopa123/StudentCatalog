@@ -4,17 +4,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "user")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private int id;
 
     @NotNull
@@ -42,7 +44,9 @@ public class User {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private UserRole role;
+    private UserRole role = UserRole.STUDENT;
+
+    private boolean isAdmin = false;
 
     private byte[] image;
 
@@ -126,6 +130,14 @@ public class User {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 
     @Override
