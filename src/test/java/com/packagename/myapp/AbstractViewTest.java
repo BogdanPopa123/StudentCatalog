@@ -79,7 +79,7 @@
 //     * @param themeClass    theme class (such as {@code Lumo.class}
 //     */
 //    protected void assertThemePresentOnElement(
-//            WebElement element, Class<? extends AbstractTheme> themeClass) {
+//            WebElement element, StudentClass<? extends AbstractTheme> themeClass) {
 //        String themeName = themeClass.getSimpleName().toLowerCase();
 //        Boolean hasStyle = (Boolean) executeScript("" +
 //                "var styles = Array.from(arguments[0]._template.content" +

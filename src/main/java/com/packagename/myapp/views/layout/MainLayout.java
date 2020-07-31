@@ -1,6 +1,5 @@
 package com.packagename.myapp.views.layout;
 
-import com.packagename.myapp.models.UserRole;
 import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.views.AdminPanelView;
 import com.packagename.myapp.views.CatalogView;
@@ -86,7 +85,7 @@ public class MainLayout extends AppLayout {
 
     @Override
     protected void onAttach(AttachEvent attachEvent) {
-        if (UserRole.ADMIN.equals(loginService.getAuthenticatedUser().getRole())) {
+        if (loginService.getAuthenticatedUser().isAdmin()) {
             addToDrawer(new VerticalLayout(new NavigateButton("AdminPanel", AdminPanelView.class)));
         }
 //        // Check current link
