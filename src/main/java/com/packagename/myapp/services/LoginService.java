@@ -50,6 +50,6 @@ public class LoginService {
     public boolean checkAuth() {
         User authUser = getAuthenticatedUser();
 
-        return authUser != null && !authUser.checkAnonymous();
+        return authUser.getUsername() != null && !authUser.checkAnonymous();
     }
 }

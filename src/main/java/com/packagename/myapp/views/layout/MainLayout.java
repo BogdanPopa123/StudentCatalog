@@ -86,7 +86,7 @@ public class MainLayout extends AppLayout {
 
     @Override
     protected void onAttach(AttachEvent attachEvent) {
-        if (UserRole.ADMIN.equals(loginService.getAuthenticatedUser().getRole())) {
+        if (loginService.getAuthenticatedUser().getAdmin()) {
             addToDrawer(new VerticalLayout(new NavigateButton("AdminPanel", AdminPanelView.class)));
         }
 //        // Check current link

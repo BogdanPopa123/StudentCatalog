@@ -30,9 +30,13 @@ public class User {
 
     private String birthDay;
 
-    @NotNull
+    /*@NotNull
     @Enumerated(EnumType.STRING)
     private UserRole role;
+*/
+    private boolean isAdmin;
+
+
 
     private byte[] image;
 
@@ -94,12 +98,20 @@ public class User {
         this.birthDay = birthDay;
     }
 
-    public UserRole getRole() {
+   /* public UserRole getRole() {
         return role;
     }
 
     public void setRole(UserRole role) {
         this.role = role;
+    }*/
+
+    public boolean getAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.isAdmin = admin;
     }
 
     public byte[] getImage() {
@@ -128,7 +140,7 @@ public class User {
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", birthDay='" + birthDay + '\'' +
-                ", role=" + role +
+             //   ", role=" + role +
                 ", image=" + Arrays.toString(image) +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
