@@ -1,10 +1,7 @@
 package com.packagename.myapp.views.layout;
 
 import com.packagename.myapp.services.LoginService;
-import com.packagename.myapp.views.AdminPanelView;
-import com.packagename.myapp.views.CatalogView;
-import com.packagename.myapp.views.HomeView;
-import com.packagename.myapp.views.MyAccountView;
+import com.packagename.myapp.views.*;
 import com.packagename.myapp.views.customComponents.NavigateButton;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.UI;
@@ -64,6 +61,7 @@ public class MainLayout extends AppLayout {
         Button home = new NavigateButton("Home", HomeView.class);
         Button myAccount = new NavigateButton("My account", MyAccountView.class);
         Button catalog = new NavigateButton("Catalog", CatalogView.class);
+        Button faculty = new NavigateButton("Faculty", FacultyView.class);
 
 //        home.setHighlightCondition(HighlightConditions.sameLocation());
 //        myAccount.setHighlightCondition(HighlightConditions.sameLocation());
@@ -77,7 +75,8 @@ public class MainLayout extends AppLayout {
                 new H5("Menu"),
                 home,
                 myAccount,
-                catalog
+                catalog,
+                faculty
         ));
 
     }
