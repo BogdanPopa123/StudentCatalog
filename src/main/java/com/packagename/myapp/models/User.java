@@ -2,41 +2,51 @@ package com.packagename.myapp.models;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "user")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private int id;
 
     @NotNull
+    @NotEmpty
     private String username;
 
+    @NotNull
+    @NotEmpty
+    @Email
     private String email;
 
     @NotNull
+    @NotEmpty
     private String password;
 
     @NotNull
+    @NotEmpty
     private String name;
 
     @NotNull
+    @NotEmpty
     private String surname;
 
     private String birthDay;
 
-    /*@NotNull
+    @NotNull
     @Enumerated(EnumType.STRING)
-    private UserRole role;
-*/
-    private boolean isAdmin;
+    private UserRole role = UserRole.STUDENT;
 
-
+    private boolean isAdmin = false;
 
     private byte[] image;
 
@@ -98,20 +108,12 @@ public class User {
         this.birthDay = birthDay;
     }
 
-   /* public UserRole getRole() {
+    public UserRole getRole() {
         return role;
     }
 
     public void setRole(UserRole role) {
         this.role = role;
-    }*/
-
-    public boolean getAdmin() {
-        return isAdmin;
-    }
-
-    public void setAdmin(boolean admin) {
-        this.isAdmin = admin;
     }
 
     public byte[] getImage() {
@@ -130,6 +132,14 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -140,7 +150,7 @@ public class User {
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", birthDay='" + birthDay + '\'' +
-             //   ", role=" + role +
+                ", role=" + role +
                 ", image=" + Arrays.toString(image) +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 '}';

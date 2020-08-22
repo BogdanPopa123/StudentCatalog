@@ -1,7 +1,6 @@
 package com.packagename.myapp.views;
 
 import com.packagename.myapp.services.LoginService;
-import com.packagename.myapp.views.HomeView;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
@@ -10,18 +9,11 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.PWA;
 
 import javax.annotation.PostConstruct;
 
 @Route("login")
-@PWA(name = "Vaadin Application",
-        shortName = "Vaadin App",
-        description = "This is an example Vaadin application.",
-        enableInstallPrompt = false)
-@CssImport("./styles/shared-styles.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
 @CssImport("./styles/login-view-styles.css")
 public class LoginView extends VerticalLayout {
@@ -43,27 +35,33 @@ public class LoginView extends VerticalLayout {
         TextField usernameField = new TextField("Username");
         usernameField.addClassName("username-style");
         usernameField.addThemeName("bordered");
+        usernameField.setRequired(true);
         usernameField.setMaxLength(50);
 
         PasswordField passwordField = new PasswordField("Password");
         passwordField.addClassName("password-style");
         passwordField.addThemeName("bordered");
+        passwordField.setRequired(true);
         passwordField.setMaxLength(50);
 
-        Button button = new Button("Login");
-        button.addClassName("login-button-style");
-        button.addClickListener(e -> {
+        Button loginButton = new Button("Login");
+        loginButton.addClassName("login-button-style");
+        loginButton.addClickListener(e -> {
             String username = usernameField.getValue();
             String password = passwordField.getValue();
 
-            if(loginService.login(username, password)){
+            if (loginService.login(username, password)) {
                 UI.getCurrent().getPage().reload();
             }
         });
+        loginButton.addClickShortcut(Key.ENTER);
 
-        button.addClickShortcut(Key.ENTER);
+        Button registerButton = new Button("Register");
+        registerButton.addClassName("register-button-style");
+        registerButton.addClickListener(e -> UI.getCurrent().navigate(RegisterView.class));
 
-        loginForm.add(usernameField, passwordField, button);
+
+        loginForm.add(usernameField, passwordField, loginButton, registerButton);
 
         add(loginForm);
     }
