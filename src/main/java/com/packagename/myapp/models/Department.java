@@ -2,11 +2,14 @@ package com.packagename.myapp.models;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Set;
 
 @Entity
 @Table(name = "department")
-public class Department {
+
+public class Department implements  UniversityModel{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,6 +53,18 @@ public class Department {
         return name;
     }
 
+    @Override
+    public UniversityModel getParent() {
+        return this.getFaculty();
+    }
+
+    @Override
+    public Collection<UniversityModel> getChildren() {
+       // return new ArrayList<UniversityModel>(getDomains());
+        // TO DO !!
+        return new ArrayList<>();
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -70,4 +85,5 @@ public class Department {
     public void setProfessors(Set<Professor> professors) {
         this.professors = professors;
     }
+
 }

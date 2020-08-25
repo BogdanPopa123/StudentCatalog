@@ -62,6 +62,7 @@ public class MainLayout extends AppLayout {
         Button myAccount = new NavigateButton("My account", MyAccountView.class);
         Button catalog = new NavigateButton("Catalog", CatalogView.class);
         Button faculty = new NavigateButton("Faculty", FacultyView.class);
+        Button departments = new NavigateButton("Departments", DepartmentView.class);
 
 //        home.setHighlightCondition(HighlightConditions.sameLocation());
 //        myAccount.setHighlightCondition(HighlightConditions.sameLocation());
@@ -76,7 +77,8 @@ public class MainLayout extends AppLayout {
                 home,
                 myAccount,
                 catalog,
-                faculty
+                faculty,
+                departments
         ));
 
     }
