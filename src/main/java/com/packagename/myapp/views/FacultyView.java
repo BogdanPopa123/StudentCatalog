@@ -53,7 +53,7 @@ public class FacultyView extends VerticalLayout {
     }
 
     private void setupFacultyForm() {
-        if (loginService.getAuthenticatedUser().isAdmin()) {
+        if (loginService.getAuthenticatedUser().isNotAdmin()) {
             return;
         }
 
