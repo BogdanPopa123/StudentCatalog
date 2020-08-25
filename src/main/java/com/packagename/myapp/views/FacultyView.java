@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.packagename.myapp.dao.FacultyRepository;
 import com.packagename.myapp.models.Faculty;
+import com.packagename.myapp.services.NotificationService;
 import com.packagename.myapp.views.layout.MainLayout;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
@@ -29,11 +30,13 @@ import java.util.List;
 public class FacultyView extends VerticalLayout {
 
     private final FacultyRepository facultyRepository;
+    private final NotificationService notificationService;
     private Grid<Faculty> facultyGrid;
     private List<Faculty> faculties;
 
-    public FacultyView(FacultyRepository facultyRepository) {
+    public FacultyView(FacultyRepository facultyRepository, NotificationService notificationService) {
         this.facultyRepository = facultyRepository;
+        this.notificationService = notificationService;
     }
 
     @PostConstruct
@@ -61,9 +64,7 @@ public class FacultyView extends VerticalLayout {
                 facultyGrid.setItems(faculties);
 
             } else {
-                Notification notification = new Notification("Wrong faculty name!");
-                notification.getElement().getThemeList().add("error");
-                notification.open();
+                notificationService.error("Wrong faculty name!");
             }
 
         });
