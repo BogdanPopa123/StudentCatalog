@@ -61,7 +61,9 @@ public class FacultyView extends VerticalLayout {
                 facultyGrid.setItems(faculties);
 
             } else {
-                Notification.show("Wrong faculty name");
+                Notification notification = new Notification("Wrong faculty name!");
+                notification.getElement().getThemeList().add("error");
+                notification.open();
             }
 
         });
