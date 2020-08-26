@@ -3,7 +3,6 @@ package com.packagename.myapp.views;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.packagename.myapp.dao.FacultyRepository;
-import com.packagename.myapp.models.Department;
 import com.packagename.myapp.models.Faculty;
 import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.services.NotificationService;
@@ -19,12 +18,13 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
-import java.util.Set;
 
 @Route(value = "faculty", layout = MainLayout.class)
 @PageTitle("Faculty")
@@ -36,8 +36,15 @@ public class FacultyView extends VerticalLayout {
     private final FacultyRepository facultyRepository;
     private final NotificationService notificationService;
     private final LoginService loginService;
+
     private Grid<Faculty> facultyGrid;
     private List<Faculty> faculties;
+
+    private TextField facultyNameField = new TextField("Faculty");
+    private TextField facultyAbbreviationField = new TextField("Abbreviation");
+
+    private Faculty faculty = new Faculty();
+    private final Binder<Faculty> binder = new BeanValidationBinder<>(Faculty.class);
 
     public FacultyView(FacultyRepository facultyRepository, NotificationService notificationService, LoginService loginService) {
         this.facultyRepository = facultyRepository;
@@ -52,24 +59,51 @@ public class FacultyView extends VerticalLayout {
         setupHeader();
         setupGrid();
         setupFacultyForm();
+
+//        setBinder();
+    }
+
+
+    private void setupHeader() {
+        H1 header = new H1("Faculties");
+        header.addClassName("faculty-header");
+        add(header);
+    }
+
+    private void setupGrid() {
+        faculties = Lists.newArrayList(facultyRepository.findAll().iterator());
+
+        facultyGrid = new Grid<>();
+        facultyGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
+        facultyGrid.setItems(faculties);
+
+        facultyGrid.addColumn(Faculty::getId).setHeader("Id").setKey("id").setWidth("10px");
+        facultyGrid.addColumn(Faculty::getName).setHeader("Name").setKey("name").setWidth("20px");
+
+        add(facultyGrid);
     }
 
     private void setupFacultyForm() {
+        // Check if user is admin ( only admin can add faculties )
         if (loginService.getAuthenticatedUser().isNotAdmin()) {
             return;
         }
 
-        TextField facultyNameField = new TextField("Faculty");
         facultyNameField.addThemeName("bordered");
         facultyNameField.addClassName("faculty-name-field");
 
+        facultyAbbreviationField.addThemeName("bordered");
+        facultyAbbreviationField.addClassName("faculty-name-field");
+
         Button addFaculty = new Button("Add", event -> {
             String facultyName = facultyNameField.getValue();
+            String facultyAbbreviation = facultyAbbreviationField.getValue();
 
             if (!Strings.isNullOrEmpty(facultyName) && !facultyRepository.existsByName(facultyName) && faculties.stream().noneMatch(faculty -> faculty.getName().equals(facultyName))) {
 
                 Faculty faculty = new Faculty();
                 faculty.setName(facultyName);
+                faculty.setAbbreviation(facultyAbbreviation);
 
                 facultyRepository.save(faculty);
 
@@ -93,24 +127,8 @@ public class FacultyView extends VerticalLayout {
         add(facultyForm);
     }
 
-    private void setupHeader() {
-        H1 header = new H1("Faculties");
-        header.addClassName("faculty-header");
-        add(header);
-    }
 
-    private void setupGrid() {
-        faculties = Lists.newArrayList(facultyRepository.findAll().iterator());
 
-        facultyGrid = new Grid<>();
-        facultyGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
-        facultyGrid.setItems(faculties);
-
-        facultyGrid.addColumn(Faculty::getId).setHeader("Id").setKey("id").setWidth("10px");
-        facultyGrid.addColumn(Faculty::getName).setHeader("Name").setKey("name").setWidth("20px");
-
-        add(facultyGrid);
-    }
 
     @Override
     protected void onAttach(AttachEvent attachEvent) {
