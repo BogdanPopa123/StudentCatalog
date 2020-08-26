@@ -13,11 +13,14 @@ public class Faculty {
     @Column(name = "faculty_id")
     private int id;
 
-    @OneToMany
+    @OneToMany(mappedBy = "faculty", fetch = FetchType.EAGER)
     private Set<Department> departments;
 
     @NotNull
     private String name;
+
+    @NotNull
+    private String abbreviation;
 
     public int getId() {
         return id;
@@ -41,5 +44,13 @@ public class Faculty {
 
     public void setDepartments(Set<Department> departments) {
         this.departments = departments;
+    }
+
+    public String getAbbreviation() {
+        return abbreviation;
+    }
+
+    public void setAbbreviation(String abbreviation) {
+        this.abbreviation = abbreviation;
     }
 }

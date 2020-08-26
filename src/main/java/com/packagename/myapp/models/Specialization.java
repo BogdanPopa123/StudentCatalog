@@ -20,10 +20,10 @@ public class Specialization {
     @JoinColumn(name = "domain_id", nullable = false)
     private Domain domain;
 
-    @OneToMany
+    @OneToMany(mappedBy = "specialization", fetch = FetchType.EAGER)
     private Set<StudentClass> studentClasses;
 
-    @OneToOne
+    @OneToOne(mappedBy = "specialization", fetch = FetchType.EAGER)
     private LearningPlan plan;
 
     public Set<StudentClass> getStudentClasses() {

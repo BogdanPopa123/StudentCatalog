@@ -12,10 +12,10 @@ public class LearningPlan {
     @Column(name = "plan_id")
     private int id;
 
-    @OneToOne
+    @OneToOne(mappedBy = "plan", fetch = FetchType.EAGER)
     private Specialization specialization;
 
-    @OneToMany
+    @OneToMany(mappedBy = "plan", fetch = FetchType.EAGER)
     private Set<Course> courses;
 
     public int getId() {
