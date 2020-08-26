@@ -20,7 +20,7 @@ public class Domain {
     @JoinColumn(name = "department_id", nullable = false)
     private Department department;
 
-    @OneToMany
+    @OneToMany(mappedBy = "domain", fetch = FetchType.EAGER)
     private Set<Specialization> specializations;
 
     public int getId() {

@@ -3,6 +3,7 @@ package com.packagename.myapp.views;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.packagename.myapp.dao.FacultyRepository;
+import com.packagename.myapp.models.Department;
 import com.packagename.myapp.models.Faculty;
 import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.services.NotificationService;
@@ -23,6 +24,7 @@ import com.vaadin.flow.router.Route;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.Set;
 
 @Route(value = "faculty", layout = MainLayout.class)
 @PageTitle("Faculty")

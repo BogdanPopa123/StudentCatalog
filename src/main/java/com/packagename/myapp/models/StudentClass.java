@@ -21,7 +21,7 @@ public class StudentClass {
     @JoinColumn(name = "specialization_id", nullable = false)
     private Specialization specialization;
 
-    @OneToMany
+    @OneToMany(mappedBy = "studentClass", fetch = FetchType.EAGER)
     private Set<Profile> profiles;
 
     public String getName() {

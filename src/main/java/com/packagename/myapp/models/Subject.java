@@ -20,10 +20,10 @@ public class Subject {
     @ManyToMany
     private Set<Professor> professors;
 
-    @OneToMany
+    @OneToMany(mappedBy = "subject", fetch = FetchType.EAGER)
     private Set<Grade> grades;
 
-    @OneToMany
+    @OneToMany(mappedBy = "subject", fetch = FetchType.EAGER)
     private Set<Course> courses;
 
     public int getId() {
