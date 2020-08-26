@@ -12,9 +12,11 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -36,15 +38,13 @@ public class FacultyView extends VerticalLayout {
     private final FacultyRepository facultyRepository;
     private final NotificationService notificationService;
     private final LoginService loginService;
-
+    private final Binder<Faculty> binder = new BeanValidationBinder<>(Faculty.class);
+    public TextField name = new TextField("Faculty name");
+    public TextField abbreviation = new TextField("Abbreviation");
     private Grid<Faculty> facultyGrid;
     private List<Faculty> faculties;
-
-    private TextField facultyNameField = new TextField("Faculty");
-    private TextField facultyAbbreviationField = new TextField("Abbreviation");
-
     private Faculty faculty = new Faculty();
-    private final Binder<Faculty> binder = new BeanValidationBinder<>(Faculty.class);
+
 
     public FacultyView(FacultyRepository facultyRepository, NotificationService notificationService, LoginService loginService) {
         this.facultyRepository = facultyRepository;
@@ -60,7 +60,8 @@ public class FacultyView extends VerticalLayout {
         setupGrid();
         setupFacultyForm();
 
-//        setBinder();
+        setBinder();
+
     }
 
 
@@ -89,45 +90,54 @@ public class FacultyView extends VerticalLayout {
             return;
         }
 
-        facultyNameField.addThemeName("bordered");
-        facultyNameField.addClassName("faculty-name-field");
+        name.addThemeName("bordered");
+        name.addClassName("faculty-name-field");
 
-        facultyAbbreviationField.addThemeName("bordered");
-        facultyAbbreviationField.addClassName("faculty-name-field");
+        abbreviation.addThemeName("bordered");
+        abbreviation.addClassName("faculty-name-field");
 
         Button addFaculty = new Button("Add", event -> {
-            String facultyName = facultyNameField.getValue();
-            String facultyAbbreviation = facultyAbbreviationField.getValue();
+            if (binder.isValid()) {
 
-            if (!Strings.isNullOrEmpty(facultyName) && !facultyRepository.existsByName(facultyName) && faculties.stream().noneMatch(faculty -> faculty.getName().equals(facultyName))) {
-
-                Faculty faculty = new Faculty();
-                faculty.setName(facultyName);
-                faculty.setAbbreviation(facultyAbbreviation);
+                faculty = binder.getBean();
 
                 facultyRepository.save(faculty);
 
                 faculties.add(faculty);
                 facultyGrid.setItems(faculties);
 
-            } else {
-                notificationService.error("Wrong faculty name!");
             }
-
         });
 
-        facultyNameField.addKeyPressListener(Key.ENTER, event -> addFaculty.click());
+        name.addKeyPressListener(Key.ENTER, event -> addFaculty.click());
 
-        HorizontalLayout facultyForm = new HorizontalLayout(facultyNameField, addFaculty);
+        HorizontalLayout facultyForm = new HorizontalLayout(name, abbreviation, addFaculty);
         facultyForm.addClassName("faculty-form");
 
-        facultyForm.setVerticalComponentAlignment(Alignment.BASELINE, facultyNameField);
-        facultyForm.setVerticalComponentAlignment(Alignment.BASELINE, addFaculty);
+        facultyForm.setVerticalComponentAlignment(FlexComponent.Alignment.BASELINE, name);
+        facultyForm.setVerticalComponentAlignment(FlexComponent.Alignment.BASELINE, abbreviation);
+        facultyForm.setVerticalComponentAlignment(FlexComponent.Alignment.BASELINE, addFaculty);
 
         add(facultyForm);
     }
 
+    private void setBinder() {
+        binder.setBean(faculty);
 
+        binder.bindInstanceFields(this);
+
+        binder.forField(name)
+                .withValidator(name -> !Strings.isNullOrEmpty(name) , "Enter name!")
+                .withValidator(name -> !facultyRepository.existsByName(name) && faculties.stream().noneMatch(faculty -> faculty.getName().equals(name)), "Name already taken!")
+                .bind(Faculty::getName, Faculty::setName);
+
+        binder.forField(abbreviation)
+                .withValidator(abbreviation -> !Strings.isNullOrEmpty(abbreviation), "Enter abbreviation!")
+                .withValidator(abbreviation -> !facultyRepository.existsByAbbreviation(abbreviation) && faculties.stream().noneMatch(faculty -> faculty.getAbbreviation().equals(abbreviation)), "Abbreviation already taken!")
+                .bind(Faculty::getAbbreviation, Faculty::setAbbreviation);
+
+
+    }
 
 
     @Override
