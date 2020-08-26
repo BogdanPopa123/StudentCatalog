@@ -23,7 +23,7 @@ public class Specialization {
     @OneToMany(mappedBy = "specialization", fetch = FetchType.EAGER)
     private Set<StudentClass> studentClasses;
 
-    @OneToOne(mappedBy = "specialization", fetch = FetchType.EAGER)
+    @OneToOne
     private LearningPlan plan;
 
     public Set<StudentClass> getStudentClasses() {

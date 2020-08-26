@@ -102,14 +102,6 @@ public class FacultyView extends VerticalLayout {
     private void setupGrid() {
         faculties = Lists.newArrayList(facultyRepository.findAll().iterator());
 
-        for (Faculty faculty : faculties) {
-            Set<Department> departments = faculty.getDepartments();
-            for (Department department : departments) {
-                String name = department.getName();
-                System.out.println(name);
-            }
-        }
-
         facultyGrid = new Grid<>();
         facultyGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
         facultyGrid.setItems(faculties);
