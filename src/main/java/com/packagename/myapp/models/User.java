@@ -1,5 +1,6 @@
 package com.packagename.myapp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.validator.constraints.Email;
@@ -7,6 +8,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Console;
 import java.util.Arrays;
 
 @Entity
@@ -136,6 +138,11 @@ public class User {
         return isAdmin;
     }
 
+    @JsonIgnore
+    public boolean isNotAdmin() {
+        return !isAdmin();
+    }
+
     public void setAdmin(boolean admin) {
         isAdmin = admin;
     }
@@ -151,6 +158,7 @@ public class User {
                 ", surname='" + surname + '\'' +
                 ", birthDay='" + birthDay + '\'' +
                 ", role=" + role +
+                ", isAdmin=" + isAdmin +
                 ", image=" + Arrays.toString(image) +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
@@ -160,6 +168,8 @@ public class User {
         try {
             return getMapper().writeValueAsString(this);
         } catch (JsonProcessingException e) {
+            System.out.println("Error on parsing user TO JSON: "+this.toString());
+            System.out.println(e.toString());
             return "";
         }
     }
@@ -168,6 +178,8 @@ public class User {
         try {
             return getMapper().readValue(jsonString, User.class);
         } catch (JsonProcessingException e) {
+            System.out.println("Error on parsing user FROM JSON: "+jsonString);
+            System.out.println(e.toString());
             return new User();
         }
     }
@@ -185,7 +197,7 @@ public class User {
 
 
     public boolean checkAnonymous() {
-        return this.getUsername().equals(getAnonymousUser().getUsername());
+        return getAnonymousUser().getUsername().equals(this.getUsername());
     }
 
     public static User getAnonymousUser() {

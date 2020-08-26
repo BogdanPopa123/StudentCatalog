@@ -4,14 +4,17 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.packagename.myapp.dao.FacultyRepository;
 import com.packagename.myapp.models.Faculty;
+import com.packagename.myapp.services.LoginService;
+import com.packagename.myapp.services.NotificationService;
 import com.packagename.myapp.views.layout.MainLayout;
+import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -29,11 +32,15 @@ import java.util.List;
 public class FacultyView extends VerticalLayout {
 
     private final FacultyRepository facultyRepository;
+    private final NotificationService notificationService;
+    private final LoginService loginService;
     private Grid<Faculty> facultyGrid;
     private List<Faculty> faculties;
 
-    public FacultyView(FacultyRepository facultyRepository) {
+    public FacultyView(FacultyRepository facultyRepository, NotificationService notificationService, LoginService loginService) {
         this.facultyRepository = facultyRepository;
+        this.notificationService = notificationService;
+        this.loginService = loginService;
     }
 
     @PostConstruct
@@ -42,6 +49,13 @@ public class FacultyView extends VerticalLayout {
 
         setupHeader();
         setupGrid();
+        setupFacultyForm();
+    }
+
+    private void setupFacultyForm() {
+        if (loginService.getAuthenticatedUser().isNotAdmin()) {
+            return;
+        }
 
         TextField facultyNameField = new TextField("Faculty");
         facultyNameField.addThemeName("bordered");
@@ -61,7 +75,7 @@ public class FacultyView extends VerticalLayout {
                 facultyGrid.setItems(faculties);
 
             } else {
-                Notification.show("Wrong faculty name");
+                notificationService.error("Wrong faculty name!");
             }
 
         });
@@ -96,6 +110,11 @@ public class FacultyView extends VerticalLayout {
         add(facultyGrid);
     }
 
-
+    @Override
+    protected void onAttach(AttachEvent attachEvent) {
+        if (!loginService.checkAuth()) {
+            UI.getCurrent().navigate(LoginView.class);
+        }
+    }
 }
 
