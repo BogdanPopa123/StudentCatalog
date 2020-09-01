@@ -52,6 +52,11 @@ public class User {
 
     private String phoneNumber;
 
+    private String cnp;
+
+    private String address;
+
+
     public int getId() {
         return id;
     }
@@ -132,6 +137,22 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
+    public String getCnp() {
+        return cnp;
+    }
+
+    public void setCnp(String cnp) {
+        this.cnp = cnp;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public boolean isAdmin() {
         return isAdmin;
     }
@@ -151,8 +172,11 @@ public class User {
                 ", surname='" + surname + '\'' +
                 ", birthDay='" + birthDay + '\'' +
                 ", role=" + role +
+                ", isAdmin=" + isAdmin +
                 ", image=" + Arrays.toString(image) +
                 ", phoneNumber='" + phoneNumber + '\'' +
+                ", cnp=" + cnp +
+                ", address='" + address + '\'' +
                 '}';
     }
 
@@ -172,7 +196,6 @@ public class User {
         }
     }
 
-
     private static ObjectMapper mapper;
 
     private static ObjectMapper getMapper() {
@@ -183,7 +206,6 @@ public class User {
         return mapper;
     }
 
-
     public boolean checkAnonymous() {
         return this.getUsername().equals(getAnonymousUser().getUsername());
     }
@@ -193,7 +215,6 @@ public class User {
         anonymousUser.setUsername("AnonymousUsername");
         return anonymousUser;
     }
-
 
 }
 

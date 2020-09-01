@@ -159,7 +159,6 @@ public class AdminPanelView extends VerticalLayout {
 
         add(addUserLayout);
 
-
     }
 
 
