@@ -23,6 +23,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.List;
 
 @Route(value = "faculty", layout = MainLayout.class)
@@ -35,8 +36,8 @@ public class FacultyView extends VerticalLayoutAuthRestricted {
     private final FacultyRepository facultyRepository;
     private final LoginService loginService;
     private final Binder<Faculty> binder = new BeanValidationBinder<>(Faculty.class);
-    public TextField name = new TextField("Faculty name");
-    public TextField abbreviation = new TextField("Abbreviation");
+    private TextField name = new TextField("Faculty name");
+    private TextField abbreviation = new TextField("Abbreviation");
     private Grid<Faculty> facultyGrid;
     private List<Faculty> faculties;
     private Faculty faculty = new Faculty();
@@ -68,8 +69,8 @@ public class FacultyView extends VerticalLayoutAuthRestricted {
     }
 
     private void setupGrid() {
-        faculties = Lists.newArrayList(facultyRepository.findAll().iterator());
-
+        faculties = Lists.newArrayList(facultyRepository.findAll());
+        
         facultyGrid = new Grid<>();
         facultyGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
         facultyGrid.setItems(faculties);
