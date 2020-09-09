@@ -6,19 +6,16 @@ import com.packagename.myapp.dao.FacultyRepository;
 import com.packagename.myapp.models.Faculty;
 import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.services.NotificationService;
-import com.packagename.myapp.views.layout.MainLayout;
-import com.vaadin.flow.component.AttachEvent;
+import com.packagename.myapp.views.layouts.VerticalLayoutAuthRestricted;
+import com.packagename.myapp.views.layouts.MainLayout;
 import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
@@ -33,7 +30,7 @@ import java.util.List;
 @CssImport("./styles/shared-styles.css")
 @CssImport("./styles/faculty-view.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
-public class FacultyView extends VerticalLayout {
+public class FacultyView extends VerticalLayoutAuthRestricted {
 
     private final FacultyRepository facultyRepository;
     private final NotificationService notificationService;
@@ -47,6 +44,7 @@ public class FacultyView extends VerticalLayout {
 
 
     public FacultyView(FacultyRepository facultyRepository, NotificationService notificationService, LoginService loginService) {
+        super(loginService);
         this.facultyRepository = facultyRepository;
         this.notificationService = notificationService;
         this.loginService = loginService;
@@ -137,14 +135,6 @@ public class FacultyView extends VerticalLayout {
                 .bind(Faculty::getAbbreviation, Faculty::setAbbreviation);
 
 
-    }
-
-
-    @Override
-    protected void onAttach(AttachEvent attachEvent) {
-        if (!loginService.checkAuth()) {
-            UI.getCurrent().navigate(LoginView.class);
-        }
     }
 }
 

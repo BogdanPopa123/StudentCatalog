@@ -67,7 +67,7 @@ public class LoginService {
         return cookieService.getCurrentUserFromCookies();
     }
 
-    public boolean checkAuth() {
+    public boolean isAuthenticated() {
         User authUser = getAuthenticatedUser();
 
         return authUser != null && !authUser.checkAnonymous();

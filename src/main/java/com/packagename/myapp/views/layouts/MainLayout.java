@@ -1,4 +1,4 @@
-package com.packagename.myapp.views.layout;
+package com.packagename.myapp.views.layouts;
 
 import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.views.*;

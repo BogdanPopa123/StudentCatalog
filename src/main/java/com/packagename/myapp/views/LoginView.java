@@ -68,7 +68,7 @@ public class LoginView extends VerticalLayout {
 
     @Override
     protected void onAttach(AttachEvent attachEvent) {
-        if (loginService.checkAuth()) {
+        if (loginService.isAuthenticated()) {
             UI.getCurrent().navigate(HomeView.class);
         }
     }
