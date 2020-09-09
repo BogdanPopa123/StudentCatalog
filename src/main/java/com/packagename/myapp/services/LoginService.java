@@ -3,7 +3,6 @@ package com.packagename.myapp.services;
 import com.packagename.myapp.dao.UserRepository;
 import com.packagename.myapp.models.User;
 import com.packagename.myapp.models.UserRole;
-import com.vaadin.flow.component.notification.Notification;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,33 +10,41 @@ public class LoginService {
 
     private final UserRepository userRepository;
     private final CookieService cookieService;
+    private final NotificationService notificationService;
 
-    public LoginService(UserRepository userRepository, CookieService cookieService) {
+    public LoginService(UserRepository userRepository, CookieService cookieService, NotificationService notificationService) {
         this.userRepository = userRepository;
         this.cookieService = cookieService;
+        this.notificationService = notificationService;
     }
 
     public boolean login(String username, String password) {
         if (username.isEmpty() || password.isEmpty()) {
-            Notification.show("Introduce login / password");
-            return false;
+            return notifyStatus("Insert login / password", false);
+        }
+
+        if (!checkUsername(username)) {
+            return notifyStatus("Username not found", false);
+        }
+
+        if (!checkUserPassword(username, password)) {
+            return notifyStatus("Username or password is wrong. Please try again!", false);
         }
 
         User authUser = userRepository.findByUsername(username);
-
-        if (authUser == null) {
-            Notification.show("Username not found");
-            return false;
-        }
-
-        if (!authUser.getPassword().equals(HashingService.hashThis(password))) {
-            Notification.show("Username or password is wrong. Please try again!");
-            return false;
-        }
-
         cookieService.addUserCookie(authUser);
-        Notification.show("Login successful");
-        return true;
+
+        return notifyStatus("Login successful", true);
+    }
+
+    private boolean notifyStatus(String message, boolean status) {
+        if (status) {
+            notificationService.success(message);
+        } else {
+            notificationService.alert(message);
+        }
+
+        return status;
     }
 
     public void logout() {
@@ -59,17 +66,24 @@ public class LoginService {
         return userRepository.existsByEmail(email);
     }
 
-    public boolean checkUsername(String password) {
-        return userRepository.existsByUsername(password);
+    public boolean checkUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    public boolean checkUserPassword(String username, String password) {
+        String hashedPassword = HashingService.hashThis(password);
+
+        return userRepository.existsByUsernameAndPassword(username, hashedPassword);
     }
 
     public User getAuthenticatedUser() {
         return cookieService.getCurrentUserFromCookies();
     }
 
-    public boolean checkAuth() {
+    public boolean isAuthenticated() {
         User authUser = getAuthenticatedUser();
 
         return authUser != null && !authUser.checkAnonymous();
     }
+
 }

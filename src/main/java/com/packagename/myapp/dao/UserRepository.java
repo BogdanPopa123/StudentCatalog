@@ -4,6 +4,8 @@ import com.packagename.myapp.models.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import javax.validation.constraints.NotNull;
+
 @Repository
 public interface UserRepository extends CrudRepository<User, Integer> {
 
@@ -17,10 +19,10 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 
     boolean existsByUsername(String username);
 
-    User save(User user);
 
     User findByPhoneNumber(String phoneNumber);
 
     Boolean existsByPhoneNumber(String phoneNumber);
 
+    Boolean existsByUsernameAndPassword(@NotNull String username, @NotNull String password);
 }
