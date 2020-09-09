@@ -33,7 +33,6 @@ import java.util.List;
 public class FacultyView extends VerticalLayoutAuthRestricted {
 
     private final FacultyRepository facultyRepository;
-    private final NotificationService notificationService;
     private final LoginService loginService;
     private final Binder<Faculty> binder = new BeanValidationBinder<>(Faculty.class);
     public TextField name = new TextField("Faculty name");
@@ -43,10 +42,9 @@ public class FacultyView extends VerticalLayoutAuthRestricted {
     private Faculty faculty = new Faculty();
 
 
-    public FacultyView(FacultyRepository facultyRepository, NotificationService notificationService, LoginService loginService) {
+    public FacultyView(FacultyRepository facultyRepository, LoginService loginService) {
         super(loginService);
         this.facultyRepository = facultyRepository;
-        this.notificationService = notificationService;
         this.loginService = loginService;
     }
 
@@ -90,9 +88,11 @@ public class FacultyView extends VerticalLayoutAuthRestricted {
 
         name.addThemeName("bordered");
         name.addClassName("faculty-name-field");
+        name.setRequired(true);
 
         abbreviation.addThemeName("bordered");
         abbreviation.addClassName("faculty-name-field");
+        abbreviation.setRequired(true);
 
         Button addFaculty = new Button("Add", event -> {
             if (binder.isValid()) {
@@ -125,12 +125,12 @@ public class FacultyView extends VerticalLayoutAuthRestricted {
         binder.bindInstanceFields(this);
 
         binder.forField(name)
-                .withValidator(name -> !Strings.isNullOrEmpty(name) , "Enter name!")
+                .asRequired("Enter name!")
                 .withValidator(name -> !facultyRepository.existsByName(name) && faculties.stream().noneMatch(faculty -> faculty.getName().equals(name)), "Name already taken!")
                 .bind(Faculty::getName, Faculty::setName);
 
         binder.forField(abbreviation)
-                .withValidator(abbreviation -> !Strings.isNullOrEmpty(abbreviation), "Enter abbreviation!")
+                .asRequired("Enter abbreviation!")
                 .withValidator(abbreviation -> !facultyRepository.existsByAbbreviation(abbreviation) && faculties.stream().noneMatch(faculty -> faculty.getAbbreviation().equals(abbreviation)), "Abbreviation already taken!")
                 .bind(Faculty::getAbbreviation, Faculty::setAbbreviation);
 

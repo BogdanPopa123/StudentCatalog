@@ -21,6 +21,10 @@ public class NotificationService {
         return showThemedNotification(message, "error");
     }
 
+    public Notification alert(String message){
+        return error(message);
+    }
+
     public Notification success(String message){
         return showThemedNotification(message, "success");
     }
