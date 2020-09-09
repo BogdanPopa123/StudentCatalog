@@ -1,13 +1,11 @@
 package com.packagename.myapp.views;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.packagename.myapp.dao.FacultyRepository;
 import com.packagename.myapp.models.Faculty;
 import com.packagename.myapp.services.LoginService;
-import com.packagename.myapp.services.NotificationService;
-import com.packagename.myapp.views.layouts.VerticalLayoutAuthRestricted;
 import com.packagename.myapp.views.layouts.MainLayout;
+import com.packagename.myapp.views.layouts.VerticalLayoutAuthRestricted;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -23,7 +21,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.List;
 
 @Route(value = "faculty", layout = MainLayout.class)
@@ -70,7 +67,7 @@ public class FacultyView extends VerticalLayoutAuthRestricted {
 
     private void setupGrid() {
         faculties = Lists.newArrayList(facultyRepository.findAll());
-        
+
         facultyGrid = new Grid<>();
         facultyGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
         facultyGrid.setItems(faculties);
@@ -120,11 +117,11 @@ public class FacultyView extends VerticalLayoutAuthRestricted {
         add(facultyForm);
     }
 
+    /**
+     * Call binder.bindInstanceFields(this); after all custom validators
+     */
     private void setBinder() {
         binder.setBean(faculty);
-
-        // Need to fix => see LoginView comments
-//        binder.bindInstanceFields(this);
 
         binder.forField(name)
                 .asRequired("Enter name!")
@@ -136,7 +133,7 @@ public class FacultyView extends VerticalLayoutAuthRestricted {
                 .withValidator(abbreviation -> !facultyRepository.existsByAbbreviation(abbreviation) && faculties.stream().noneMatch(faculty -> faculty.getAbbreviation().equals(abbreviation)), "Abbreviation already taken!")
                 .bind(Faculty::getAbbreviation, Faculty::setAbbreviation);
 
-
+        binder.bindInstanceFields(this);
     }
 }
 

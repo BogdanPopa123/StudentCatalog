@@ -1,6 +1,5 @@
 package com.packagename.myapp.views;
 
-import com.google.common.base.Strings;
 import com.packagename.myapp.models.User;
 import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.views.layouts.VerticalLayoutAuthRestricted;
@@ -77,20 +76,8 @@ public class LoginView extends VerticalLayoutAuthRestricted {
     }
 
 
-
     private void setupBinder() {
         binder.setBean(user);
-
-        // Not working properly
-        // Fields that are already bound are not updating validators after calling binder.bindInstanceFields(this);
-        // that cause both validators (from model constraints and manually registered) to work improperly.
-        // Possible solutions:
-        // * Maybe to check if field is already bound -> unbind it and bind back with new validators
-        // * Check for existing methods to update already bound fields
-        // * Make a binder super class that knows how to update already bound fields
-        // * binder.forMemberField(field) - not updating?
-//        binder.bindInstanceFields(this);
-
 
         binder.forField(username)
                 .asRequired("Enter username")
@@ -101,8 +88,10 @@ public class LoginView extends VerticalLayoutAuthRestricted {
         binder.forField(password)
                 .asRequired("Enter password")
 //                .withValidator(password -> !Strings.isNullOrEmpty(password), "Enter username")
-                .withValidator(password -> loginService.checkUserPassword(username.getValue(), password), "Wrong password")
+                .withValidator(password -> loginService.checkUserPassword(username.getValue(), password), "Wrong login / password")
                 .bind(User::getPassword, User::setPassword);
+
+        binder.bindInstanceFields(this);
     }
 
     private void loginClickEvent(ClickEvent<Button> e) {

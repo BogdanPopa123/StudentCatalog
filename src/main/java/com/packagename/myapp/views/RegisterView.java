@@ -27,14 +27,14 @@ public class RegisterView extends VerticalLayoutAuthRestricted {
 
     private final LoginService loginService;
     private final Binder<User> binder = new BeanValidationBinder<>(User.class);
-    public TextField username = new TextField("Username");
-    public TextField email = new TextField("Email");
-    public PasswordField password = new PasswordField("Password");
-    public PasswordField confirmPassword = new PasswordField("Confirm Password");
-    public TextField name = new TextField("First Name");
-    public TextField surname = new TextField("Surname");
-    public TextField phoneNumber = new TextField("Phone Number");
-    public TextField birthDay = new TextField("Birth Date");
+    private TextField username = new TextField("Username");
+    private TextField email = new TextField("Email");
+    private PasswordField password = new PasswordField("Password");
+    private PasswordField confirmPassword = new PasswordField("Confirm Password");
+    private TextField name = new TextField("First Name");
+    private TextField surname = new TextField("Surname");
+    private TextField phoneNumber = new TextField("Phone Number");
+    private TextField birthDay = new TextField("Birth Date");
     private User user = new User();
 
     public RegisterView(LoginService loginService) {
