@@ -1,7 +1,7 @@
 package com.packagename.myapp.views;
 
 import com.packagename.myapp.services.LoginService;
-import com.vaadin.flow.component.AttachEvent;
+import com.packagename.myapp.views.layouts.VerticalLayoutAuthRestricted;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -16,11 +16,12 @@ import javax.annotation.PostConstruct;
 @Route("login")
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
 @CssImport("./styles/login-view-styles.css")
-public class LoginView extends VerticalLayout {
+public class LoginView extends VerticalLayoutAuthRestricted {
 
     private final LoginService loginService;
 
     public LoginView(LoginService loginService) {
+        super(loginService);
         this.loginService = loginService;
     }
 
@@ -66,10 +67,4 @@ public class LoginView extends VerticalLayout {
         add(loginForm);
     }
 
-    @Override
-    protected void onAttach(AttachEvent attachEvent) {
-        if (loginService.isAuthenticated()) {
-            UI.getCurrent().navigate(HomeView.class);
-        }
-    }
 }

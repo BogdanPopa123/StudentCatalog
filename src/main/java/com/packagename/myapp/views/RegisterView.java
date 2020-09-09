@@ -2,13 +2,12 @@ package com.packagename.myapp.views;
 
 import com.packagename.myapp.models.User;
 import com.packagename.myapp.services.LoginService;
-import com.vaadin.flow.component.AttachEvent;
+import com.packagename.myapp.views.layouts.VerticalLayoutAuthRestricted;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -24,10 +23,10 @@ import javax.annotation.PostConstruct;
 @Route(value = "register")
 @CssImport("./styles/register-view-styles.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
-public class RegisterView extends FormLayout {
+public class RegisterView extends VerticalLayoutAuthRestricted {
 
     private final LoginService loginService;
-
+    private final Binder<User> binder = new BeanValidationBinder<>(User.class);
     public TextField username = new TextField("Username");
     public TextField email = new TextField("Email");
     public PasswordField password = new PasswordField("Password");
@@ -36,12 +35,10 @@ public class RegisterView extends FormLayout {
     public TextField surname = new TextField("Surname");
     public TextField phoneNumber = new TextField("Phone Number");
     public TextField birthDay = new TextField("Birth Date");
-
     private User user = new User();
 
-    private final Binder<User> binder = new BeanValidationBinder<>(User.class);
-
     public RegisterView(LoginService loginService) {
+        super(loginService);
         this.loginService = loginService;
     }
 
@@ -149,10 +146,4 @@ public class RegisterView extends FormLayout {
         }
     }
 
-    @Override
-    protected void onAttach(AttachEvent attachEvent) {
-        if (loginService.isAuthenticated()) {
-            UI.getCurrent().navigate(HomeView.class);
-        }
-    }
 }
