@@ -122,7 +122,8 @@ public class FacultyView extends VerticalLayoutAuthRestricted {
     private void setBinder() {
         binder.setBean(faculty);
 
-        binder.bindInstanceFields(this);
+        // Need to fix => see LoginView comments
+//        binder.bindInstanceFields(this);
 
         binder.forField(name)
                 .asRequired("Enter name!")
