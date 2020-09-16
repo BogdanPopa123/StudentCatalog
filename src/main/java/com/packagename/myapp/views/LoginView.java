@@ -14,6 +14,8 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.Route;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.PostConstruct;
 
@@ -21,6 +23,8 @@ import javax.annotation.PostConstruct;
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
 @CssImport("./styles/login-view-styles.css")
 public class LoginView extends VerticalLayoutAuthRestricted {
+
+    private static final Logger logger = LogManager.getLogger(LoginView.class);
 
     private final LoginService loginService;
     private final TextField username = new TextField("Username");
@@ -95,13 +99,17 @@ public class LoginView extends VerticalLayoutAuthRestricted {
     }
 
     private void loginClickEvent(ClickEvent<Button> e) {
+        logger.info("Submit login form");
         if (binder.isValid()) {
             String username = this.username.getValue();
             String password = this.password.getValue();
 
+            logger.info("Send login request");
             if (loginService.login(username, password)) {
                 UI.getCurrent().getPage().reload();
             }
+        }else{
+            logger.info("Not valid login data");
         }
     }
 

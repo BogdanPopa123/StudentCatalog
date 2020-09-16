@@ -17,6 +17,8 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.router.Route;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.PostConstruct;
 
@@ -24,6 +26,8 @@ import javax.annotation.PostConstruct;
 @CssImport("./styles/register-view-styles.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
 public class RegisterView extends VerticalLayoutAuthRestricted {
+
+    private static final Logger logger = LogManager.getLogger(RegisterView.class);
 
     private final LoginService loginService;
     private final Binder<User> binder = new BeanValidationBinder<>(User.class);
@@ -143,9 +147,12 @@ public class RegisterView extends VerticalLayoutAuthRestricted {
         if (binder.isValid()) {
             user = binder.getBean();
 
+            logger.info("Sending register data");
             if (loginService.registerNewUser(user)) {
                 UI.getCurrent().getPage().reload();
             }
+        }else{
+            logger.info("Not valid register data");
         }
     }
 
