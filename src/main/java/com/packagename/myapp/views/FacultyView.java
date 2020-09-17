@@ -10,6 +10,7 @@ import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H1;
@@ -24,6 +25,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.swing.*;
+import javax.tools.DiagnosticListener;
 import java.util.List;
 
 @Route(value = "faculty", layout = MainLayout.class)
@@ -43,6 +46,7 @@ public class FacultyView extends VerticalLayoutAuthRestricted {
     private Grid<Faculty> facultyGrid;
     private List<Faculty> faculties;
     private Faculty faculty = new Faculty();
+    private Dialog dialog;
 
 
     public FacultyView(FacultyRepository facultyRepository, LoginService loginService) {
@@ -108,7 +112,11 @@ public class FacultyView extends VerticalLayoutAuthRestricted {
         facultyForm.setVerticalComponentAlignment(FlexComponent.Alignment.BASELINE, abbreviation);
         facultyForm.setVerticalComponentAlignment(FlexComponent.Alignment.BASELINE, addFaculty);
 
-        add(facultyForm);
+        dialog = new Dialog();
+        dialog.add(facultyForm);
+
+        Button addNewFacultyDialog = new Button("Add new faculty", event -> dialog.open());
+        add(addNewFacultyDialog);
     }
 
     /**
@@ -131,7 +139,7 @@ public class FacultyView extends VerticalLayoutAuthRestricted {
     }
 
     private void addNewFacultyEvent(ClickEvent<Button> event) {
-        logger.info("Submit new faculty data");
+        logger.debug("Submit new faculty data");
         if (binder.isValid()) {
 
             faculty = binder.getBean();
@@ -142,8 +150,10 @@ public class FacultyView extends VerticalLayoutAuthRestricted {
             faculties.add(faculty);
             facultyGrid.setItems(faculties);
 
+            dialog.close();
+
         }else{
-            logger.info("New faculty not valid data");
+            logger.debug("New faculty not valid data");
         }
     }
 }

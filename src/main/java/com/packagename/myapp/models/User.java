@@ -170,20 +170,20 @@ public class User {
 
     public String toJSON() {
         try {
-            logger.info("Trying to parse User model to JSON");
+            logger.debug("Trying to parse User model to JSON");
             return getMapper().writeValueAsString(this);
         } catch (JsonProcessingException e) {
-            logger.warn("Error on parsing user TO JSON: "+this.toString());
+            logger.warn("Error on parsing user TO JSON: "+this.toString(), e);
             return "";
         }
     }
 
     public static User jsonParse(String jsonString) {
         try {
-            logger.info("Trying to parse JSON to User model");
+            logger.debug("Trying to parse JSON to User model");
             return getMapper().readValue(jsonString, User.class);
         } catch (JsonProcessingException e) {
-            logger.warn("Error on parsing user FROM JSON: "+jsonString);
+            logger.warn("Error on parsing user FROM JSON: "+jsonString, e);
             return new User();
         }
     }
