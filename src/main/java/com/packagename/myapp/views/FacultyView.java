@@ -6,9 +6,11 @@ import com.packagename.myapp.models.Faculty;
 import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.views.layouts.MainLayout;
 import com.packagename.myapp.views.layouts.VerticalLayoutAuthRestricted;
+import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H1;
@@ -19,8 +21,12 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.swing.*;
+import javax.tools.DiagnosticListener;
 import java.util.List;
 
 @Route(value = "faculty", layout = MainLayout.class)
@@ -30,6 +36,8 @@ import java.util.List;
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
 public class FacultyView extends VerticalLayoutAuthRestricted {
 
+    private final Logger logger = LogManager.getLogger(FacultyView.class);
+
     private final FacultyRepository facultyRepository;
     private final LoginService loginService;
     private final Binder<Faculty> binder = new BeanValidationBinder<>(Faculty.class);
@@ -38,6 +46,7 @@ public class FacultyView extends VerticalLayoutAuthRestricted {
     private Grid<Faculty> facultyGrid;
     private List<Faculty> faculties;
     private Faculty faculty = new Faculty();
+    private Dialog dialog;
 
 
     public FacultyView(FacultyRepository facultyRepository, LoginService loginService) {
@@ -92,18 +101,7 @@ public class FacultyView extends VerticalLayoutAuthRestricted {
         abbreviation.addClassName("faculty-name-field");
         abbreviation.setRequired(true);
 
-        Button addFaculty = new Button("Add", event -> {
-            if (binder.isValid()) {
-
-                faculty = binder.getBean();
-
-                facultyRepository.save(faculty);
-
-                faculties.add(faculty);
-                facultyGrid.setItems(faculties);
-
-            }
-        });
+        Button addFaculty = new Button("Add", this::addNewFacultyEvent);
 
         name.addKeyPressListener(Key.ENTER, event -> addFaculty.click());
 
@@ -114,7 +112,11 @@ public class FacultyView extends VerticalLayoutAuthRestricted {
         facultyForm.setVerticalComponentAlignment(FlexComponent.Alignment.BASELINE, abbreviation);
         facultyForm.setVerticalComponentAlignment(FlexComponent.Alignment.BASELINE, addFaculty);
 
-        add(facultyForm);
+        dialog = new Dialog();
+        dialog.add(facultyForm);
+
+        Button addNewFacultyDialog = new Button("Add new faculty", event -> dialog.open());
+        add(addNewFacultyDialog);
     }
 
     /**
@@ -134,6 +136,25 @@ public class FacultyView extends VerticalLayoutAuthRestricted {
                 .bind(Faculty::getAbbreviation, Faculty::setAbbreviation);
 
         binder.bindInstanceFields(this);
+    }
+
+    private void addNewFacultyEvent(ClickEvent<Button> event) {
+        logger.debug("Submit new faculty data");
+        if (binder.isValid()) {
+
+            faculty = binder.getBean();
+
+            logger.info("Create new faculty");
+            facultyRepository.save(faculty);
+
+            faculties.add(faculty);
+            facultyGrid.setItems(faculties);
+
+            dialog.close();
+
+        }else{
+            logger.debug("New faculty not valid data");
+        }
     }
 }
 

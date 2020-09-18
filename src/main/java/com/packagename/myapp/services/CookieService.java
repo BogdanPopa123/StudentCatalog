@@ -2,6 +2,8 @@ package com.packagename.myapp.services;
 
 import com.packagename.myapp.models.User;
 import com.vaadin.flow.server.VaadinService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
@@ -9,15 +11,20 @@ import javax.servlet.http.Cookie;
 @Service
 public class CookieService {
 
+    private static final Logger logger = LogManager.getLogger(CookieService.class);
+
     public Cookie getCookieByName(String name) {
         Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
 
+        logger.debug("Trying to get cookie: " + name);
         for (Cookie cookie : cookies) {
             if (name.equals(cookie.getName())) {
+                logger.debug("Fount cookie: " + name);
                 return cookie;
             }
         }
 
+        logger.warn("Failed to find cookie: " + name);
         return null;
     }
 
@@ -28,6 +35,9 @@ public class CookieService {
         if (userCookie != null) {
             return User.jsonParse(userCookie.getValue());
         }
+
+        logger.debug("User cookie not found");
+        logger.debug("Set anonymous user");
         setAnonymousUser();
 
         return User.getAnonymousUser();
@@ -37,6 +47,8 @@ public class CookieService {
         Cookie userCookie = new Cookie("user", authUser.toJSON());
         userCookie.setMaxAge(604800);
         userCookie.setPath(VaadinService.getCurrentRequest().getContextPath());
+
+        logger.debug("Update user auth cookie data");
         VaadinService.getCurrentResponse().addCookie(userCookie);
     }
 

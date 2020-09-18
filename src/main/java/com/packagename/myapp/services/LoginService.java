@@ -1,12 +1,18 @@
 package com.packagename.myapp.services;
 
+import com.google.common.base.Strings;
 import com.packagename.myapp.dao.UserRepository;
 import com.packagename.myapp.models.User;
 import com.packagename.myapp.models.UserRole;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class LoginService {
+
+    private static final Logger logger = LogManager.getLogger(LoginService.class);
 
     private final UserRepository userRepository;
     private final CookieService cookieService;
@@ -19,7 +25,7 @@ public class LoginService {
     }
 
     public boolean login(String username, String password) {
-        if (username.isEmpty() || password.isEmpty()) {
+        if (Strings.isNullOrEmpty(username) || Strings.isNullOrEmpty(password)) {
             return notifyStatus("Insert login / password", false);
         }
 
@@ -38,6 +44,8 @@ public class LoginService {
     }
 
     private boolean notifyStatus(String message, boolean status) {
+        logger.debug(message);
+
         if (status) {
             notificationService.success(message);
         } else {
@@ -48,6 +56,7 @@ public class LoginService {
     }
 
     public void logout() {
+        logger.debug("Logout user: " + getAuthenticatedUser().getUsername());
         cookieService.setAnonymousUser();
     }
 
@@ -57,6 +66,7 @@ public class LoginService {
         String password = user.getPassword();
         user.setPassword(HashingService.hashThis(user.getPassword()));
 
+        logger.info("Registering new user: " + user.toString());
         userRepository.save(user);
 
         return login(user.getUsername(), password);
@@ -77,6 +87,7 @@ public class LoginService {
     }
 
     public User getAuthenticatedUser() {
+        logger.debug("Trying to get authenticated user");
         return cookieService.getCurrentUserFromCookies();
     }
 
