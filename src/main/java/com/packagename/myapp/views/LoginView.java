@@ -99,17 +99,17 @@ public class LoginView extends VerticalLayoutAuthRestricted {
     }
 
     private void loginClickEvent(ClickEvent<Button> e) {
-        logger.info("Submit login form");
+        logger.debug("Submit login form");
         if (binder.isValid()) {
             String username = this.username.getValue();
             String password = this.password.getValue();
 
-            logger.info("Send login request");
+            logger.debug("Send login request");
             if (loginService.login(username, password)) {
                 UI.getCurrent().getPage().reload();
             }
         }else{
-            logger.info("Not valid login data");
+            logger.debug("Not valid login data");
         }
     }
 

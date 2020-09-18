@@ -147,12 +147,12 @@ public class RegisterView extends VerticalLayoutAuthRestricted {
         if (binder.isValid()) {
             user = binder.getBean();
 
-            logger.info("Sending register data");
+            logger.debug("Sending register data");
             if (loginService.registerNewUser(user)) {
                 UI.getCurrent().getPage().reload();
             }
         }else{
-            logger.info("Not valid register data");
+            logger.debug("Not valid register data");
         }
     }
 

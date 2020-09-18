@@ -44,7 +44,7 @@ public class LoginService {
     }
 
     private boolean notifyStatus(String message, boolean status) {
-        logger.info(message);
+        logger.debug(message);
 
         if (status) {
             notificationService.success(message);
@@ -56,7 +56,7 @@ public class LoginService {
     }
 
     public void logout() {
-        logger.info("Logout user: "+getAuthenticatedUser().getUsername());
+        logger.debug("Logout user: " + getAuthenticatedUser().getUsername());
         cookieService.setAnonymousUser();
     }
 
@@ -66,7 +66,7 @@ public class LoginService {
         String password = user.getPassword();
         user.setPassword(HashingService.hashThis(user.getPassword()));
 
-        logger.info("Registering new user");
+        logger.info("Registering new user: " + user.toString());
         userRepository.save(user);
 
         return login(user.getUsername(), password);
@@ -87,6 +87,7 @@ public class LoginService {
     }
 
     public User getAuthenticatedUser() {
+        logger.debug("Trying to get authenticated user");
         return cookieService.getCurrentUserFromCookies();
     }
 

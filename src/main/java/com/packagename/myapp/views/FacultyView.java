@@ -144,7 +144,7 @@ public class FacultyView extends VerticalLayoutAuthRestricted {
 
             faculty = binder.getBean();
 
-            logger.info("Creating new faculty");
+            logger.info("Create new faculty");
             facultyRepository.save(faculty);
 
             faculties.add(faculty);
