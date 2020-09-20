@@ -1,6 +1,5 @@
 package com.packagename.myapp.views.layouts;
 
-import com.packagename.myapp.models.Specialization;
 import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.views.*;
 import com.packagename.myapp.views.customComponents.NavigateButton;
@@ -11,7 +10,6 @@ import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -25,6 +23,7 @@ import javax.annotation.PostConstruct;
 public class MainLayout extends AppLayout {
 
     private final LoginService loginService;
+    Button lastPressedButton;
 
     public MainLayout(LoginService loginService) {
         this.loginService = loginService;
@@ -56,9 +55,10 @@ public class MainLayout extends AppLayout {
         addToNavbar(header);
     }
 
-    Button lastPressedButton;
-
     private void createDrawer() {
+        H3 navbarHeader = new H3("Menu");
+        navbarHeader.addClassName("navbar-header");
+
         Button home = new NavigateButton("Home", HomeView.class);
         Button myAccount = new NavigateButton("My account", MyAccountView.class);
         Button catalog = new NavigateButton("Catalog", CatalogView.class);
@@ -73,8 +73,9 @@ public class MainLayout extends AppLayout {
 //        myAccount.setHighlightAction((routerLink, highlight) -> routerLink.addClassName("active-link"));
 //        catalog.setHighlightAction((routerLink, highlight) -> routerLink.addClassName("active-link"));
 
+
         addToDrawer(new VerticalLayout(
-                new H5("Menu"),
+                navbarHeader,
                 home,
                 myAccount,
                 catalog,

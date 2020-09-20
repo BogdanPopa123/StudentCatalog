@@ -8,6 +8,7 @@ public class NavigateButton extends Button {
 
     public NavigateButton(String text, Class<? extends Component> locationClass) {
         super(text);
+        this.addClassName("link-button");
 
         this.addClickListener(event -> {
             if (lastPressedButton != null) {

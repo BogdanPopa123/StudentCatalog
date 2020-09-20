@@ -67,6 +67,45 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
         setCreateDialog();
     }
 
+    private void addHeader() {
+        H1 header = new H1("Specialization");
+        header.addClassName("specialization-header");
+        add(header);
+    }
+
+    private void addGrid() {
+        ArrayList<Specialization> specializations = Lists.newArrayList(specializationRepository.findAll());
+
+        Grid<Specialization> grid = new Grid<>();
+        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
+        grid.setItems(specializations);
+
+        grid.addColumn(Specialization::getId).setHeader("Id").setKey("id");
+        grid.addColumn(Specialization::getName).setHeader("Name").setKey("name");
+        grid.addColumn(specialization -> specialization.getDomain().getName()).setHeader("Domain").setKey("domain");
+
+        add(grid);
+    }
+
+    private void addManageButtons() {
+        if (loginService.getAuthenticatedUser().isNotAdmin()) {
+            return;
+        }
+
+        Button create = new Button("Create", this::create);
+        Button details = new Button("Details", this::details);
+        Button modify = new Button("Modify", this::modify);
+        Button delete = new Button("Delete", this::delete);
+
+        create.addThemeName("success");
+        details.addThemeName("secondary");
+        modify.addThemeName("secondary");
+        delete.addThemeName("error");
+
+        HorizontalLayout manageButtons = new HorizontalLayout(create, details, modify, delete);
+        add(manageButtons);
+    }
+
     private void setCreateDialog() {
         faculty = new ComboBox<>("Faculty");
         faculty.setItems(Lists.newArrayList(facultyRepository.findAll()));
@@ -101,31 +140,12 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
         dialog = new Dialog(specializationForm);
     }
 
-    private void save(ClickEvent<Button> event) {
-
-    }
-
-    private void addManageButtons() {
-        if (loginService.getAuthenticatedUser().isNotAdmin()) {
-            return;
-        }
-
-        Button create = new Button("Create", this::create);
-        Button details = new Button("Details", this::details);
-        Button modify = new Button("Modify", this::modify);
-        Button delete = new Button("Delete", this::delete);
-
-        create.addThemeName("success");
-        details.addThemeName("secondary");
-        modify.addThemeName("secondary");
-        delete.addThemeName("error");
-
-        HorizontalLayout manageButtons = new HorizontalLayout(create, details, modify, delete);
-        add(manageButtons);
-    }
-
     private void create(ClickEvent<Button> event) {
         dialog.open();
+    }
+
+    private void save(ClickEvent<Button> event) {
+
     }
 
     private void details(ClickEvent<Button> event) {
@@ -136,28 +156,6 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
 
     }
 
-
     private void delete(ClickEvent<Button> event) {
-    }
-
-
-    private void addHeader() {
-        H1 header = new H1("Specialization");
-        header.addClassName("specialization-header");
-        add(header);
-    }
-
-    private void addGrid() {
-        ArrayList<Specialization> specializations = Lists.newArrayList(specializationRepository.findAll());
-
-        Grid<Specialization> grid = new Grid<>();
-        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
-        grid.setItems(specializations);
-
-        grid.addColumn(Specialization::getId).setHeader("Id").setKey("id");
-        grid.addColumn(Specialization::getName).setHeader("Name").setKey("name");
-        grid.addColumn(specialization -> specialization.getDomain().getName()).setHeader("Domain").setKey("domain");
-
-        add(grid);
     }
 }
