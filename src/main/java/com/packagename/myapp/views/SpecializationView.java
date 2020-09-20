@@ -14,6 +14,7 @@ import com.packagename.myapp.views.layouts.MainLayout;
 import com.packagename.myapp.views.layouts.VerticalLayoutAuthRestricted;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -97,10 +98,10 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
         Button modify = new Button("Modify", this::modify);
         Button delete = new Button("Delete", this::delete);
 
-        create.addThemeName("success");
-        details.addThemeName("secondary");
-        modify.addThemeName("secondary");
-        delete.addThemeName("error");
+        create.addThemeName(ButtonVariant.LUMO_SUCCESS.getVariantName());
+        details.addThemeName(ButtonVariant.LUMO_TERTIARY.getVariantName());
+        modify.addThemeName(ButtonVariant.LUMO_TERTIARY.getVariantName());
+        delete.addThemeName(ButtonVariant.LUMO_ERROR.getVariantName());
 
         HorizontalLayout manageButtons = new HorizontalLayout(create, details, modify, delete);
         add(manageButtons);
@@ -108,12 +109,14 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
 
     private void setCreateDialog() {
         faculty = new ComboBox<>("Faculty");
+        faculty.addValueChangeListener(event -> department.setItems(event.getValue().getDepartments()));
         faculty.setItems(Lists.newArrayList(facultyRepository.findAll()));
         faculty.setPlaceholder("Faculty");
         faculty.setItemLabelGenerator(Faculty::getName);
         faculty.setWidth("300px");
 
         department = new ComboBox<>("Department");
+        department.addValueChangeListener(event -> domain.setItems(event.getValue() != null ? event.getValue().getDomains() : new ArrayList<>()));
         department.setItems(Lists.newArrayList(departmentRepository.findAll()));
         department.setPlaceholder("Department");
         department.setItemLabelGenerator(Department::getName);
@@ -131,8 +134,8 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
 
         Button save = new Button("Save", this::save);
         Button cancel = new Button("Cancel", event -> dialog.close());
-        save.addThemeName("success");
-        cancel.addThemeName("error");
+        save.addThemeName(ButtonVariant.LUMO_SUCCESS.getVariantName());
+        cancel.addThemeName(ButtonVariant.LUMO_ERROR.getVariantName());
 
         HorizontalLayout createButtons = new HorizontalLayout(save, cancel);
 
@@ -158,4 +161,5 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
 
     private void delete(ClickEvent<Button> event) {
     }
+
 }
