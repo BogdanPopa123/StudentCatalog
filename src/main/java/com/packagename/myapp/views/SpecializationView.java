@@ -24,8 +24,12 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
@@ -36,6 +40,7 @@ import java.util.ArrayList;
 @CssImport("./styles/specialization-style.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
 public class SpecializationView extends VerticalLayoutAuthRestricted {
+    private final Logger logger = LogManager.getLogger(SpecializationView.class);
     private final LoginService loginService;
     private final SpecializationRepository specializationRepository;
     private final DomainRepository domainRepository;
@@ -43,10 +48,12 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
     private final DepartmentRepository departmentRepository;
 
     private Dialog dialog;
-    private TextField name;
-    private ComboBox<Domain> domain;
-    private ComboBox<Faculty> faculty;
-    private ComboBox<Department> department;
+    private TextField name = new TextField("Name");
+    private ComboBox<Domain> domain = new ComboBox<>("Domain");
+    private ComboBox<Faculty> faculty = new ComboBox<>("Faculty");
+    private ComboBox<Department> department = new ComboBox<>("Department");
+    private Binder<Specialization> binder = new BeanValidationBinder<>(Specialization.class);
+    private Grid<Specialization> grid = new Grid<>();
 
     public SpecializationView(LoginService loginService, SpecializationRepository specializationRepository, DomainRepository domainRepository, FacultyRepository facultyRepository, DepartmentRepository departmentRepository) {
         super(loginService);
@@ -66,6 +73,8 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
         addManageButtons();
 
         setCreateDialog();
+
+        setBinder();
     }
 
     private void addHeader() {
@@ -77,7 +86,6 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
     private void addGrid() {
         ArrayList<Specialization> specializations = Lists.newArrayList(specializationRepository.findAll());
 
-        Grid<Specialization> grid = new Grid<>();
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
         grid.setItems(specializations);
 
@@ -108,27 +116,23 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
     }
 
     private void setCreateDialog() {
-        faculty = new ComboBox<>("Faculty");
         faculty.addValueChangeListener(event -> department.setItems(event.getValue().getDepartments()));
         faculty.setItems(Lists.newArrayList(facultyRepository.findAll()));
         faculty.setPlaceholder("Faculty");
         faculty.setItemLabelGenerator(Faculty::getName);
         faculty.setWidth("300px");
 
-        department = new ComboBox<>("Department");
         department.addValueChangeListener(event -> domain.setItems(event.getValue() != null ? event.getValue().getDomains() : new ArrayList<>()));
         department.setItems(Lists.newArrayList(departmentRepository.findAll()));
         department.setPlaceholder("Department");
         department.setItemLabelGenerator(Department::getName);
         department.setWidth("300px");
 
-        domain = new ComboBox<>("Domain");
         domain.setItems(Lists.newArrayList(domainRepository.findAll()));
         domain.setPlaceholder("Domain");
         domain.setItemLabelGenerator(Domain::getName);
         domain.setWidth("300px");
 
-        name = new TextField("Name");
         name.setWidth("300px");
 
 
@@ -143,12 +147,35 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
         dialog = new Dialog(specializationForm);
     }
 
+    private void setBinder() {
+        binder.setBean(new Specialization());
+
+        binder.forField(name)
+                .asRequired("Enter specialization")
+                .withValidator(s -> !specializationRepository.existsByName(s), "Name already taken")
+                .bind(Specialization::getName, Specialization::setName);
+
+        binder.bindInstanceFields(this);
+    }
+
     private void create(ClickEvent<Button> event) {
         dialog.open();
     }
 
     private void save(ClickEvent<Button> event) {
+        logger.debug("Submit new specialization data");
 
+        if (binder.isValid()) {
+            Specialization specialization = binder.getBean();
+
+            logger.info("Save new specialization");
+            specializationRepository.save(specialization);
+
+            dialog.close();
+            updateGrid();
+        } else {
+            logger.debug("Not valid specialization data");
+        }
     }
 
     private void details(ClickEvent<Button> event) {
@@ -160,6 +187,11 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
     }
 
     private void delete(ClickEvent<Button> event) {
+    }
+
+    private void updateGrid() {
+        ArrayList<Specialization> specializations = Lists.newArrayList(specializationRepository.findAll());
+        grid.setItems(specializations);
     }
 
 }
