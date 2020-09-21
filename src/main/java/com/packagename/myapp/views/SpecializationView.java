@@ -13,6 +13,7 @@ import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.views.layouts.MainLayout;
 import com.packagename.myapp.views.layouts.VerticalLayoutAuthRestricted;
 import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -33,6 +34,8 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Route(value = "specialization", layout = MainLayout.class)
 @PageTitle("Specialization")
@@ -92,6 +95,8 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
         grid.addColumn(Specialization::getId).setHeader("Id").setKey("id");
         grid.addColumn(Specialization::getName).setHeader("Name").setKey("name");
         grid.addColumn(specialization -> specialization.getDomain().getName()).setHeader("Domain").setKey("domain");
+        grid.addColumn(specialization -> specialization.getDomain().getDepartment().getName()).setHeader("Department").setKey("department");
+        grid.addColumn(specialization -> specialization.getDomain().getDepartment().getFaculty().getName()).setHeader("Faculty").setKey("faculty");
 
         add(grid);
     }
@@ -116,42 +121,70 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
     }
 
     private void setCreateDialog() {
-        faculty.addValueChangeListener(event -> department.setItems(event.getValue().getDepartments()));
+        faculty.addValueChangeListener(event -> {
+
+            Set<Department> departments = event.getValue().getDepartments();
+            department.setItems(departments);
+
+            ArrayList<Domain> domains = departments.stream().map(Department::getDomains).collect(ArrayList::new, List::addAll, List::addAll);
+
+            domain.setItems(domains);
+        });
         faculty.setItems(Lists.newArrayList(facultyRepository.findAll()));
         faculty.setPlaceholder("Faculty");
         faculty.setItemLabelGenerator(Faculty::getName);
         faculty.setWidth("300px");
+        faculty.setRequired(true);
+        faculty.setAllowCustomValue(false);
+        faculty.setPreventInvalidInput(true);
 
         department.addValueChangeListener(event -> domain.setItems(event.getValue() != null ? event.getValue().getDomains() : new ArrayList<>()));
         department.setItems(Lists.newArrayList(departmentRepository.findAll()));
         department.setPlaceholder("Department");
         department.setItemLabelGenerator(Department::getName);
         department.setWidth("300px");
+        department.setRequired(true);
+        department.setAllowCustomValue(false);
+        department.setPreventInvalidInput(true);
 
         domain.setItems(Lists.newArrayList(domainRepository.findAll()));
         domain.setPlaceholder("Domain");
         domain.setItemLabelGenerator(Domain::getName);
         domain.setWidth("300px");
+        domain.setRequired(true);
+        domain.setAllowCustomValue(false);
+        domain.setPreventInvalidInput(true);
 
         name.setWidth("300px");
 
 
         Button save = new Button("Save", this::save);
-        Button cancel = new Button("Cancel", event -> dialog.close());
+        Button cancel = new Button("Cancel", event -> {
+            dialog.close();
+            binder.setBean(new Specialization());
+        });
         save.addThemeName(ButtonVariant.LUMO_SUCCESS.getVariantName());
         cancel.addThemeName(ButtonVariant.LUMO_ERROR.getVariantName());
+
+        name.addKeyPressListener(Key.ENTER, event -> save.click());
 
         HorizontalLayout createButtons = new HorizontalLayout(save, cancel);
 
         VerticalLayout specializationForm = new VerticalLayout(faculty, department, domain, name, createButtons);
+
         dialog = new Dialog(specializationForm);
     }
 
     private void setBinder() {
         binder.setBean(new Specialization());
 
+        binder.forField(domain)
+                .asRequired("Select domain")
+                .withValidator(d -> domainRepository.existsByName(d.getName()), "Not valid domain")
+                .bind(Specialization::getDomain, Specialization::setDomain);
+
         binder.forField(name)
-                .asRequired("Enter specialization")
+                .asRequired("Enter name")
                 .withValidator(s -> !specializationRepository.existsByName(s), "Name already taken")
                 .bind(Specialization::getName, Specialization::setName);
 

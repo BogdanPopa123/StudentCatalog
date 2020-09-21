@@ -16,6 +16,7 @@ public class Specialization {
     @NotNull
     private String name;
 
+    @NotNull(message = "Select domain")
     @ManyToOne
     @JoinColumn(name = "domain_id", nullable = false)
     private Domain domain;
@@ -54,7 +55,7 @@ public class Specialization {
         return domain;
     }
 
-    public void setDomain(Domain domain) {
+    public void setDomain(com.packagename.myapp.models.Domain domain) {
         this.domain = domain;
     }
 

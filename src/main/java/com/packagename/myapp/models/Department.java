@@ -1,5 +1,7 @@
 package com.packagename.myapp.models;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
@@ -13,6 +15,7 @@ public class Department {
     @Column(name = "department_id")
     private int id;
 
+    @NotNull(message = "Select faculty")
     @ManyToOne
     @JoinColumn(name = "faculty_id", nullable = false)
     private Faculty faculty;
