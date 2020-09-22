@@ -1,14 +1,14 @@
 package com.packagename.myapp.views;
 
+
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.packagename.myapp.dao.DepartmentRepository;
 import com.packagename.myapp.dao.DomainRepository;
 import com.packagename.myapp.dao.FacultyRepository;
 import com.packagename.myapp.dao.SpecializationRepository;
-import com.packagename.myapp.models.Department;
+import com.packagename.myapp.models.*;
 import com.packagename.myapp.models.Domain;
-import com.packagename.myapp.models.Faculty;
-import com.packagename.myapp.models.Specialization;
 import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.views.layouts.MainLayout;
 import com.packagename.myapp.views.layouts.VerticalLayoutAuthRestricted;
@@ -25,8 +25,11 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.treegrid.TreeGrid;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.provider.hierarchy.TreeData;
+import com.vaadin.flow.data.provider.hierarchy.TreeDataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.apache.logging.log4j.LogManager;
@@ -36,6 +39,8 @@ import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Route(value = "specialization", layout = MainLayout.class)
 @PageTitle("Specialization")
@@ -73,6 +78,7 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
 
         addHeader();
         addGrid();
+        addTreeGrid();
         addManageButtons();
 
         setCreateDialog();
@@ -101,6 +107,48 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
         add(grid);
     }
 
+    private void addTreeGrid() {
+        TreeGrid<String> treeGrid = new TreeGrid<>();
+
+        List<BaseModel> faculties = Lists.newArrayList(facultyRepository.findAll());
+
+        List<BaseModel> departments = faculties.stream().map(BaseModel::getChildren).collect(ArrayList::new, List::addAll, List::addAll);
+
+        List<BaseModel> domains = departments.stream().map(BaseModel::getChildren).collect(ArrayList::new, List::addAll, List::addAll);
+
+        List<BaseModel> specializations = domains.stream().map(BaseModel::getChildren).collect(ArrayList::new, List::addAll, List::addAll);
+
+//        treeGrid.setItems(faculties, BaseModel::getChildren);
+
+        TreeData<String> treeData = new TreeData<>();
+//
+        faculties.forEach(baseModel -> treeData.addItem(null, baseModel.getName()));
+        departments.forEach(baseModel -> treeData.addItem(baseModel.getParent().getName(), baseModel.getName()));
+        domains.forEach(baseModel -> treeData.addItem(baseModel.getParent().getName(), baseModel.getName()));
+        specializations.forEach(baseModel -> treeData.addItem(baseModel.getParent().getName(), baseModel.getName()));
+
+//        faculties.forEach(baseModel -> treeGrid.getTreeData().addItem(baseModel.getParent(), baseModel));
+
+        TreeDataProvider<String> treeDataProvider = new TreeDataProvider<>(treeData);
+        treeGrid.setDataProvider(treeDataProvider);
+//        departments.forEach(baseModel -> treeGrid.getTreeData().addItem(baseModel.getParent(), baseModel));
+
+//        rootModels.forEach(baseModel -> grid.);
+
+//        rootModels.forEach(baseModel -> treeGrid.getTreeData().addItem(baseModel.getParent(), baseModel));
+//
+        treeGrid.addHierarchyColumn(s -> s)
+                .setHeader("Value");
+
+
+        add(treeGrid);
+//        TreeData<BaseModel> treeData = new TreeData<>();
+//        treeData.addItems(facultyRepository.);
+//
+//        facultyRepository.findAll().forEach();
+    }
+
+
     private void addManageButtons() {
         if (loginService.getAuthenticatedUser().isNotAdmin()) {
             return;
@@ -111,10 +159,10 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
         Button modify = new Button("Modify", this::modify);
         Button delete = new Button("Delete", this::delete);
 
-        create.addThemeName(ButtonVariant.LUMO_SUCCESS.getVariantName());
-        details.addThemeName(ButtonVariant.LUMO_TERTIARY.getVariantName());
-        modify.addThemeName(ButtonVariant.LUMO_TERTIARY.getVariantName());
-        delete.addThemeName(ButtonVariant.LUMO_ERROR.getVariantName());
+        create.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+        details.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        modify.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
         HorizontalLayout manageButtons = new HorizontalLayout(create, details, modify, delete);
         add(manageButtons);
@@ -163,8 +211,8 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
             dialog.close();
             binder.setBean(new Specialization());
         });
-        save.addThemeName(ButtonVariant.LUMO_SUCCESS.getVariantName());
-        cancel.addThemeName(ButtonVariant.LUMO_ERROR.getVariantName());
+        save.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+        cancel.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
         name.addKeyPressListener(Key.ENTER, event -> save.click());
 

@@ -1,14 +1,14 @@
 package com.packagename.myapp.models;
 
-import org.hibernate.validator.constraints.NotEmpty;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "domain")
-public class Domain {
+public class Domain implements BaseModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +40,16 @@ public class Domain {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public BaseModel getParent() {
+        return department;
+    }
+
+    @Override
+    public List<BaseModel> getChildren() {
+        return new ArrayList<>(specializations);
     }
 
     public Department getDepartment() {

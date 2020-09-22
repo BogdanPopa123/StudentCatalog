@@ -2,11 +2,14 @@ package com.packagename.myapp.models;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "faculty")
-public class Faculty {
+public class Faculty implements BaseModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +35,16 @@ public class Faculty {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public BaseModel getParent() {
+        return null;
+    }
+
+    @Override
+    public List<BaseModel> getChildren() {
+        return new ArrayList<>(departments);
     }
 
     public void setName(String name) {

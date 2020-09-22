@@ -1,12 +1,14 @@
 package com.packagename.myapp.models;
 
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "specialization")
-public class Specialization {
+public class Specialization implements BaseModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,11 +53,21 @@ public class Specialization {
         this.name = name;
     }
 
+    @Override
+    public BaseModel getParent() {
+        return domain;
+    }
+
+    @Override
+    public List<BaseModel> getChildren() {
+        return null;
+    }
+
     public Domain getDomain() {
         return domain;
     }
 
-    public void setDomain(com.packagename.myapp.models.Domain domain) {
+    public void setDomain(Domain domain) {
         this.domain = domain;
     }
 
