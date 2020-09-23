@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "domain")
-public class Domain implements BaseModel {
+public class Domain extends BaseModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

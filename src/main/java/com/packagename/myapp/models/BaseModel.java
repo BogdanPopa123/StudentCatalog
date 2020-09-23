@@ -1,14 +1,34 @@
 package com.packagename.myapp.models;
 
 import java.util.List;
-import java.util.Set;
 
-public interface BaseModel {
-    int getId();
+public abstract class BaseModel {
+    public abstract int getId();
 
-    String getName();
+    public abstract String getName();
 
-    BaseModel getParent();
+    public abstract BaseModel getParent();
 
-    List<BaseModel> getChildren();
+    public abstract List<BaseModel> getChildren();
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        BaseModel other = (BaseModel) obj;
+
+        return other.getId() == this.getId() && other.getName().equals(this.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+
+        hash = 53 * hash + (this.getName() != null ? this.getName().hashCode() : 0);
+        hash = 53 * hash + this.getId();
+
+        return hash;
+    }
 }

@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "specialization")
-public class Specialization implements BaseModel {
+public class Specialization extends BaseModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

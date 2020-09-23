@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "faculty")
-public class Faculty implements BaseModel {
+public class Faculty extends BaseModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
