@@ -8,6 +8,7 @@ import com.packagename.myapp.dao.FacultyRepository;
 import com.packagename.myapp.dao.SpecializationRepository;
 import com.packagename.myapp.models.*;
 import com.packagename.myapp.services.LoginService;
+import com.packagename.myapp.views.customComponents.BaseModelTreeGrid;
 import com.packagename.myapp.views.layouts.MainLayout;
 import com.packagename.myapp.views.layouts.VerticalLayoutAuthRestricted;
 import com.vaadin.flow.component.ClickEvent;
@@ -22,20 +23,15 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.component.treegrid.TreeGrid;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.provider.hierarchy.TreeData;
-import com.vaadin.flow.data.provider.hierarchy.TreeDataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.Repository;
 
 import javax.annotation.PostConstruct;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,14 +49,14 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
     private final DomainRepository domainRepository;
     private final FacultyRepository facultyRepository;
     private final DepartmentRepository departmentRepository;
-
+    private final List<CrudRepository<? extends BaseModel, Integer>> repositories;
     private Dialog dialog;
     private TextField name = new TextField("Name");
     private ComboBox<Domain> domain = new ComboBox<>("Domain");
     private ComboBox<Faculty> faculty = new ComboBox<>("Faculty");
     private ComboBox<Department> department = new ComboBox<>("Department");
     private Binder<Specialization> binder = new BeanValidationBinder<>(Specialization.class);
-    private TreeGrid<BaseModel> grid = new TreeGrid<>();
+    private BaseModelTreeGrid grid;
     //    private Grid<Specialization> grid = new Grid<>();
 
     public SpecializationView(LoginService loginService, SpecializationRepository specializationRepository, DomainRepository domainRepository, FacultyRepository facultyRepository, DepartmentRepository departmentRepository) {
@@ -70,6 +66,8 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
         this.domainRepository = domainRepository;
         this.facultyRepository = facultyRepository;
         this.departmentRepository = departmentRepository;
+
+        repositories = Arrays.asList(facultyRepository, departmentRepository, domainRepository, specializationRepository);
     }
 
     @PostConstruct
@@ -92,23 +90,8 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
         add(header);
     }
 
-//    private void addGrid() {
-//        ArrayList<Specialization> specializations = Lists.newArrayList(specializationRepository.findAll());
-//
-//        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
-//        grid.setItems(specializations);
-//
-//        grid.addColumn(Specialization::getId).setHeader("Id").setKey("id");
-//        grid.addColumn(Specialization::getName).setHeader("Name").setKey("name");
-//        grid.addColumn(specialization -> specialization.getDomain().getName()).setHeader("Domain").setKey("domain");
-//        grid.addColumn(specialization -> specialization.getDomain().getDepartment().getName()).setHeader("Department").setKey("department");
-//        grid.addColumn(specialization -> specialization.getDomain().getDepartment().getFaculty().getName()).setHeader("Faculty").setKey("faculty");
-//
-//        add(grid);
-//    }
-
     private void addTreeGrid() {
-        setGridItems();
+        grid = new BaseModelTreeGrid(repositories);
 
         grid.addHierarchyColumn(BaseModel::getName)
                 .setHeader("Specialiazations");
@@ -224,7 +207,7 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
             specializationRepository.save(specialization);
 
             dialog.close();
-            setGridItems();
+            grid.updateData();
         } else {
             logger.debug("Not valid specialization data");
         }
@@ -241,38 +224,6 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
     private void delete(ClickEvent<Button> event) {
     }
 
-    private void setGridItems() {
-        TreeData<BaseModel> treeData = new TreeData<>();
 
-//        List<BaseModel> faculties = Lists.newArrayList(facultyRepository.findAll());
-//        List<BaseModel> departments = Lists.newArrayList(departmentRepository.findAll());
-//        List<BaseModel> domains = Lists.newArrayList(domainRepository.findAll());
-//        List<BaseModel> specializations = Lists.newArrayList(specializationRepository.findAll());
-
-//        faculties.forEach(baseModel -> treeData.addItem(null, baseModel));
-//        departments.forEach(baseModel -> treeData.addItem(baseModel.getParent(), baseModel));
-//        domains.forEach(baseModel -> treeData.addItem(baseModel.getParent(), baseModel));
-//        specializations.forEach(baseModel -> treeData.addItem(baseModel.getParent(), baseModel));
-
-//        addItemsToTreeDataFromRepository(facultyRepository, treeData);
-//        addItemsToTreeDataFromRepository(departmentRepository, treeData);
-//        addItemsToTreeDataFromRepository(domainRepository, treeData);
-//        addItemsToTreeDataFromRepository(specializationRepository, treeData);
-
-        Arrays.asList(facultyRepository, departmentRepository, domainRepository, specializationRepository)
-                .forEach(repo -> addItemsToTreeDataFromRepository(repo, treeData));
-
-        TreeDataProvider<BaseModel> treeDataProvider = new TreeDataProvider<>(treeData);
-
-        grid.setDataProvider(treeDataProvider);
-    }
-
-    private void addItemsToTreeDataFromRepository(CrudRepository repository, TreeData<BaseModel> treeData) {
-        addItemsToTreeData(Lists.newArrayList(repository.findAll()), treeData);
-    }
-
-    private void addItemsToTreeData(List<BaseModel> items, TreeData<BaseModel> treeData) {
-        items.forEach(item -> treeData.addItem(item.getParent(), item));
-    }
 
 }
