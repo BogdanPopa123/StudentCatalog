@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Route(value = "specialization", layout = MainLayout.class)
 @PageTitle("Specialization")
@@ -98,6 +99,7 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
         grid = new BaseModelTreeGrid(repositories);
 
         grid.addHierarchyColumn(BaseModel::getName).setHeader("Specialiazations");
+//        grid.addColumn(baseModel -> baseModel.getClass().getSimpleName()).setHeader("Category");
 
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
         grid.setHeight("800px");
@@ -206,110 +208,119 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
     }
 
     private void details(ClickEvent<Button> event) {
-        Set<BaseModel> selectedItems = grid.getSelectedItems();
+        Set<BaseModel> selectedItems = grid.getSelectedItems().stream()
+                .filter(item -> item instanceof Specialization)
+                .collect(Collectors.toSet());
 
-        if (selectedItems.stream().anyMatch(item -> item instanceof Specialization)) {
-            selectedItems.forEach(item -> {
-                Specialization specialization = (Specialization) item;
-
-                int id = specialization.getId();
-                String name = specialization.getName();
-                Domain domain = specialization.getDomain();
-                Department department = domain.getDepartment();
-                Faculty faculty = department.getFaculty();
-
-                Button close = new Button("Close");
-                close.addThemeVariants(ButtonVariant.LUMO_ERROR);
-
-                VerticalLayout specializationDetails = new VerticalLayout(
-                        new H5("Id: " + id),
-                        new H5("Name: " + name),
-                        new H5("Domain: " + domain.getName()),
-                        new H5("Department: " + department.getName()),
-                        new H5("Faculty: " + faculty.getName())
-                );
-
-                VerticalLayout details = new VerticalLayout(
-                        new H2("Specialization"),
-                        new HtmlComponent("hr"),
-                        specializationDetails,
-                        close
-                );
-                details.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-
-                Dialog detailsDialog = new Dialog(details);
-
-                close.addClickListener(click -> detailsDialog.close());
-
-                detailsDialog.open();
-            });
-        } else {
+        if (selectedItems.isEmpty()) {
             notificationService.alert("Select a valid specialization!");
+            return;
         }
+
+        selectedItems.forEach(item -> {
+            Specialization specialization = (Specialization) item;
+
+            int id = specialization.getId();
+            String name = specialization.getName();
+            Domain domain = specialization.getDomain();
+            Department department = domain.getDepartment();
+            Faculty faculty = department.getFaculty();
+
+            Button close = new Button("Close");
+            close.addThemeVariants(ButtonVariant.LUMO_ERROR);
+
+            VerticalLayout specializationDetails = new VerticalLayout(
+                    new H5("Id: " + id),
+                    new H5("Name: " + name),
+                    new H5("Domain: " + domain.getName()),
+                    new H5("Department: " + department.getName()),
+                    new H5("Faculty: " + faculty.getName())
+            );
+
+            VerticalLayout details = new VerticalLayout(
+                    new H2("Specialization"),
+                    new HtmlComponent("hr"),
+                    specializationDetails,
+                    close
+            );
+            details.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+
+            Dialog detailsDialog = new Dialog(details);
+
+            close.addClickListener(click -> detailsDialog.close());
+
+            detailsDialog.open();
+        });
     }
 
     private void modify(ClickEvent<Button> event) {
-        Set<BaseModel> selectedItems = grid.getSelectedItems();
+        Set<BaseModel> selectedItems = grid.getSelectedItems().stream()
+                .filter(item -> item instanceof Specialization)
+                .collect(Collectors.toSet());
 
-        if (selectedItems.stream().anyMatch(item -> item instanceof Specialization)) {
-            selectedItems.forEach(item -> {
-                binder.setBean((Specialization) item);
-
-                Domain domain = binder.getBean().getDomain();
-                Department department = domain.getDepartment();
-                Faculty faculty = department.getFaculty();
-
-                this.faculty.setValue(faculty);
-                this.department.setValue(department);
-                this.domain.setValue(domain);
-
-                dialog.open();
-            });
-        } else {
+        if (selectedItems.isEmpty()) {
             notificationService.alert("Select a valid specialization to modify!");
+            return;
         }
+
+        selectedItems.forEach(item -> {
+            binder.setBean((Specialization) item);
+
+            Domain domain = binder.getBean().getDomain();
+            Department department = domain.getDepartment();
+            Faculty faculty = department.getFaculty();
+
+            this.faculty.setValue(faculty);
+            this.department.setValue(department);
+            this.domain.setValue(domain);
+
+            dialog.open();
+        });
     }
 
     private void delete(ClickEvent<Button> event) {
-        Set<BaseModel> selectedItems = grid.getSelectedItems();
+        Set<BaseModel> selectedItems = grid.getSelectedItems().stream()
+                .filter(item -> item instanceof Specialization)
+                .collect(Collectors.toSet());
 
-        if (selectedItems.stream().anyMatch(item -> item instanceof Specialization)) {
-            selectedItems.forEach(item -> {
-
-                H5 header = new H5("Are you sure you want to delete specialization:");
-                H5 specialization = new H5(item.toShortString() + " ?");
-
-                Button confirm = new Button("Confirm");
-                Button cancel = new Button("Cancel");
-
-                confirm.addThemeVariants(ButtonVariant.LUMO_ERROR);
-                cancel.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-
-                HorizontalLayout buttons = new HorizontalLayout(confirm, cancel);
-
-                VerticalLayout dialogBody = new VerticalLayout(header, specialization, buttons);
-                dialogBody.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-
-                Dialog confirmDialog = new Dialog(dialogBody);
-
-                confirm.addClickListener(click -> {
-                    specializationRepository.deleteById(item.getId());
-
-                    notificationService.success("Deleted specialization: " + item.toShortString());
-
-                    logger.info("Deleted specialization: " + item.toString());
-
-                    grid.updateData();
-                    confirmDialog.close();
-                });
-
-                cancel.addClickListener(click -> confirmDialog.close());
-
-                confirmDialog.open();
-            });
-        } else {
+        if (selectedItems.isEmpty()) {
             notificationService.alert("Select a valid specialization to delete!");
+            return;
         }
+
+        selectedItems.forEach(item -> {
+
+            H5 header = new H5("Are you sure you want to delete specialization:");
+            H5 specialization = new H5(item.toShortString() + " ?");
+
+            Button confirm = new Button("Confirm");
+            Button cancel = new Button("Cancel");
+
+            confirm.addThemeVariants(ButtonVariant.LUMO_ERROR);
+            cancel.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+            HorizontalLayout buttons = new HorizontalLayout(confirm, cancel);
+
+            VerticalLayout dialogBody = new VerticalLayout(header, specialization, buttons);
+            dialogBody.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+
+            Dialog confirmDialog = new Dialog(dialogBody);
+
+            confirm.addClickListener(click -> {
+                specializationRepository.deleteById(item.getId());
+
+                notificationService.success("Deleted specialization: " + item.toShortString());
+
+                logger.info("Deleted specialization: " + item.toString());
+
+                grid.updateData();
+                confirmDialog.close();
+            });
+
+            cancel.addClickListener(click -> confirmDialog.close());
+
+            confirmDialog.open();
+        });
     }
 
     private void configureComboBox(ComboBox<? extends BaseModel> comboBox, String placeholder, String width) {
