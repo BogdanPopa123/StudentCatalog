@@ -13,6 +13,7 @@ import com.packagename.myapp.views.customComponents.BaseModelTreeGrid;
 import com.packagename.myapp.views.layouts.MainLayout;
 import com.packagename.myapp.views.layouts.VerticalLayoutAuthRestricted;
 import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.HtmlComponent;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -21,7 +22,7 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -197,17 +198,75 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
 
             dialog.close();
             grid.updateData();
+            notificationService.success("Saved specialization!");
         } else {
             logger.debug("Not valid specialization data");
         }
     }
 
     private void details(ClickEvent<Button> event) {
+        Set<BaseModel> selectedItems = grid.getSelectedItems();
 
+        if (selectedItems.stream().anyMatch(item -> item instanceof Specialization)) {
+            selectedItems.forEach(item -> {
+                Specialization specialization = (Specialization) item;
+
+                int id = specialization.getId();
+                String name = specialization.getName();
+                Domain domain = specialization.getDomain();
+                Department department = domain.getDepartment();
+                Faculty faculty = department.getFaculty();
+
+                Button close = new Button("Close");
+                close.addThemeVariants(ButtonVariant.LUMO_ERROR);
+
+                VerticalLayout specializationDetails = new VerticalLayout(
+                        new H5("Id: " + id),
+                        new H5("Name: " + name),
+                        new H5("Domain: " + domain.getName()),
+                        new H5("Department: " + department.getName()),
+                        new H5("Faculty: " + faculty.getName())
+                );
+
+                VerticalLayout details = new VerticalLayout(
+                        new H2("Specialization"),
+                        new HtmlComponent("hr"),
+                        specializationDetails,
+                        close
+                );
+                details.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+
+                Dialog detailsDialog = new Dialog(details);
+
+                close.addClickListener(click -> detailsDialog.close());
+
+                detailsDialog.open();
+            });
+        } else {
+            notificationService.alert("Select a valid specialization!");
+        }
     }
 
     private void modify(ClickEvent<Button> event) {
+        Set<BaseModel> selectedItems = grid.getSelectedItems();
 
+        if (selectedItems.stream().anyMatch(item -> item instanceof Specialization)) {
+            selectedItems.forEach(item -> {
+                binder.setBean((Specialization) item);
+
+                Domain domain = binder.getBean().getDomain();
+                Department department = domain.getDepartment();
+                Faculty faculty = department.getFaculty();
+
+                this.faculty.setValue(faculty);
+                this.department.setValue(department);
+                this.domain.setValue(domain);
+
+                dialog.open();
+            });
+        } else {
+            notificationService.alert("Select a valid specialization to modify!");
+        }
     }
 
     private void delete(ClickEvent<Button> event) {
@@ -235,7 +294,7 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
                 confirm.addClickListener(click -> {
                     specializationRepository.deleteById(item.getId());
 
-                    notificationService.info("Deleted specialization: " + item.toShortString());
+                    notificationService.success("Deleted specialization: " + item.toShortString());
 
                     logger.info("Deleted specialization: " + item.toString());
 
