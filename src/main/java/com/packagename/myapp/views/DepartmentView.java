@@ -1,28 +1,22 @@
 package com.packagename.myapp.views;
 
-import com.google.common.collect.Lists;
 import com.packagename.myapp.dao.DepartmentRepository;
 import com.packagename.myapp.dao.FacultyRepository;
 import com.packagename.myapp.models.Department;
 import com.packagename.myapp.models.Faculty;
-import com.packagename.myapp.models.UniversityModel;
 import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.views.layout.MainLayout;
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.treegrid.TreeGrid;
-import com.vaadin.flow.data.renderer.Renderer;
-import com.vaadin.flow.function.ValueProvider;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 import javax.annotation.PostConstruct;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Route(value = "departments", layout = MainLayout.class)
@@ -43,22 +37,23 @@ public class DepartmentView extends VerticalLayout {
 
     @PostConstruct
     private void init() {
-        TreeGrid<UniversityModel> grid = new TreeGrid<>();
 
+        Grid<Department> grid = new Grid<>(Department.class);
 
         if (loginService.getAuthenticatedUser().isAdmin()) {
             com.vaadin.flow.component.textfield.TextField newDepartmentName = new com.vaadin.flow.component.textfield.TextField("New Department's Name");
-            com.vaadin.flow.component.textfield.TextField facultyField = new com.vaadin.flow.component.textfield.TextField("id of the faculty of the new department");
+
+            ComboBox<Faculty> facultyComboBox = new ComboBox<>();
+            facultyComboBox.setLabel("Department's Faculty");
+            List<Faculty> facultyList = facultyRepository.findAll();
+            facultyComboBox.setItemLabelGenerator(Faculty::getName);
+            facultyComboBox.setItems(facultyList);
+            facultyComboBox.setValue(facultyList.get(0));
+
             Button addDepartment = new Button("Add department", event -> {
                 boolean isok = true;
-                if (newDepartmentName.getValue().equals(null) ||
-                        !facultyField.getValue().matches("\\d+") ||
-                        facultyField.getValue().equals(null)) {
+                if (newDepartmentName.getValue().equals(null)) {
                     Notification.show("Complete both fields");
-                    isok = false;
-                }
-                if (facultyRepository.existsById(Integer.parseInt(facultyField.getValue())) == false) {
-                    Notification.show("The faculty with this id does not exist");
                     isok = false;
                 }
                 if (departmentRepository.existsByName(newDepartmentName.getValue()) == true) {
@@ -69,39 +64,36 @@ public class DepartmentView extends VerticalLayout {
                     Department testDepartment = null;
                     Department department = new Department();
                     department.setName(newDepartmentName.getValue());
-                    department.setFaculty(facultyRepository.findById(Integer.parseInt(facultyField.getValue())));
-                    testDepartment = departmentRepository.save(department);
-                    if (testDepartment != null) {
-                        Notification.show("Department saved successfully");
-                    } else {
-                        Notification.show("Something went wrong! Please try again.");
-                    }
+                    department.setFaculty(facultyComboBox.getValue());
+                    departmentRepository.save(department);
+                    List<Department> departemnts = departmentRepository.findAll();
+                    grid.setItems(departemnts);
+                    Notification.show("Department saved successfully");
+                }
+                newDepartmentName.setValue("");
+                facultyComboBox.setValue(facultyList.get(0));
+            });
+
+            addDepartment.setEnabled(false);
+            newDepartmentName.setValueChangeMode(ValueChangeMode.EAGER);
+            newDepartmentName.addValueChangeListener(e -> {
+                if (newDepartmentName.getValue().trim().isEmpty()) {
+                    addDepartment.setEnabled(false);
+                } else {
+                    addDepartment.setEnabled(true);
                 }
             });
 
             VerticalLayout adminLayout = new VerticalLayout();
             adminLayout.add(newDepartmentName,
-                    facultyField,
+                    facultyComboBox,
                     addDepartment);
             add(grid, adminLayout);
         }
 
-        grid.setItems(new ArrayList<UniversityModel>(facultyRepository.findAll()), universityModel -> {
-            if (universityModel instanceof Faculty)
-                return new ArrayList<>(departmentRepository.findAllByFaculty_Id(universityModel.getId()));
-            else
-                return new ArrayList<>();
-            //   .stream()
-            //    .forEach();
-        });
-        grid.addHierarchyColumn(UniversityModel::getName).setHeader("Faculty and departments");
-        //grid.addColumn(UniversityModel::getName).setHeader("Department");
-
+        grid.setItems(departmentRepository.findAll());
+        grid.setColumns("id", "name", "faculty");
 
         add(grid);
-
-
     }
-
-
 }

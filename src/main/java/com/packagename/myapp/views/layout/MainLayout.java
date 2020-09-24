@@ -63,14 +63,8 @@ public class MainLayout extends AppLayout {
         Button catalog = new NavigateButton("Catalog", CatalogView.class);
         Button faculty = new NavigateButton("Faculty", FacultyView.class);
         Button departments = new NavigateButton("Departments", DepartmentView.class);
+        Button professors = new NavigateButton("Professors", ProfessorView.class);
 
-//        home.setHighlightCondition(HighlightConditions.sameLocation());
-//        myAccount.setHighlightCondition(HighlightConditions.sameLocation());
-//        catalog.setHighlightCondition(HighlightConditions.sameLocation());
-//
-//        home.setHighlightAction((routerLink, highlight) -> routerLink.addClassName("active-link"));
-//        myAccount.setHighlightAction((routerLink, highlight) -> routerLink.addClassName("active-link"));
-//        catalog.setHighlightAction((routerLink, highlight) -> routerLink.addClassName("active-link"));
 
         addToDrawer(new VerticalLayout(
                 new H5("Menu"),
@@ -78,11 +72,10 @@ public class MainLayout extends AppLayout {
                 myAccount,
                 catalog,
                 faculty,
-                departments
+                departments,
+                professors
         ));
-
     }
-
 
     @Override
     protected void onAttach(AttachEvent attachEvent) {

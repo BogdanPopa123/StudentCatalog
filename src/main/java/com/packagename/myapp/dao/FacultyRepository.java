@@ -15,5 +15,7 @@ public interface FacultyRepository extends CrudRepository<Faculty, Integer> {
 
     Faculty findById(int id);
 
+    Faculty findByName(String name);
+
     List<Faculty> findAll();
 }
