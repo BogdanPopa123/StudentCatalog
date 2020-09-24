@@ -1,32 +1,26 @@
 package com.packagename.myapp.models;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-import org.springframework.context.annotation.Lazy;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "faculty")
-public class Faculty implements UniversityModel {
+public class Faculty {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "faculty_id")
     private int id;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    //@LazyCollection(LazyCollectionOption.EXTRA)
+    @OneToMany(mappedBy = "faculty", fetch = FetchType.EAGER)
     private Set<Department> departments;
 
     @NotNull
     private String name;
+
+    @NotNull
+    private String abbreviation;
 
     public int getId() {
         return id;
@@ -38,16 +32,6 @@ public class Faculty implements UniversityModel {
 
     public String getName() {
         return name;
-    }
-
-    @Override
-    public UniversityModel getParent() {
-        return null;
-    }
-
-    @Override
-    public Collection<UniversityModel> getChildren() {
-        return new ArrayList<>(this.getDepartments());
     }
 
     public void setName(String name) {
@@ -62,12 +46,11 @@ public class Faculty implements UniversityModel {
         this.departments = departments;
     }
 
-    @Override
-    public String toString() {
-        return getName();
+    public String getAbbreviation() {
+        return abbreviation;
     }
 
-
-
-
+    public void setAbbreviation(String abbreviation) {
+        this.abbreviation = abbreviation;
+    }
 }

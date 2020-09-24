@@ -1,9 +1,6 @@
 package com.packagename.myapp.models;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Set;
 
 @Entity
@@ -13,10 +10,10 @@ import java.util.Set;
 
 public class Student extends User  {
 
-    @OneToMany
+    @OneToMany(mappedBy = "student", fetch = FetchType.EAGER)
     private Set<Profile> profiles;
 
-    @OneToMany
+    @OneToMany(mappedBy = "student", fetch = FetchType.EAGER)
     private Set<Grade> grades;
 
     public Set<Profile> getProfiles() {

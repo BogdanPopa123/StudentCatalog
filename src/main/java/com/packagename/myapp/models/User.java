@@ -1,18 +1,24 @@
 package com.packagename.myapp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.io.Console;
 import java.util.Arrays;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "user")
 public class User {
+
+    private static final Logger logger = LogManager.getLogger(User.class);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -136,6 +142,11 @@ public class User {
         return isAdmin;
     }
 
+    @JsonIgnore
+    public boolean isNotAdmin() {
+        return !isAdmin();
+    }
+
     public void setAdmin(boolean admin) {
         isAdmin = admin;
     }
@@ -151,6 +162,7 @@ public class User {
                 ", surname='" + surname + '\'' +
                 ", birthDay='" + birthDay + '\'' +
                 ", role=" + role +
+                ", isAdmin=" + isAdmin +
                 ", image=" + Arrays.toString(image) +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
@@ -158,16 +170,20 @@ public class User {
 
     public String toJSON() {
         try {
+            logger.debug("Trying to parse User model to JSON");
             return getMapper().writeValueAsString(this);
         } catch (JsonProcessingException e) {
+            logger.warn("Error on parsing user TO JSON: "+this.toString(), e);
             return "";
         }
     }
 
     public static User jsonParse(String jsonString) {
         try {
+            logger.debug("Trying to parse JSON to User model");
             return getMapper().readValue(jsonString, User.class);
         } catch (JsonProcessingException e) {
+            logger.warn("Error on parsing user FROM JSON: "+jsonString, e);
             return new User();
         }
     }
@@ -185,7 +201,7 @@ public class User {
 
 
     public boolean checkAnonymous() {
-        return this.getUsername().equals(getAnonymousUser().getUsername());
+        return getAnonymousUser().getUsername().equals(this.getUsername());
     }
 
     public static User getAnonymousUser() {

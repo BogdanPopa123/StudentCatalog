@@ -6,10 +6,9 @@ import com.packagename.myapp.models.User;
 import com.packagename.myapp.models.UserRole;
 import com.packagename.myapp.services.HashingService;
 import com.packagename.myapp.services.LoginService;
-import com.packagename.myapp.views.layout.MainLayout;
-import com.vaadin.flow.component.AttachEvent;
+import com.packagename.myapp.views.layouts.MainLayout;
+import com.packagename.myapp.views.layouts.VerticalLayoutAuthRestricted;
 import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H3;
@@ -29,12 +28,13 @@ import javax.annotation.PostConstruct;
 @Route(value = "admin", layout = MainLayout.class)
 @PageTitle("AdminPanel")
 @CssImport("./styles/shared-styles.css")
-public class AdminPanelView extends VerticalLayout {
+public class AdminPanelView extends VerticalLayoutAuthRestricted {
 
     private final LoginService loginService;
     private final UserRepository userRepository;
 
     public AdminPanelView(LoginService loginService, UserRepository userRepository) {
+        super(loginService);
         this.loginService = loginService;
         this.userRepository = userRepository;
     }
@@ -59,11 +59,11 @@ public class AdminPanelView extends VerticalLayout {
             newUserIsAdmin.setValue("No");
 
 
-            String warningText = "";
+        String warningText = "";
 
-            Button addUserButton = new Button("Add user", event -> {
-                User user = new User();
-                User testUser = new User();
+        Button addUserButton = new Button("Add user", event -> {
+            User user = new User();
+            User testUser = new User();
 
                 user.setUsername(newUsernameField.getValue());
                 user.setEmail(newEmailField.getValue());
@@ -182,11 +182,5 @@ public class AdminPanelView extends VerticalLayout {
 
     }
 
-
-    @Override
-    protected void onAttach(AttachEvent attachEvent) {
-        if (!loginService.checkAuth()) {
-            UI.getCurrent().navigate(LoginView.class);
-        }
-    }
 }
+

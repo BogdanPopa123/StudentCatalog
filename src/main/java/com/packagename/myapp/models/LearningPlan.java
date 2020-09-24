@@ -15,7 +15,7 @@ public class LearningPlan {
     @OneToOne
     private Specialization specialization;
 
-    @OneToMany
+    @OneToMany(mappedBy = "plan", fetch = FetchType.EAGER)
     private Set<Course> courses;
 
     public int getId() {

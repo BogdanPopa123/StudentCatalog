@@ -23,7 +23,7 @@ public class Professor extends User  {
     private Set<Subject> knownSubjects;
 
 
-    @OneToMany
+    @OneToMany(mappedBy = "professor", fetch = FetchType.EAGER)
     private Set<Course> courses;
 
 
