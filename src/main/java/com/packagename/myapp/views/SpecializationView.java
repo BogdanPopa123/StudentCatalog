@@ -21,6 +21,8 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -210,7 +212,44 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
 
     private void delete(ClickEvent<Button> event) {
         Set<BaseModel> selectedItems = grid.getSelectedItems();
-        selectedItems.forEach(item -> notificationService.info(item.toString()));
+
+        if (selectedItems.stream().anyMatch(item -> item instanceof Specialization)) {
+            selectedItems.forEach(item -> {
+
+                H5 header = new H5("Are you sure you want to delete specialization:");
+                H5 specialization = new H5(item.toShortString() + " ?");
+
+                Button confirm = new Button("Confirm");
+                Button cancel = new Button("Cancel");
+
+                confirm.addThemeVariants(ButtonVariant.LUMO_ERROR);
+                cancel.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+                HorizontalLayout buttons = new HorizontalLayout(confirm, cancel);
+
+                VerticalLayout dialogBody = new VerticalLayout(header, specialization, buttons);
+                dialogBody.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+
+                Dialog confirmDialog = new Dialog(dialogBody);
+
+                confirm.addClickListener(click -> {
+                    specializationRepository.deleteById(item.getId());
+
+                    notificationService.info("Deleted specialization: " + item.toShortString());
+
+                    logger.info("Deleted specialization: " + item.toString());
+
+                    grid.updateData();
+                    confirmDialog.close();
+                });
+
+                cancel.addClickListener(click -> confirmDialog.close());
+
+                confirmDialog.open();
+            });
+        } else {
+            notificationService.alert("Select a valid specialization to delete!");
+        }
     }
 
     private void configureComboBox(ComboBox<? extends BaseModel> comboBox, String placeholder, String width) {

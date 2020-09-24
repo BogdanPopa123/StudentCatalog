@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class NotificationService {
     private int duration = 5000;
-    private Notification.Position position = Notification.Position.BOTTOM_END;
+    private Notification.Position position = Notification.Position.TOP_CENTER;
 
     public NotificationService() {
     }

@@ -13,7 +13,7 @@ public abstract class BaseModel {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null || obj.getClass() != this.getClass()) {
+        if (obj == null || obj.getClass() != this.getClass() || this.getName() == null) {
             return false;
         }
 
@@ -40,5 +40,9 @@ public abstract class BaseModel {
                 "class='"+getClass()+"'"+
                 '}';
 
+    }
+
+    public String toShortString(){
+        return "id= '"+ getId() + " - " + "name= "+getName();
     }
 }
