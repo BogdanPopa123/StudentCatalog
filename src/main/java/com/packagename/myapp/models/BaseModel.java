@@ -31,4 +31,14 @@ public abstract class BaseModel {
 
         return hash;
     }
+
+    @Override
+    public String toString() {
+        return "BaseModel{"+
+                "id='"+ getId() + "'" +
+                "name='"+getName()+"'"+
+                "class='"+getClass()+"'"+
+                '}';
+
+    }
 }

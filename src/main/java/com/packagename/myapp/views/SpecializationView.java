@@ -8,6 +8,7 @@ import com.packagename.myapp.dao.FacultyRepository;
 import com.packagename.myapp.dao.SpecializationRepository;
 import com.packagename.myapp.models.*;
 import com.packagename.myapp.services.LoginService;
+import com.packagename.myapp.services.NotificationService;
 import com.packagename.myapp.views.customComponents.BaseModelTreeGrid;
 import com.packagename.myapp.views.layouts.MainLayout;
 import com.packagename.myapp.views.layouts.VerticalLayoutAuthRestricted;
@@ -49,6 +50,7 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
     private final DomainRepository domainRepository;
     private final FacultyRepository facultyRepository;
     private final DepartmentRepository departmentRepository;
+    private final NotificationService notificationService;
     private final List<CrudRepository<? extends BaseModel, Integer>> repositories;
     private Dialog dialog;
     private TextField name = new TextField("Name");
@@ -57,15 +59,15 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
     private ComboBox<Department> department = new ComboBox<>("Department");
     private Binder<Specialization> binder = new BeanValidationBinder<>(Specialization.class);
     private BaseModelTreeGrid grid;
-    //    private Grid<Specialization> grid = new Grid<>();
 
-    public SpecializationView(LoginService loginService, SpecializationRepository specializationRepository, DomainRepository domainRepository, FacultyRepository facultyRepository, DepartmentRepository departmentRepository) {
+    public SpecializationView(LoginService loginService, SpecializationRepository specializationRepository, DomainRepository domainRepository, FacultyRepository facultyRepository, DepartmentRepository departmentRepository, NotificationService notificationService) {
         super(loginService);
         this.loginService = loginService;
         this.specializationRepository = specializationRepository;
         this.domainRepository = domainRepository;
         this.facultyRepository = facultyRepository;
         this.departmentRepository = departmentRepository;
+        this.notificationService = notificationService;
 
         repositories = Arrays.asList(facultyRepository, departmentRepository, domainRepository, specializationRepository);
     }
@@ -76,7 +78,6 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
 
         addHeader();
         addManageButtons();
-//        addGrid();
         addTreeGrid();
 
         setCreateDialog();
@@ -93,11 +94,10 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
     private void addTreeGrid() {
         grid = new BaseModelTreeGrid(repositories);
 
-        grid.addHierarchyColumn(BaseModel::getName)
-                .setHeader("Specialiazations");
+        grid.addHierarchyColumn(BaseModel::getName).setHeader("Specialiazations");
 
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
-        grid.setHeight("1000px");
+        grid.setHeight("800px");
 
         add(grid);
     }
@@ -133,32 +133,19 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
             domain.setItems(domains);
         });
         faculty.setItems(Lists.newArrayList(facultyRepository.findAll()));
-        faculty.setPlaceholder("Faculty");
         faculty.setItemLabelGenerator(Faculty::getName);
-        faculty.setWidth("300px");
-        faculty.setRequired(true);
-        faculty.setAllowCustomValue(false);
-        faculty.setPreventInvalidInput(true);
+        configureComboBox(faculty, "Faculty", "300px");
 
         department.addValueChangeListener(event -> domain.setItems(event.getValue() != null ? event.getValue().getDomains() : new ArrayList<>()));
         department.setItems(Lists.newArrayList(departmentRepository.findAll()));
-        department.setPlaceholder("Department");
         department.setItemLabelGenerator(Department::getName);
-        department.setWidth("300px");
-        department.setRequired(true);
-        department.setAllowCustomValue(false);
-        department.setPreventInvalidInput(true);
+        configureComboBox(department, "Department", "300px");
 
         domain.setItems(Lists.newArrayList(domainRepository.findAll()));
-        domain.setPlaceholder("Domain");
         domain.setItemLabelGenerator(Domain::getName);
-        domain.setWidth("300px");
-        domain.setRequired(true);
-        domain.setAllowCustomValue(false);
-        domain.setPreventInvalidInput(true);
+        configureComboBox(domain, "Domain", "300px");
 
         name.setWidth("300px");
-
 
         Button save = new Button("Save", this::save);
         Button cancel = new Button("Cancel", event -> {
@@ -222,8 +209,17 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
     }
 
     private void delete(ClickEvent<Button> event) {
+        Set<BaseModel> selectedItems = grid.getSelectedItems();
+        selectedItems.forEach(item -> notificationService.info(item.toString()));
     }
 
+    private void configureComboBox(ComboBox<? extends BaseModel> comboBox, String placeholder, String width) {
+        comboBox.setPlaceholder(placeholder);
+        comboBox.setWidth(width);
+        comboBox.setRequired(true);
+        comboBox.setAllowCustomValue(false);
+        comboBox.setPreventInvalidInput(true);
+    }
 
 
 }
