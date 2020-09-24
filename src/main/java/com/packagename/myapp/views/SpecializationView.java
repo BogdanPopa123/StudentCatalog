@@ -103,6 +103,7 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
         grid.setHeight("800px");
 
         add(grid);
+        grid.expandAll();
     }
 
 

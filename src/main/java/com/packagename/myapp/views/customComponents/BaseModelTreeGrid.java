@@ -56,4 +56,8 @@ public class BaseModelTreeGrid extends TreeGrid<BaseModel> {
     public void setRepositories(List<CrudRepository<? extends BaseModel, Integer>> repositories) {
         this.repositories = repositories;
     }
+
+    public void expandAll() {
+        repositories.forEach(repository -> repository.findAll().forEach(this::expand));
+    }
 }
