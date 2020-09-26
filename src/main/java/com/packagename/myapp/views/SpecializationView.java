@@ -96,7 +96,6 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
             return;
         }
 
-
         add(manageButtons);
     }
 

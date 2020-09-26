@@ -25,12 +25,10 @@ import com.vaadin.flow.data.binder.Binder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Scope;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -157,18 +155,19 @@ public class SpecializationViewManageButtons extends HorizontalLayout {
     private void save(ClickEvent<Button> event) {
         logger.debug("Submit new specialization data");
 
-        if (binder.isValid()) {
-            Specialization specialization = binder.getBean();
-
-            logger.info("Save new specialization");
-            specializationRepository.save(specialization);
-
-            dialog.close();
-            runOnSuccessfulModifyEvent();
-            notificationService.success("Saved specialization!");
-        } else {
+        if (!binder.isValid()) {
             logger.debug("Not valid specialization data");
+            return;
         }
+
+        Specialization specialization = binder.getBean();
+
+        logger.info("Save new specialization");
+        specializationRepository.save(specialization);
+
+        dialog.close();
+        runOnSuccessfulModifyEvent();
+        notificationService.success("Saved specialization!");
     }
 
     private void details(ClickEvent<Button> event) {
@@ -204,6 +203,7 @@ public class SpecializationViewManageButtons extends HorizontalLayout {
                     specializationDetails,
                     close
             );
+            
             details.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 
             Dialog detailsDialog = new Dialog(details);
