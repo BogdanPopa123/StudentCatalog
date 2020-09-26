@@ -60,4 +60,9 @@ public class BaseModelTreeGrid extends TreeGrid<BaseModel> {
     public void expandAll() {
         repositories.forEach(repository -> repository.findAll().forEach(this::expand));
     }
+
+    public void updateDataAndExpandAll(){
+        updateData();
+        expandAll();
+    }
 }
