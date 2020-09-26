@@ -36,7 +36,7 @@ import java.util.Set;
 
 @Component
 @Scope(scopeName = "prototype")
-public class ManageButtons extends HorizontalLayout {
+public class SpecializationViewManageButtons extends HorizontalLayout {
 
     private final Logger logger = LogManager.getLogger(SpecializationView.class);
     private final SpecializationRepository specializationRepository;
@@ -56,11 +56,11 @@ public class ManageButtons extends HorizontalLayout {
 
     private Binder<Specialization> binder = new BeanValidationBinder<>(Specialization.class);
 
-    public ManageButtons(SpecializationRepository specializationRepository,
-                         DomainRepository domainRepository,
-                         FacultyRepository facultyRepository,
-                         DepartmentRepository departmentRepository,
-                         NotificationService notificationService) {
+    public SpecializationViewManageButtons(SpecializationRepository specializationRepository,
+                                           DomainRepository domainRepository,
+                                           FacultyRepository facultyRepository,
+                                           DepartmentRepository departmentRepository,
+                                           NotificationService notificationService) {
 
         this.specializationRepository = specializationRepository;
         this.domainRepository = domainRepository;
