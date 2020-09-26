@@ -38,21 +38,22 @@ public class CookieService {
 
         logger.debug("User cookie not found");
         logger.debug("Set anonymous user");
-        setAnonymousUser();
 
-        return User.getAnonymousUser();
+        return setAnonymousUser();
     }
 
-    public void addUserCookie(User authUser) {
+    public User addUserCookie(User authUser) {
         Cookie userCookie = new Cookie("user", authUser.toJSON());
         userCookie.setMaxAge(604800);
         userCookie.setPath(VaadinService.getCurrentRequest().getContextPath());
 
         logger.debug("Update user auth cookie data");
         VaadinService.getCurrentResponse().addCookie(userCookie);
+
+        return authUser;
     }
 
-    public void setAnonymousUser() {
-        addUserCookie(User.getAnonymousUser());
+    public User setAnonymousUser() {
+        return addUserCookie(User.getAnonymousUser());
     }
 }

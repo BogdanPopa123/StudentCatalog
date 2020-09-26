@@ -2,11 +2,14 @@ package com.packagename.myapp.models;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Set;
 
 @Entity
 @Table(name = "department")
-public class Department {
+
+public class Department{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -70,4 +73,5 @@ public class Department {
     public void setProfessors(Set<Professor> professors) {
         this.professors = professors;
     }
+
 }
