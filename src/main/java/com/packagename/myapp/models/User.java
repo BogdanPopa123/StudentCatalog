@@ -10,7 +10,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.io.Console;
 import java.util.Arrays;
 
 @Entity
@@ -19,44 +18,58 @@ import java.util.Arrays;
 public class User {
 
     private static final Logger logger = LogManager.getLogger(User.class);
-
+    private static ObjectMapper mapper;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
-
     @NotNull
     @NotEmpty
     private String username;
-
     @NotNull
     @NotEmpty
     @Email
     private String email;
-
     @NotNull
     @NotEmpty
     private String password;
-
     @NotNull
     @NotEmpty
     private String name;
-
     @NotNull
     @NotEmpty
     private String surname;
-
     private String birthDay;
-
     @NotNull
     @Enumerated(EnumType.STRING)
     private UserRole role = UserRole.STUDENT;
-
     private boolean isAdmin = false;
-
     private byte[] image;
-
     private String phoneNumber;
+
+    public static User jsonParse(String jsonString) {
+        try {
+            logger.debug("Trying to parse JSON to User model");
+            return getMapper().readValue(jsonString, User.class);
+        } catch (JsonProcessingException e) {
+            logger.warn("Error on parsing user FROM JSON: " + jsonString, e);
+            return new User();
+        }
+    }
+
+    private static ObjectMapper getMapper() {
+        if (mapper == null) {
+            mapper = new ObjectMapper();
+        }
+
+        return mapper;
+    }
+
+    public static User getAnonymousUser() {
+        User anonymousUser = new User();
+        anonymousUser.setUsername("AnonymousUsername");
+        return anonymousUser;
+    }
 
     public int getId() {
         return id;
@@ -142,13 +155,13 @@ public class User {
         return isAdmin;
     }
 
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
+    }
+
     @JsonIgnore
     public boolean isNotAdmin() {
         return !isAdmin();
-    }
-
-    public void setAdmin(boolean admin) {
-        isAdmin = admin;
     }
 
     @Override
@@ -173,45 +186,14 @@ public class User {
             logger.debug("Trying to parse User model to JSON");
             return getMapper().writeValueAsString(this);
         } catch (JsonProcessingException e) {
-            logger.warn("Error on parsing user TO JSON: "+this.toString(), e);
+            logger.warn("Error on parsing user TO JSON: " + this.toString(), e);
             return "";
         }
     }
 
-    public static User jsonParse(String jsonString) {
-        try {
-            logger.debug("Trying to parse JSON to User model");
-            return getMapper().readValue(jsonString, User.class);
-        } catch (JsonProcessingException e) {
-            logger.warn("Error on parsing user FROM JSON: "+jsonString, e);
-            return new User();
-        }
-    }
-
-
-    private static ObjectMapper mapper;
-
-    private static ObjectMapper getMapper() {
-        if (mapper == null) {
-            mapper = new ObjectMapper();
-        }
-
-        return mapper;
-    }
-
-
     public boolean checkAnonymous() {
         return getAnonymousUser().getUsername().equals(this.getUsername());
     }
-
-    public static User getAnonymousUser() {
-        User anonymousUser = new User();
-        anonymousUser.setUsername("AnonymousUsername");
-        return anonymousUser;
-    }
-
-
-
 
 
 }
