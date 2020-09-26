@@ -7,7 +7,7 @@ import com.packagename.myapp.models.Department;
 import com.packagename.myapp.models.Professor;
 import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.views.customComponents.UserForm;
-import com.packagename.myapp.views.layout.MainLayout;
+import com.packagename.myapp.views.layouts.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.CssImport;

@@ -5,7 +5,7 @@ import com.packagename.myapp.dao.FacultyRepository;
 import com.packagename.myapp.models.Department;
 import com.packagename.myapp.models.Faculty;
 import com.packagename.myapp.services.LoginService;
-import com.packagename.myapp.views.layout.MainLayout;
+import com.packagename.myapp.views.layouts.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.CssImport;

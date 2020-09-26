@@ -9,7 +9,7 @@ import java.util.Set;
 @Entity
 @Table(name = "department")
 
-public class Department implements  UniversityModel{
+public class Department{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,18 +51,6 @@ public class Department implements  UniversityModel{
 
     public String getName() {
         return name;
-    }
-
-    @Override
-    public UniversityModel getParent() {
-        return this.getFaculty();
-    }
-
-    @Override
-    public Collection<UniversityModel> getChildren() {
-       // return new ArrayList<UniversityModel>(getDomains());
-        // TO DO !!
-        return new ArrayList<>();
     }
 
     public void setName(String name) {
