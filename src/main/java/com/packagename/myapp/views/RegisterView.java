@@ -2,13 +2,12 @@ package com.packagename.myapp.views;
 
 import com.packagename.myapp.models.User;
 import com.packagename.myapp.services.LoginService;
-import com.vaadin.flow.component.AttachEvent;
+import com.packagename.myapp.views.layouts.VerticalLayoutAuthRestricted;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -18,30 +17,32 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.validator.EmailValidator;
 import com.vaadin.flow.router.Route;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.PostConstruct;
 
 @Route(value = "register")
 @CssImport("./styles/register-view-styles.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
-public class RegisterView extends FormLayout {
+public class RegisterView extends VerticalLayoutAuthRestricted {
+
+    private static final Logger logger = LogManager.getLogger(RegisterView.class);
 
     private final LoginService loginService;
-
-    public TextField username = new TextField("Username");
-    public TextField email = new TextField("Email");
-    public PasswordField password = new PasswordField("Password");
-    public PasswordField confirmPassword = new PasswordField("Confirm Password");
-    public TextField name = new TextField("First Name");
-    public TextField surname = new TextField("Surname");
-    public TextField phoneNumber = new TextField("Phone Number");
-    public TextField birthDay = new TextField("Birth Date");
-
+    private final Binder<User> binder = new BeanValidationBinder<>(User.class);
+    private TextField username = new TextField("Username");
+    private TextField email = new TextField("Email");
+    private PasswordField password = new PasswordField("Password");
+    private PasswordField confirmPassword = new PasswordField("Confirm Password");
+    private TextField name = new TextField("First Name");
+    private TextField surname = new TextField("Surname");
+    private TextField phoneNumber = new TextField("Phone Number");
+    private TextField birthDay = new TextField("Birth Date");
     private User user = new User();
 
-    private final Binder<User> binder = new BeanValidationBinder<>(User.class);
-
     public RegisterView(LoginService loginService) {
+        super(loginService);
         this.loginService = loginService;
     }
 
@@ -52,6 +53,12 @@ public class RegisterView extends FormLayout {
         H2 header = new H2("Register");
         header.addClassName("register-header-style");
 
+        addRegisterForm();
+
+        setBinder();
+    }
+
+    private void addRegisterForm() {
         username.addClassName("register-field-style");
         username.addThemeName("bordered");
         username.setRequired(true);
@@ -116,7 +123,6 @@ public class RegisterView extends FormLayout {
         registerForm.addClassName("register-form-style");
 
         add(registerForm);
-        setBinder();
     }
 
     private void setBinder() {
@@ -135,24 +141,19 @@ public class RegisterView extends FormLayout {
         binder.forField(username)
                 .withValidator(text -> !loginService.checkUsername(text), "The username already exists.")
                 .bind(User::getUsername, User::setUsername);
-
-//        binder.forField(email)
     }
 
     private void register(ClickEvent<Button> e) {
         if (binder.isValid()) {
             user = binder.getBean();
 
+            logger.debug("Sending register data");
             if (loginService.registerNewUser(user)) {
                 UI.getCurrent().getPage().reload();
             }
+        }else{
+            logger.debug("Not valid register data");
         }
     }
 
-    @Override
-    protected void onAttach(AttachEvent attachEvent) {
-        if (loginService.checkAuth()) {
-            UI.getCurrent().navigate(HomeView.class);
-        }
-    }
 }

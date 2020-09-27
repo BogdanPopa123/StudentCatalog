@@ -1,4 +1,4 @@
-package com.packagename.myapp.views.layout;
+package com.packagename.myapp.views.layouts;
 
 import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.views.*;
@@ -62,25 +62,20 @@ public class MainLayout extends AppLayout {
         Button myAccount = new NavigateButton("My account", MyAccountView.class);
         Button catalog = new NavigateButton("Catalog", CatalogView.class);
         Button faculty = new NavigateButton("Faculty", FacultyView.class);
+        Button departments = new NavigateButton("Departments", DepartmentView.class);
+        Button professors = new NavigateButton("Professors", ProfessorView.class);
 
-//        home.setHighlightCondition(HighlightConditions.sameLocation());
-//        myAccount.setHighlightCondition(HighlightConditions.sameLocation());
-//        catalog.setHighlightCondition(HighlightConditions.sameLocation());
-//
-//        home.setHighlightAction((routerLink, highlight) -> routerLink.addClassName("active-link"));
-//        myAccount.setHighlightAction((routerLink, highlight) -> routerLink.addClassName("active-link"));
-//        catalog.setHighlightAction((routerLink, highlight) -> routerLink.addClassName("active-link"));
 
         addToDrawer(new VerticalLayout(
                 new H5("Menu"),
                 home,
                 myAccount,
                 catalog,
-                faculty
+                faculty,
+                departments,
+                professors
         ));
-
     }
-
 
     @Override
     protected void onAttach(AttachEvent attachEvent) {
