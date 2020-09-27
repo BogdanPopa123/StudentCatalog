@@ -58,3 +58,5 @@ public class CookieService {
         return addUserCookie(User.getAnonymousUser());
     }
 }
+
+
