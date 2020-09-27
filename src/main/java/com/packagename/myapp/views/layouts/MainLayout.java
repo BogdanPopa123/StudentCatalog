@@ -23,7 +23,6 @@ import javax.annotation.PostConstruct;
 public class MainLayout extends AppLayout {
 
     private final LoginService loginService;
-    Button lastPressedButton;
 
     public MainLayout(LoginService loginService) {
         this.loginService = loginService;
@@ -64,14 +63,8 @@ public class MainLayout extends AppLayout {
         Button catalog = new NavigateButton("Catalog", CatalogView.class);
         Button faculty = new NavigateButton("Faculty", FacultyView.class);
         Button specialization = new NavigateButton("Specialization", SpecializationView.class);
-
-//        home.setHighlightCondition(HighlightConditions.sameLocation());
-//        myAccount.setHighlightCondition(HighlightConditions.sameLocation());
-//        catalog.setHighlightCondition(HighlightConditions.sameLocation());
-//
-//        home.setHighlightAction((routerLink, highlight) -> routerLink.addClassName("active-link"));
-//        myAccount.setHighlightAction((routerLink, highlight) -> routerLink.addClassName("active-link"));
-//        catalog.setHighlightAction((routerLink, highlight) -> routerLink.addClassName("active-link"));
+        Button departments = new NavigateButton("Departments", DepartmentView.class);
+        Button professors = new NavigateButton("Professors", ProfessorView.class);
 
 
         addToDrawer(new VerticalLayout(
@@ -80,11 +73,12 @@ public class MainLayout extends AppLayout {
                 myAccount,
                 catalog,
                 faculty,
+                departments,
+                professors,
+                faculty,
                 specialization
         ));
-
     }
-
 
     @Override
     protected void onAttach(AttachEvent attachEvent) {
