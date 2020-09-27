@@ -13,7 +13,7 @@ public class Subject {
     @Column(name = "subject_id")
     private int id;
 
-    @NotNull
+    @NotNull(message = "Enter name")
     private String name;
 
 
@@ -64,5 +64,13 @@ public class Subject {
 
     public void setCourses(Set<Course> courses) {
         this.courses = courses;
+    }
+
+    @Override
+    public String toString() {
+        return "Subject{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

@@ -168,6 +168,8 @@ public class SpecializationViewManageButtons extends HorizontalLayout {
         dialog.close();
         runOnSuccessfulModifyEvent();
         notificationService.success("Saved specialization!");
+
+        binder.setBean(new Specialization());
     }
 
     private void details(ClickEvent<Button> event) {

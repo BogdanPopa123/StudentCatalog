@@ -79,7 +79,7 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
         grid.setHeight("800px");
 
         grid.addSelectionListener(event -> {
-            Set<BaseModel> selectedItems = grid.getSelectedItems().stream()
+            Set<BaseModel> selectedItems = event.getAllSelectedItems().stream()
                     .filter(item -> item instanceof Specialization)
                     .collect(Collectors.toSet());
 
