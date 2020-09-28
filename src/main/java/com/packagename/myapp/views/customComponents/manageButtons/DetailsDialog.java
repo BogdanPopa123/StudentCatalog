@@ -10,19 +10,16 @@ import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class DetailsDialog extends Dialog {
     private final BaseModel item;
-    private List<BaseModel> parentsTree = new ArrayList<>();
 
     public DetailsDialog(BaseModel item) {
         this.item = item;
-        setDetails();
+
+        setDialog();
     }
 
-    private void setDetails() {
+    private void setDialog() {
         int id = item.getId();
         String name = item.getName();
 
@@ -31,17 +28,9 @@ public class DetailsDialog extends Dialog {
                 new H5("Name: " + name)
         );
 
-        item.getParentsTree().forEach(parent -> {
-            String propertyName = parent.getEntityTableName();
-            String propertyValue = parent.getName();
+        addParentsTreeH5(itemDetails);
 
-            String property = String.format("%s: %s", propertyName, propertyValue);
-
-            H5 propertyH5 = new H5(property);
-            itemDetails.add(propertyH5);
-        });
-
-        String header = item.getEntityTableName();
+        String header = item.getEntityTableNameCapitalized();
 
         Button close = new Button("Close");
         close.addThemeVariants(ButtonVariant.LUMO_ERROR);
@@ -58,6 +47,18 @@ public class DetailsDialog extends Dialog {
 
         add(details);
 
+    }
+
+    private void addParentsTreeH5(VerticalLayout itemDetails) {
+        item.getParentsTree().forEach(parent -> {
+            String propertyName = parent.getEntityTableNameCapitalized();
+            String propertyValue = parent.getName();
+
+            String property = String.format("%s: %s", propertyName, propertyValue);
+
+            H5 propertyH5 = new H5(property);
+            itemDetails.add(propertyH5);
+        });
     }
 
 

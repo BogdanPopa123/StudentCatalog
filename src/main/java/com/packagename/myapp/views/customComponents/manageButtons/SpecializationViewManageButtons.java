@@ -9,14 +9,11 @@ import com.packagename.myapp.models.*;
 import com.packagename.myapp.services.NotificationService;
 import com.packagename.myapp.views.SpecializationView;
 import com.vaadin.flow.component.ClickEvent;
-import com.vaadin.flow.component.HtmlComponent;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -209,37 +206,11 @@ public class SpecializationViewManageButtons extends HorizontalLayout {
         }
 
         selectedItems.forEach(item -> {
+            DeleteDialog deleteDialog = new DeleteDialog(item, specializationRepository, notificationService);
 
-            H5 header = new H5("Are you sure you want to delete specialization:");
-            H5 specialization = new H5(item.toShortString() + " ?");
+            deleteDialog.addOnConfirmEvent(this::runOnSuccessfulModifyEvent);
 
-            Button confirm = new Button("Confirm");
-            Button cancel = new Button("Cancel");
-
-            confirm.addThemeVariants(ButtonVariant.LUMO_ERROR);
-            cancel.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-
-            HorizontalLayout buttons = new HorizontalLayout(confirm, cancel);
-
-            VerticalLayout dialogBody = new VerticalLayout(header, specialization, buttons);
-            dialogBody.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-
-            Dialog confirmDialog = new Dialog(dialogBody);
-
-            confirm.addClickListener(click -> {
-                specializationRepository.deleteById(item.getId());
-
-                notificationService.success("Deleted specialization: " + item.toShortString());
-
-                logger.info("Deleted specialization: " + item.toString());
-
-                runOnSuccessfulModifyEvent();
-                confirmDialog.close();
-            });
-
-            cancel.addClickListener(click -> confirmDialog.close());
-
-            confirmDialog.open();
+            deleteDialog.open();
         });
     }
 

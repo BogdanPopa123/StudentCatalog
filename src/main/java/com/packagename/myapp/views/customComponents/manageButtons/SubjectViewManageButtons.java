@@ -12,8 +12,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.html.H5;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -151,36 +149,11 @@ public class SubjectViewManageButtons extends HorizontalLayout {
 
         selectedItems.forEach(item -> {
 
-            H5 header = new H5("Are you sure you want to delete subject:");
-            H5 subject = new H5(item.toString() + " ?");
+            DeleteDialog deleteDialog = new DeleteDialog(item, subjectRepository, notificationService);
 
-            Button confirm = new Button("Confirm");
-            Button cancel = new Button("Cancel");
+            deleteDialog.addOnConfirmEvent(this::runOnSuccessfulModifyEvent);
 
-            confirm.addThemeVariants(ButtonVariant.LUMO_ERROR);
-            cancel.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-
-            HorizontalLayout buttons = new HorizontalLayout(confirm, cancel);
-
-            VerticalLayout dialogBody = new VerticalLayout(header, subject, buttons);
-            dialogBody.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
-
-            Dialog confirmDialog = new Dialog(dialogBody);
-
-            confirm.addClickListener(click -> {
-                subjectRepository.deleteById(item.getId());
-
-                notificationService.success("Deleted subject: " + item.toString());
-
-                logger.info("Deleted subject: " + item.toString());
-
-                runOnSuccessfulModifyEvent();
-                confirmDialog.close();
-            });
-
-            cancel.addClickListener(click -> confirmDialog.close());
-
-            confirmDialog.open();
+            deleteDialog.open();
         });
     }
 

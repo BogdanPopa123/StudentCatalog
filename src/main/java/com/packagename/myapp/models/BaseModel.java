@@ -51,7 +51,11 @@ public abstract class BaseModel {
     }
 
     public String getEntityTableName() {
-        return StringUtils.capitalize(this.getClass().getAnnotation(Table.class).name());
+        return this.getClass().getAnnotation(Table.class).name();
+    }
+
+    public String getEntityTableNameCapitalized(){
+        return StringUtils.capitalize(getEntityTableName());
     }
 
     public List<BaseModel> getParentsTree() {
