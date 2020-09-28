@@ -17,3 +17,10 @@
     font-size: larger;
 }
 
+.link-button{
+    width: 100%;
+}
+
+.navbar-header{
+    align-self: center;
+}

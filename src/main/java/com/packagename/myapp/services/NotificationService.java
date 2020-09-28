@@ -6,36 +6,31 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class NotificationService {
-
     private int duration = 5000;
-    private Notification.Position position = Notification.Position.BOTTOM_END;
+    private Notification.Position position = Notification.Position.TOP_CENTER;
 
     public NotificationService() {
     }
 
-    public Notification info(String message){
-        return showThemedNotification(message, "info");
+    public Notification info(String message) {
+        return showThemedNotification(message, Theme.INFO);
     }
 
-    public Notification error(String message){
-        return showThemedNotification(message, "error");
+    public Notification error(String message) {
+        return showThemedNotification(message, Theme.ERROR);
     }
 
-    public Notification alert(String message){
+    public Notification alert(String message) {
         return error(message);
     }
 
-    public Notification success(String message){
-        return showThemedNotification(message, "success");
+    public Notification success(String message) {
+        return showThemedNotification(message, Theme.SUCCESS);
     }
 
-    public Notification warning(String message){
-        return showThemedNotification(message, "warning");
-    }
-
-    private Notification showThemedNotification(String message, String theme){
+    private Notification showThemedNotification(String message, Theme theme) {
         Notification notification = new Notification(message, duration, position);
-        notification.getElement().getThemeList().add(theme);
+        notification.getElement().getThemeList().add(theme.getValue());
 
         notification.open();
 
@@ -48,5 +43,22 @@ public class NotificationService {
 
     public void setPosition(Notification.Position position) {
         this.position = position;
+    }
+
+    public enum Theme {
+        INFO("primary"),
+        SUCCESS("success"),
+        ERROR("error");
+
+
+        private final String value;
+
+        Theme(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
     }
 }

@@ -19,7 +19,7 @@ public class CookieService {
         logger.debug("Trying to get cookie: " + name);
         for (Cookie cookie : cookies) {
             if (name.equals(cookie.getName())) {
-                logger.debug("Fount cookie: " + name);
+                logger.debug("Found cookie " + name + " : " + cookie.getValue());
                 return cookie;
             }
         }
@@ -54,6 +54,9 @@ public class CookieService {
     }
 
     public User setAnonymousUser() {
+        logger.debug("Set anonymous user to cookies");
         return addUserCookie(User.getAnonymousUser());
     }
 }
+
+

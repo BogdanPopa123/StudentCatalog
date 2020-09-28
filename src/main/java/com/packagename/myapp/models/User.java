@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -19,57 +18,39 @@ public class User {
 
     private static final Logger logger = LogManager.getLogger(User.class);
     private static ObjectMapper mapper;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
-    @NotNull
-    @NotEmpty
+
+    @NotNull(message = "Enter message")
     private String username;
-    @NotNull
-    @NotEmpty
-    @Email
+
+    @NotNull(message = "Enter email")
+    @Email(message = "Not an email")
     private String email;
-    @NotNull
-    @NotEmpty
+
+    @NotNull(message = "Enter password")
     private String password;
-    @NotNull
-    @NotEmpty
+
+    @NotNull(message = "Enter name")
     private String name;
-    @NotNull
-    @NotEmpty
+
+    @NotNull(message = "Enter surname")
     private String surname;
+
     private String birthDay;
+
     @NotNull
     @Enumerated(EnumType.STRING)
     private UserRole role = UserRole.STUDENT;
+
     private boolean isAdmin = false;
+
     private byte[] image;
+
     private String phoneNumber;
-
-    public static User jsonParse(String jsonString) {
-        try {
-            logger.debug("Trying to parse JSON to User model");
-            return getMapper().readValue(jsonString, User.class);
-        } catch (JsonProcessingException e) {
-            logger.warn("Error on parsing user FROM JSON: " + jsonString, e);
-            return new User();
-        }
-    }
-
-    private static ObjectMapper getMapper() {
-        if (mapper == null) {
-            mapper = new ObjectMapper();
-        }
-
-        return mapper;
-    }
-
-    public static User getAnonymousUser() {
-        User anonymousUser = new User();
-        anonymousUser.setUsername("AnonymousUsername");
-        return anonymousUser;
-    }
 
     public int getId() {
         return id;
@@ -181,6 +162,24 @@ public class User {
                 '}';
     }
 
+    private static ObjectMapper getMapper() {
+        if (mapper == null) {
+            mapper = new ObjectMapper();
+        }
+
+        return mapper;
+    }
+
+    public static User jsonParse(String jsonString) {
+        try {
+            logger.debug("Trying to parse JSON to User model");
+            return getMapper().readValue(jsonString, User.class);
+        } catch (JsonProcessingException e) {
+            logger.warn("Error on parsing user FROM JSON: " + jsonString, e);
+            return new User();
+        }
+
+    }
     public String toJSON() {
         try {
             logger.debug("Trying to parse User model to JSON");
@@ -191,13 +190,16 @@ public class User {
         }
     }
 
-    public boolean checkAnonymous() {
-        return getAnonymousUser().getUsername().equals(this.getUsername());
+    public static User getAnonymousUser() {
+        User anonymousUser = new User();
+        anonymousUser.setUsername("AnonymousUsername");
+        return anonymousUser;
     }
 
 
+    public boolean checkAnonymous() {
+        return getAnonymousUser().getUsername().equals(this.getUsername());
+    }
 }
-
-
 
 

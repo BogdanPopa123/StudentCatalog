@@ -10,7 +10,6 @@ import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -55,25 +54,29 @@ public class MainLayout extends AppLayout {
         addToNavbar(header);
     }
 
-    Button lastPressedButton;
-
     private void createDrawer() {
+        H3 navbarHeader = new H3("Menu");
+        navbarHeader.addClassName("navbar-header");
+
         Button home = new NavigateButton("Home", HomeView.class);
         Button myAccount = new NavigateButton("My account", MyAccountView.class);
         Button catalog = new NavigateButton("Catalog", CatalogView.class);
         Button faculty = new NavigateButton("Faculty", FacultyView.class);
+        Button specialization = new NavigateButton("Specialization", SpecializationView.class);
         Button departments = new NavigateButton("Departments", DepartmentView.class);
         Button professors = new NavigateButton("Professors", ProfessorView.class);
 
 
         addToDrawer(new VerticalLayout(
-                new H5("Menu"),
+                navbarHeader,
                 home,
                 myAccount,
                 catalog,
                 faculty,
                 departments,
-                professors
+                professors,
+                faculty,
+                specialization
         ));
     }
 

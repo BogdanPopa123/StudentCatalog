@@ -3,19 +3,19 @@ package com.packagename.myapp.models;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "department")
-
-public class Department{
+public class Department extends BaseModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "department_id")
     private int id;
 
+    @NotNull(message = "Select faculty")
     @ManyToOne
     @JoinColumn(name = "faculty_id", nullable = false)
     private Faculty faculty;
@@ -57,6 +57,15 @@ public class Department{
         this.name = name;
     }
 
+    @Override
+    public BaseModel getParent() {
+        return faculty;
+    }
+
+    @Override
+    public List<BaseModel> getChildren() {
+        return new ArrayList<>(domains);
+    }
 
     public Set<Domain> getDomains() {
         return domains;
@@ -73,5 +82,4 @@ public class Department{
     public void setProfessors(Set<Professor> professors) {
         this.professors = professors;
     }
-
 }
