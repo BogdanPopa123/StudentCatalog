@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.packagename.myapp.dao.SubjectRepository;
 import com.packagename.myapp.models.Subject;
 import com.packagename.myapp.services.LoginService;
-import com.packagename.myapp.views.customComponents.SubjectViewManageButtons;
+import com.packagename.myapp.views.customComponents.manageButtons.SubjectViewManageButtons;
 import com.packagename.myapp.views.layouts.MainLayout;
 import com.packagename.myapp.views.layouts.VerticalLayoutAuthRestricted;
 import com.vaadin.flow.component.dependency.CssImport;

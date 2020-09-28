@@ -1,4 +1,4 @@
-package com.packagename.myapp.views.customComponents;
+package com.packagename.myapp.views.customComponents.manageButtons;
 
 import com.google.common.collect.Lists;
 import com.packagename.myapp.dao.DepartmentRepository;
@@ -173,47 +173,12 @@ public class SpecializationViewManageButtons extends HorizontalLayout {
     }
 
     private void details(ClickEvent<Button> event) {
-
         if (selectedItems.isEmpty()) {
             notificationService.alert("Select a valid specialization!");
             return;
         }
 
-        selectedItems.forEach(item -> {
-            Specialization specialization = (Specialization) item;
-
-            int id = specialization.getId();
-            String name = specialization.getName();
-            Domain domain = specialization.getDomain();
-            Department department = domain.getDepartment();
-            Faculty faculty = department.getFaculty();
-
-            Button close = new Button("Close");
-            close.addThemeVariants(ButtonVariant.LUMO_ERROR);
-
-            VerticalLayout specializationDetails = new VerticalLayout(
-                    new H5("Id: " + id),
-                    new H5("Name: " + name),
-                    new H5("Domain: " + domain.getName()),
-                    new H5("Department: " + department.getName()),
-                    new H5("Faculty: " + faculty.getName())
-            );
-
-            VerticalLayout details = new VerticalLayout(
-                    new H2("Specialization"),
-                    new HtmlComponent("hr"),
-                    specializationDetails,
-                    close
-            );
-            
-            details.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-
-            Dialog detailsDialog = new Dialog(details);
-
-            close.addClickListener(click -> detailsDialog.close());
-
-            detailsDialog.open();
-        });
+        selectedItems.forEach(item -> new DetailsDialog(item).open());
     }
 
     private void modify(ClickEvent<Button> event) {

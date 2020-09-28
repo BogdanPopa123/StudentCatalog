@@ -1,5 +1,9 @@
 package com.packagename.myapp.models;
 
+import org.apache.commons.lang3.StringUtils;
+
+import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BaseModel {
@@ -34,15 +38,32 @@ public abstract class BaseModel {
 
     @Override
     public String toString() {
-        return "BaseModel{"+
-                "id='"+ getId() + "'" +
-                "name='"+getName()+"'"+
-                "class='"+getClass()+"'"+
+        return "BaseModel{" +
+                "id='" + getId() + "'" +
+                "name='" + getName() + "'" +
+                "class='" + getClass() + "'" +
                 '}';
 
     }
 
-    public String toShortString(){
-        return "id= '"+ getId() + " - " + "name= "+getName();
+    public String toShortString() {
+        return "id= '" + getId() + " - " + "name= " + getName();
+    }
+
+    public String getEntityTableName() {
+        return StringUtils.capitalize(this.getClass().getAnnotation(Table.class).name());
+    }
+
+    public List<BaseModel> getParentsTree() {
+        ArrayList<BaseModel> parentsTree = new ArrayList<>();
+
+        BaseModel currentParent = getParent();
+        while (currentParent != null) {
+            parentsTree.add(currentParent);
+
+            currentParent = currentParent.getParent();
+        }
+
+        return parentsTree;
     }
 }

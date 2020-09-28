@@ -9,7 +9,7 @@ import com.packagename.myapp.models.BaseModel;
 import com.packagename.myapp.models.Specialization;
 import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.views.customComponents.BaseModelTreeGrid;
-import com.packagename.myapp.views.customComponents.SpecializationViewManageButtons;
+import com.packagename.myapp.views.customComponents.manageButtons.SpecializationViewManageButtons;
 import com.packagename.myapp.views.layouts.MainLayout;
 import com.packagename.myapp.views.layouts.VerticalLayoutAuthRestricted;
 import com.vaadin.flow.component.dependency.CssImport;

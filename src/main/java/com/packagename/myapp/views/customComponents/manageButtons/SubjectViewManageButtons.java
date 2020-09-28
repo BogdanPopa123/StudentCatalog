@@ -1,4 +1,5 @@
-package com.packagename.myapp.views.customComponents;
+package com.packagename.myapp.views.customComponents.manageButtons;
+
 
 import com.packagename.myapp.dao.SubjectRepository;
 import com.packagename.myapp.models.BaseModel;
@@ -6,14 +7,13 @@ import com.packagename.myapp.models.Subject;
 import com.packagename.myapp.services.NotificationService;
 import com.packagename.myapp.views.SpecializationView;
 import com.vaadin.flow.component.ClickEvent;
-import com.vaadin.flow.component.HtmlComponent;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H5;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -34,14 +34,11 @@ public class SubjectViewManageButtons extends HorizontalLayout {
     private final Logger logger = LogManager.getLogger(SpecializationView.class);
     private final SubjectRepository subjectRepository;
     private final NotificationService notificationService;
-
-    private Dialog dialog;
     private final TextField name = new TextField("Name");
-    private Runnable onSuccessfulModify;
-
-    private Set<Subject> selectedItems;
-
     private final Binder<Subject> binder = new BeanValidationBinder<>(Subject.class);
+    private Dialog dialog;
+    private Runnable onSuccessfulModify;
+    private Set<Subject> selectedItems;
 
     public SubjectViewManageButtons(SubjectRepository subjectRepository, NotificationService notificationService) {
         this.subjectRepository = subjectRepository;
@@ -97,6 +94,7 @@ public class SubjectViewManageButtons extends HorizontalLayout {
                 .asRequired("Enter name")
                 .withValidator(s -> !subjectRepository.existsByName(s), "Name already taken")
                 .bind(Subject::getName, Subject::setName);
+
     }
 
     private void create(ClickEvent<Button> event) {
@@ -124,40 +122,12 @@ public class SubjectViewManageButtons extends HorizontalLayout {
     }
 
     private void details(ClickEvent<Button> event) {
-
         if (selectedItems.isEmpty()) {
             notificationService.alert("Select a valid subject!");
             return;
         }
 
-        selectedItems.forEach(subject -> {
-
-            int id = subject.getId();
-            String name = subject.getName();
-
-            Button close = new Button("Close");
-            close.addThemeVariants(ButtonVariant.LUMO_ERROR);
-
-            VerticalLayout subjectDetails = new VerticalLayout(
-                    new H5("Id: " + id),
-                    new H5("Name: " + name)
-            );
-
-            VerticalLayout details = new VerticalLayout(
-                    new H2("Subject"),
-                    new HtmlComponent("hr"),
-                    subjectDetails,
-                    close
-            );
-
-            details.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-
-            Dialog detailsDialog = new Dialog(details);
-
-            close.addClickListener(click -> detailsDialog.close());
-
-            detailsDialog.open();
-        });
+        selectedItems.forEach(subject -> new DetailsDialog(subject).open());
     }
 
     private void modify(ClickEvent<Button> event) {
@@ -193,7 +163,7 @@ public class SubjectViewManageButtons extends HorizontalLayout {
             HorizontalLayout buttons = new HorizontalLayout(confirm, cancel);
 
             VerticalLayout dialogBody = new VerticalLayout(header, subject, buttons);
-            dialogBody.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+            dialogBody.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
 
             Dialog confirmDialog = new Dialog(dialogBody);
 

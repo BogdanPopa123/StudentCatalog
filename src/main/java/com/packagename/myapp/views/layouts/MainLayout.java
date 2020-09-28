@@ -1,6 +1,5 @@
 package com.packagename.myapp.views.layouts;
 
-import com.packagename.myapp.models.Subject;
 import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.views.*;
 import com.packagename.myapp.views.customComponents.NavigateButton;
@@ -9,7 +8,6 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
