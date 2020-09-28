@@ -1,11 +1,7 @@
 package com.packagename.myapp.services;
 
-
 import com.google.common.hash.Hashing;
-import org.springframework.stereotype.Service;
-
 import java.nio.charset.StandardCharsets;
-
 
 public class HashingService {
     public static String hashThis(String password) {
