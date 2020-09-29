@@ -10,6 +10,7 @@ import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -54,6 +55,8 @@ public class MainLayout extends AppLayout {
         addToNavbar(header);
     }
 
+    Button lastPressedButton;
+
     private void createDrawer() {
         H3 navbarHeader = new H3("Menu");
         navbarHeader.addClassName("navbar-header");
@@ -67,6 +70,13 @@ public class MainLayout extends AppLayout {
         Button departments = new NavigateButton("Departments", DepartmentView.class);
         Button professors = new NavigateButton("Professors", ProfessorView.class);
 
+//        home.setHighlightCondition(HighlightConditions.sameLocation());
+//        myAccount.setHighlightCondition(HighlightConditions.sameLocation());
+//        catalog.setHighlightCondition(HighlightConditions.sameLocation());
+//
+//        home.setHighlightAction((routerLink, highlight) -> routerLink.addClassName("active-link"));
+//        myAccount.setHighlightAction((routerLink, highlight) -> routerLink.addClassName("active-link"));
+//        catalog.setHighlightAction((routerLink, highlight) -> routerLink.addClassName("active-link"));
 
         addToDrawer(new VerticalLayout(
                 navbarHeader,
@@ -74,14 +84,16 @@ public class MainLayout extends AppLayout {
                 myAccount,
                 catalog,
                 faculty,
-                students
+                students,
                 faculty,
                 departments,
                 professors,
                 faculty,
                 specialization
         ));
+
     }
+
 
     @Override
     protected void onAttach(AttachEvent attachEvent) {
