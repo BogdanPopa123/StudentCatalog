@@ -10,6 +10,7 @@ public abstract class BaseModel {
     public abstract int getId();
 
     public abstract String getName();
+    public abstract void setName(String name);
 
     public abstract BaseModel getParent();
 
