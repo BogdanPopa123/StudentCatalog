@@ -25,8 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.swing.*;
-import javax.tools.DiagnosticListener;
+import java.util.ArrayList;
 import java.util.List;
 
 @Route(value = "faculty", layout = MainLayout.class)
@@ -147,14 +146,18 @@ public class FacultyView extends VerticalLayoutAuthRestricted {
             logger.info("Create new faculty");
             facultyRepository.save(faculty);
 
-            faculties.add(faculty);
-            facultyGrid.setItems(faculties);
 
             dialog.close();
+            updateGrid();
 
-        }else{
+        } else {
             logger.debug("New faculty not valid data");
         }
+    }
+
+    private void updateGrid() {
+        ArrayList<Faculty> faculties = Lists.newArrayList(facultyRepository.findAll());
+        facultyGrid.setItems(faculties);
     }
 }
 

@@ -1,3 +1,4 @@
+
 package com.packagename.myapp.models;
 
 import javax.persistence.*;
@@ -6,7 +7,8 @@ import java.util.Set;
 @Entity
 @PrimaryKeyJoinColumn(name = "professor_id")
 @Table(name = "professor")
-public class Professor extends User {
+//EXTENDS USER !!!
+public class Professor extends User  {
 
     @ManyToOne
     @JoinColumn(name = "department_id", nullable = false)
@@ -25,6 +27,16 @@ public class Professor extends User {
     private Set<Course> courses;
 
 
+    //
+  //  @OneToOne(cascade = CascadeType.ALL)
+  //  @JoinColumn(name="user_id", referencedColumnName = "id")
+  //  private User user;
+
+
+
+    //
+
+    
     public Department getDepartment() {
         return department;
     }

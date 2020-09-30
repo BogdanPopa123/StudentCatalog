@@ -55,9 +55,9 @@ public class LoginService {
         return status;
     }
 
-    public void logout() {
+    public User logout() {
         logger.debug("Logout user: " + getAuthenticatedUser().getUsername());
-        cookieService.setAnonymousUser();
+        return cookieService.setAnonymousUser();
     }
 
     public boolean registerNewUser(User user) {
@@ -88,13 +88,25 @@ public class LoginService {
 
     public User getAuthenticatedUser() {
         logger.debug("Trying to get authenticated user");
-        return cookieService.getCurrentUserFromCookies();
+
+
+        User user = cookieService.getCurrentUserFromCookies();
+
+        if (checkUserValidity(user)) {
+            return user;
+        }
+
+        logger.info("Found not valid user from cookies: " + user);
+        return logout();
     }
 
     public boolean isAuthenticated() {
         User authUser = getAuthenticatedUser();
 
-        return authUser != null && !authUser.checkAnonymous();
+        return authUser.getUsername() != null && !authUser.checkAnonymous();
     }
 
+    public boolean checkUserValidity(User user) {
+        return user != null && (user.checkAnonymous() || userRepository.existsById(user.getId()));
+    }
 }

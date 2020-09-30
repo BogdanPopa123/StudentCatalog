@@ -10,19 +10,20 @@
   max-width: 250px;
 }
 
-:host([theme~="info"]) [part~="overlay"] {
-  color: var(--lumo-primary-text-color);
-}
+/*:host([theme~="primary"]) [part~="overlay"] {*/
+/*  color: red !important;*/
+/*  background-color: black !important;*/
+/*}*/
 
-:host([theme~="success"]) [part~="overlay"] {
-  color: var(--lumo-success-text-color);
-}
+/*:host([theme~="success"]) [part~="overlay"] {*/
+/*  color: var(--lumo-success-text-color);*/
+/*}*/
 
-:host([theme~="warning"]) [part~="overlay"] {
-  color: #ff6700;
-}
+/*:host([theme~="warning"]) [part~="overlay"] {*/
+/*  color: #ff6700;*/
+/*}*/
 
-:host([theme~="error"]) [part~="overlay"] {
-  background-color: var(--lumo-error-color);;
-  color: var(--lumo-error-contrast-color);
-}
+/*:host([theme~="error"]) [part~="overlay"] {*/
+/*  background-color: var(--lumo-error-color);;*/
+/*  color: var(--lumo-error-contrast-color);*/
+/*}*/

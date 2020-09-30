@@ -19,7 +19,7 @@ public class CookieService {
         logger.debug("Trying to get cookie: " + name);
         for (Cookie cookie : cookies) {
             if (name.equals(cookie.getName())) {
-                logger.debug("Fount cookie: " + name);
+                logger.debug("Found cookie " + name + " : " + cookie.getValue());
                 return cookie;
             }
         }
@@ -38,21 +38,25 @@ public class CookieService {
 
         logger.debug("User cookie not found");
         logger.debug("Set anonymous user");
-        setAnonymousUser();
 
-        return User.getAnonymousUser();
+        return setAnonymousUser();
     }
 
-    public void addUserCookie(User authUser) {
+    public User addUserCookie(User authUser) {
         Cookie userCookie = new Cookie("user", authUser.toJSON());
         userCookie.setMaxAge(604800);
         userCookie.setPath(VaadinService.getCurrentRequest().getContextPath());
 
         logger.debug("Update user auth cookie data");
         VaadinService.getCurrentResponse().addCookie(userCookie);
+
+        return authUser;
     }
 
-    public void setAnonymousUser() {
-        addUserCookie(User.getAnonymousUser());
+    public User setAnonymousUser() {
+        logger.debug("Set anonymous user to cookies");
+        return addUserCookie(User.getAnonymousUser());
     }
 }
+
+
