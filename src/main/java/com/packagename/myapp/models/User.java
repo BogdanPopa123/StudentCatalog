@@ -43,6 +43,12 @@ public class User {
     private String birthDay;
 
     @NotNull
+    private String cnp;
+
+    @NotNull
+    private String address;
+
+    @NotNull
     @Enumerated(EnumType.STRING)
     private UserRole role = UserRole.STUDENT;
 
@@ -108,6 +114,14 @@ public class User {
         this.birthDay = birthDay;
     }
 
+    public String getCnp() {
+        return cnp;
+    }
+
+    public void setCnp(String cnp) {
+        this.cnp = cnp;
+    }
+
     public UserRole getRole() {
         return role;
     }
@@ -130,6 +144,14 @@ public class User {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public boolean isAdmin() {
