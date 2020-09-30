@@ -22,8 +22,8 @@ import org.springframework.data.repository.CrudRepository;
 import javax.persistence.Table;
 import java.util.stream.StreamSupport;
 
-public class CreateDialog<T extends BaseModel> extends Dialog {
-    private static final Logger logger = LogManager.getLogger(CreateDialog.class);
+public class ModifyDialog<T extends BaseModel> extends Dialog {
+    private static final Logger logger = LogManager.getLogger(ModifyDialog.class);
 
     private final NotificationService notificationService;
     private final CrudRepository<T, Integer> repository;
@@ -34,7 +34,7 @@ public class CreateDialog<T extends BaseModel> extends Dialog {
     private Binder<T> binder;
 
 
-    public CreateDialog(Class<T> clazz,
+    public ModifyDialog(Class<T> clazz,
                         CrudRepository<T, Integer> repository,
                         NotificationService notificationService) {
         this.notificationService = notificationService;
@@ -104,9 +104,8 @@ public class CreateDialog<T extends BaseModel> extends Dialog {
             return this.clazz.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
             logger.warn("Failed to instantiate object for class: " + this.clazz.getName(), e);
+            return null;
         }
-
-        return null;
     }
 
     private String getTableName() {
@@ -124,6 +123,10 @@ public class CreateDialog<T extends BaseModel> extends Dialog {
 
     public void addOnSuccessfulModifyListener(Runnable onSuccessfulModify) {
         this.onSuccessfulModify = onSuccessfulModify;
+    }
+
+    public void setBean(T item) {
+        binder.setBean(item);
     }
 
     private void configureComboBox(ComboBox<? extends BaseModel> comboBox, String placeholder, String width) {

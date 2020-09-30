@@ -8,11 +8,7 @@ import com.packagename.myapp.views.SpecializationView;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.binder.BeanValidationBinder;
-import com.vaadin.flow.data.binder.Binder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Scope;
@@ -26,11 +22,9 @@ import java.util.Set;
 public class SubjectViewManageButtons extends HorizontalLayout {
 
     private final Logger logger = LogManager.getLogger(SpecializationView.class);
+
     private final SubjectRepository subjectRepository;
     private final NotificationService notificationService;
-    private final TextField name = new TextField("Name");
-    private final Binder<Subject> binder = new BeanValidationBinder<>(Subject.class);
-    private Dialog dialog;
     private Runnable onSuccessfulModify;
     private Set<Subject> selectedItems;
 
@@ -41,35 +35,26 @@ public class SubjectViewManageButtons extends HorizontalLayout {
 
     @PostConstruct
     private void init() {
-        setButtons();
-//        setCreateDialog();
-//        setBinder();
-    }
-
-
-
-    private void setButtons() {
         Button create = new Button("Create", this::create);
         Button details = new Button("Details", this::details);
-//        Button modify = new Button("Modify", this::modify);
+        Button modify = new Button("Modify", this::modify);
         Button delete = new Button("Delete", this::delete);
 
         create.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
         details.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-//        modify.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        modify.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
-//        HorizontalLayout manageButtons = new HorizontalLayout(create, details, modify, delete);
-        HorizontalLayout manageButtons = new HorizontalLayout(create, details, delete);
+        HorizontalLayout manageButtons = new HorizontalLayout(create, details, modify, delete);
         add(manageButtons);
     }
 
     private void create(ClickEvent<Button> clickEvent) {
-        CreateDialog<Subject> createDialog = new CreateDialog<>(Subject.class, subjectRepository, notificationService);
+        ModifyDialog<Subject> modifyDialog = new ModifyDialog<>(Subject.class, subjectRepository, notificationService);
 
-        createDialog.addOnSuccessfulModifyListener(this::runOnSuccessfulModifyEvent);
+        modifyDialog.addOnSuccessfulModifyListener(this::runOnSuccessfulModifyEvent);
 
-        createDialog.open();
+        modifyDialog.open();
     }
 
     private void details(ClickEvent<Button> event) {
@@ -81,18 +66,22 @@ public class SubjectViewManageButtons extends HorizontalLayout {
         selectedItems.forEach(subject -> new DetailsDialog(subject).open());
     }
 
-//    private void modify(ClickEvent<Button> event) {
-//        if (selectedItems.isEmpty()) {
-//            notificationService.alert("Select a valid subject to modify!");
-//            return;
-//        }
-//
-//        selectedItems.forEach(subject -> {
-//            binder.setBean(subject);
-//
-//            dialog.open();
-//        });
-//    }
+    private void modify(ClickEvent<Button> event) {
+        if (selectedItems.isEmpty()) {
+            notificationService.alert("Select a valid subject to modify!");
+            return;
+        }
+
+        selectedItems.forEach(subject -> {
+            ModifyDialog<Subject> modifyDialog = new ModifyDialog<>(Subject.class, subjectRepository, notificationService);
+
+            modifyDialog.setBean(subject);
+
+            modifyDialog.addOnSuccessfulModifyListener(this::runOnSuccessfulModifyEvent);
+
+            modifyDialog.open();
+        });
+    }
 
     private void delete(ClickEvent<Button> event) {
         if (selectedItems.isEmpty()) {
@@ -101,17 +90,12 @@ public class SubjectViewManageButtons extends HorizontalLayout {
         }
 
         selectedItems.forEach(item -> {
-
             DeleteDialog deleteDialog = new DeleteDialog(item, subjectRepository, notificationService);
 
             deleteDialog.addOnConfirmEvent(this::runOnSuccessfulModifyEvent);
 
             deleteDialog.open();
         });
-    }
-
-    public Binder<Subject> getBinder() {
-        return binder;
     }
 
     public void setSelectedItems(Set<Subject> selectedItems) {
