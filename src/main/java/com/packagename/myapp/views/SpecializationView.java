@@ -72,7 +72,7 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
     private void addTreeGrid() {
         grid = new BaseModelTreeGrid(repositories);
 
-        grid.addHierarchyColumn(BaseModel::getName).setHeader("Specialiazations");
+        grid.addHierarchyColumn(BaseModel::getName).setHeader("Specializations");
 //        grid.addColumn(baseModel -> baseModel.getClass().getSimpleName()).setHeader("Category");
 
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);

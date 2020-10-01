@@ -81,7 +81,7 @@ public class SubjectView extends VerticalLayoutAuthRestricted {
     }
 
     private void configureManageButtons() {
-        manageButtons.getBinder().setBean(new Subject());
+//        manageButtons.getBinder().setBean(new Subject());
         manageButtons.addOnSuccessfulModifyListener(this::updateGrid);
     }
 
