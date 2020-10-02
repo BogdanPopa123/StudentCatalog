@@ -69,7 +69,7 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
 
         binder.forField(name)
                 .asRequired("Enter name")
-                .withValidator(s -> StreamSupport.stream(repository.findAll().spliterator(), false).noneMatch(item -> item.getName().equals(s)), "Name already taken")
+                .withValidator(s -> StreamSupport.stream(repository.findAll().spliterator(), false).noneMatch(t -> t.getName().equals(s)), "Name already taken")
                 .bind(BaseModel::getName, BaseModel::setName);
 
     }

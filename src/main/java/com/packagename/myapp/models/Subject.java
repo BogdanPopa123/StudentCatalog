@@ -15,7 +15,6 @@ public class Subject extends BaseModel{
     private int id;
 
     @NotNull(message = "Enter name")
-    @Column(unique = true)
     private String name;
 
     @ManyToMany

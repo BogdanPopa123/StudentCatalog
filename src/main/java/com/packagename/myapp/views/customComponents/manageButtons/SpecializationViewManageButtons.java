@@ -88,6 +88,8 @@ public class SpecializationViewManageButtons extends HorizontalLayout {
     }
 
     private void setCreateDialog() {
+
+
         faculty.addValueChangeListener(event -> {
 
             Set<Department> departments = event.getValue().getDepartments();
@@ -125,6 +127,9 @@ public class SpecializationViewManageButtons extends HorizontalLayout {
         HorizontalLayout createButtons = new HorizontalLayout(save, cancel);
 
         VerticalLayout specializationForm = new VerticalLayout(faculty, department, domain, name, createButtons);
+
+        List<com.vaadin.flow.component.Component> fields = new Specialization().getPropertiesField();
+        fields.forEach(specializationForm::add);
 
         dialog = new Dialog(specializationForm);
     }
