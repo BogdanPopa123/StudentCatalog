@@ -85,9 +85,9 @@ public abstract class BaseModel {
         List<Class<?>> acceptedReturnType = Arrays.asList(String.class, Integer.class, BaseModel.class);
 
         return Arrays.stream(this.getClass().getMethods())
-                .filter(method -> method.getName().matches("get(.*)") && acceptedReturnType.stream().anyMatch(c -> c.equals(method.getReturnType())))
-                .filter(method -> Arrays.stream(this.getClass().getFields()).anyMatch(field -> field.getName().equals(method.getName().substring(3))))
                 .filter(method -> Modifier.isPublic(method.getModifiers()))
+                .filter(method -> method.getName().matches("get(.*)") && acceptedReturnType.stream().anyMatch(c -> c.isAssignableFrom(method.getReturnType())))
+                .filter(method -> Arrays.stream(this.getClass().getDeclaredFields()).anyMatch(field -> field.getName().equalsIgnoreCase(method.getName().substring(3))))
                 .map(method -> {
                     Class<?> returnType = method.getReturnType();
                     String propertyName = method.getName().substring(3);
@@ -100,8 +100,9 @@ public abstract class BaseModel {
                         return new NumberField(propertyName);
                     }
 
-                    if (returnType.equals(BaseModel.class)) {
-                        return new ComboBox<BaseModel>();
+                    if (BaseModel.class.isAssignableFrom(returnType)) {
+                        propertyName = method.getReturnType().getSimpleName();
+                        return new ComboBox<BaseModel>(propertyName);
                     }
 
                     return new Text(propertyName + ": Undefined type");
