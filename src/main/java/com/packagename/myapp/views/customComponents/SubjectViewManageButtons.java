@@ -25,6 +25,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.HashSet;
 import java.util.Set;
 
 @Component
@@ -39,7 +40,7 @@ public class SubjectViewManageButtons extends HorizontalLayout {
     private final TextField name = new TextField("Name");
     private Runnable onSuccessfulModify;
 
-    private Set<Subject> selectedItems;
+    private Set<Subject> selectedItems =new HashSet<>();
 
     private final Binder<Subject> binder = new BeanValidationBinder<>(Subject.class);
 

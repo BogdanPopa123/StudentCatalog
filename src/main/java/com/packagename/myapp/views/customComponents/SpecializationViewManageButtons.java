@@ -29,6 +29,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -50,7 +51,7 @@ public class SpecializationViewManageButtons extends HorizontalLayout {
     private ComboBox<Department> department = new ComboBox<>("Department");
     private Runnable onSuccessfulModify;
 
-    private Set<BaseModel> selectedItems;
+    private Set<BaseModel> selectedItems = new HashSet<>();
 
     private Binder<Specialization> binder = new BeanValidationBinder<>(Specialization.class);
 
