@@ -66,6 +66,7 @@ public class MainLayout extends AppLayout {
         Button departments = new NavigateButton("Departments", DepartmentView.class);
         Button professors = new NavigateButton("Professors", ProfessorView.class);
         Button subject = new NavigateButton("Subject", SubjectView.class);
+        Button classes = new NavigateButton("Classes", StudentClassView.class);
 
 
         addToDrawer(new VerticalLayout(
@@ -78,7 +79,8 @@ public class MainLayout extends AppLayout {
                 professors,
                 faculty,
                 specialization,
-                subject
+                subject,
+                classes
         ));
     }
 

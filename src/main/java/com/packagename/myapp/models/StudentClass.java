@@ -17,6 +17,8 @@ public class StudentClass {
     @NotNull
     private String name;
 
+    private int studyYear;
+
     @ManyToOne
     @JoinColumn(name = "specialization_id", nullable = false)
     private Specialization specialization;
@@ -30,6 +32,14 @@ public class StudentClass {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getStudyYear() {
+        return studyYear;
+    }
+
+    public void setStudyYear(int studyYear) {
+        this.studyYear = studyYear;
     }
 
     public Specialization getSpecialization() {
@@ -55,4 +65,6 @@ public class StudentClass {
     public void setProfiles(Set<Profile> profiles) {
         this.profiles = profiles;
     }
+
+
 }
