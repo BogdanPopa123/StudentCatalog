@@ -1,7 +1,6 @@
 package com.packagename.myapp.views.customComponents.manageButtons;
 
 import com.packagename.myapp.models.BaseModel;
-import com.packagename.myapp.services.NotificationService;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
 import org.apache.logging.log4j.LogManager;
@@ -13,17 +12,18 @@ public class DeleteDialog extends ConfirmDialog {
     private static final Logger logger = LogManager.getLogger(DeleteDialog.class);
 
     private final BaseModel item;
-    private final NotificationService notificationService;
     private final CrudRepository<? extends BaseModel, Integer> repository;
 
+
     public DeleteDialog(BaseModel item,
-                        CrudRepository<? extends BaseModel, Integer> repository,
-                        NotificationService notificationService) {
+                        CrudRepository<? extends BaseModel, Integer> repository) {
         super(getMessage(item));
+
 
         this.item = item;
         this.repository = repository;
-        this.notificationService = notificationService;
+
+        setConfirmMessage(getDeleteMessage());
     }
 
     private static String getMessage(BaseModel item) {
@@ -34,11 +34,11 @@ public class DeleteDialog extends ConfirmDialog {
     public void confirm(ClickEvent<Button> event) {
         repository.deleteById(item.getId());
 
-        String message = "Deleted " + item.getEntityTableName() + " : " + item.toString();
-
-        notificationService.success(message);
-        logger.info(message);
-
+        logger.info(this::getDeleteMessage);
         super.confirm(event);
+    }
+
+    private String getDeleteMessage() {
+        return "Deleted " + item.getEntityTableName() + " : " + item.toString();
     }
 }

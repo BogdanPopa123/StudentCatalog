@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.data.repository.CrudRepository;
 
 import javax.persistence.Table;
+import java.lang.reflect.InvocationTargetException;
 import java.util.stream.StreamSupport;
 
 public class ModifyDialog<T extends BaseModel> extends Dialog {
@@ -40,6 +41,7 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
         this.notificationService = notificationService;
         this.clazz = clazz;
         this.repository = repository;
+
 
         setDialog();
         setBinder();
@@ -101,8 +103,8 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
 
     private T createInstance() {
         try {
-            return this.clazz.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+            return this.clazz.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             logger.warn("Failed to instantiate object for class: " + this.clazz.getName(), e);
             return null;
         }

@@ -211,7 +211,7 @@ public class SpecializationViewManageButtons extends HorizontalLayout {
         }
 
         selectedItems.forEach(item -> {
-            DeleteDialog deleteDialog = new DeleteDialog(item, specializationRepository, notificationService);
+            DeleteDialog deleteDialog = new DeleteDialog(item, specializationRepository);
 
             deleteDialog.addOnConfirmEvent(this::runOnSuccessfulModifyEvent);
 

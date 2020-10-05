@@ -90,7 +90,7 @@ public class SubjectViewManageButtons extends HorizontalLayout {
         }
 
         selectedItems.forEach(item -> {
-            DeleteDialog deleteDialog = new DeleteDialog(item, subjectRepository, notificationService);
+            DeleteDialog deleteDialog = new DeleteDialog(item, subjectRepository);
 
             deleteDialog.addOnConfirmEvent(this::runOnSuccessfulModifyEvent);
 

@@ -8,6 +8,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Table;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -101,11 +102,22 @@ public abstract class BaseModel {
                     }
 
                     if (BaseModel.class.isAssignableFrom(returnType)) {
+                        try {
+                            BaseModel parent = (BaseModel) returnType.getDeclaredConstructor().newInstance();
+//                            parent.getParentsTree().forEach();
+                        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+
                         propertyName = method.getReturnType().getSimpleName();
                         return new ComboBox<BaseModel>(propertyName);
                     }
 
                     return new Text(propertyName + ": Undefined type");
                 }).collect(Collectors.toList());
+    }
+
+    public String getRepositoryName() {
+        return getEntityTableName() + "Repository";
     }
 }

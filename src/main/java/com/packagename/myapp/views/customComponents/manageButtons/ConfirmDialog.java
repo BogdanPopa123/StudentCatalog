@@ -1,5 +1,8 @@
 package com.packagename.myapp.views.customComponents.manageButtons;
 
+import com.google.common.base.Strings;
+import com.packagename.myapp.Application;
+import com.packagename.myapp.services.NotificationService;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
@@ -10,17 +13,19 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 public class ConfirmDialog extends Dialog {
+    private final NotificationService notificationService = Application.context.getBean(NotificationService.class);
 
-    private final String message;
+    private final String caption;
     private Runnable onConfirm;
+    private String confirmMessage;
 
-    public ConfirmDialog(String message) {
-        this.message = message;
+    public ConfirmDialog(String caption) {
+        this.caption = caption;
         setDialog();
     }
 
     private void setDialog() {
-        Html dialogMessage = new Html("<h3>" + message + "</h3>");
+        Html dialogMessage = new Html("<h3>" + caption + "</h3>");
 
         Button confirm = new Button("Confirm", this::confirm);
         Button cancel = new Button("Cancel", this::cancel);
@@ -40,11 +45,17 @@ public class ConfirmDialog extends Dialog {
 
     public void confirm(ClickEvent<Button> clickEvent) {
         runOnConfirm();
+        showConfirmMessage();
+
         this.close();
     }
 
     public void cancel(ClickEvent<Button> clickEvent) {
         this.close();
+    }
+
+    private void showConfirmMessage() {
+        notificationService.success(getConfirmMessage());
     }
 
     public void addOnConfirmEvent(Runnable onConfirm) {
@@ -55,5 +66,13 @@ public class ConfirmDialog extends Dialog {
         if (onConfirm != null) {
             onConfirm.run();
         }
+    }
+
+    private String getConfirmMessage() {
+        return Strings.isNullOrEmpty(confirmMessage) ? "" : confirmMessage;
+    }
+
+    public void setConfirmMessage(String confirmMessage) {
+        this.confirmMessage = confirmMessage;
     }
 }
