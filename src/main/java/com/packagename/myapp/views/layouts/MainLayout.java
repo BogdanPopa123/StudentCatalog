@@ -9,7 +9,6 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -64,6 +63,7 @@ public class MainLayout extends AppLayout {
         Button myAccount = new NavigateButton("My account", MyAccountView.class);
         Button catalog = new NavigateButton("Catalog", CatalogView.class);
         Button faculty = new NavigateButton("Faculty", FacultyView.class);
+        Button students = new NavigateButton("Students", StudentsView.class);
         Button specialization = new NavigateButton("Specialization", SpecializationView.class);
         Button departments = new NavigateButton("Departments", DepartmentView.class);
         Button professors = new NavigateButton("Professors", ProfessorView.class);
@@ -76,9 +76,9 @@ public class MainLayout extends AppLayout {
                 myAccount,
                 catalog,
                 faculty,
+                students,
                 departments,
                 professors,
-                faculty,
                 specialization,
                 subject
         ));
