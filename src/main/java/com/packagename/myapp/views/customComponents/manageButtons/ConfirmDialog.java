@@ -1,7 +1,6 @@
 package com.packagename.myapp.views.customComponents.manageButtons;
 
 import com.google.common.base.Strings;
-import com.packagename.myapp.Application;
 import com.packagename.myapp.services.NotificationService;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Html;
@@ -13,7 +12,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 public class ConfirmDialog extends Dialog {
-    private final NotificationService notificationService = Application.context.getBean(NotificationService.class);
+    private final NotificationService notificationService = NotificationService.getService();
 
     private final String caption;
     private Runnable onConfirm;

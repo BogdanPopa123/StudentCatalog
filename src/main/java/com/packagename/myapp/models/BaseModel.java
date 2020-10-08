@@ -1,11 +1,13 @@
 package com.packagename.myapp.models;
 
+import com.packagename.myapp.Application;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.repository.CrudRepository;
 
 import javax.persistence.Table;
 import java.lang.reflect.InvocationTargetException;
@@ -13,7 +15,6 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public abstract class BaseModel {
     public abstract int getId();
@@ -85,39 +86,53 @@ public abstract class BaseModel {
     public List<Component> getPropertiesField() {
         List<Class<?>> acceptedReturnType = Arrays.asList(String.class, Integer.class, BaseModel.class);
 
-        return Arrays.stream(this.getClass().getMethods())
+        ArrayList<Component> fields = new ArrayList<>();
+
+        Arrays.stream(this.getClass().getMethods())
                 .filter(method -> Modifier.isPublic(method.getModifiers()))
                 .filter(method -> method.getName().matches("get(.*)") && acceptedReturnType.stream().anyMatch(c -> c.isAssignableFrom(method.getReturnType())))
                 .filter(method -> Arrays.stream(this.getClass().getDeclaredFields()).anyMatch(field -> field.getName().equalsIgnoreCase(method.getName().substring(3))))
-                .map(method -> {
+                .forEach(method -> {
                     Class<?> returnType = method.getReturnType();
                     String propertyName = method.getName().substring(3);
 
                     if (returnType.equals(String.class)) {
-                        return new TextField(propertyName);
+                        fields.add(new TextField(propertyName));
+                        return;
                     }
 
                     if (returnType.equals(Integer.class)) {
-                        return new NumberField(propertyName);
+                        fields.add(new NumberField(propertyName));
+                        return;
                     }
 
                     if (BaseModel.class.isAssignableFrom(returnType)) {
                         try {
-                            BaseModel parent = (BaseModel) returnType.getDeclaredConstructor().newInstance();
-//                            parent.getParentsTree().forEach();
-                        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+                            BaseModel parent = (BaseModel) method.getReturnType().getDeclaredConstructor().newInstance();
+
+                            propertyName = parent.getEntityTableNameCapitalized();
+                            fields.add(new ComboBox<BaseModel>(propertyName));
+                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                             e.printStackTrace();
                         }
-
-                        propertyName = method.getReturnType().getSimpleName();
-                        return new ComboBox<BaseModel>(propertyName);
+                        this.getParentsTree().forEach(baseModel -> {
+                            String parentName = baseModel.getEntityTableNameCapitalized();
+                            fields.add(new ComboBox<BaseModel>(parentName));
+                        });
+                        return;
                     }
 
-                    return new Text(propertyName + ": Undefined type");
-                }).collect(Collectors.toList());
+                    fields.add(new Text(propertyName + ": Undefined type"));
+                });
+
+        return fields;
     }
 
     public String getRepositoryName() {
         return getEntityTableName() + "Repository";
+    }
+
+    public <T extends BaseModel> CrudRepository<T, Integer> getRepository(){
+        return (CrudRepository<T, Integer>) Application.context.getBean(getRepositoryName());
     }
 }

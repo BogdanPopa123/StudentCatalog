@@ -50,7 +50,7 @@ public class SubjectViewManageButtons extends HorizontalLayout {
     }
 
     private void create(ClickEvent<Button> clickEvent) {
-        ModifyDialog<Subject> modifyDialog = new ModifyDialog<>(Subject.class, subjectRepository, notificationService);
+        ModifyDialog<Subject> modifyDialog = new ModifyDialog<>(Subject.class);
 
         modifyDialog.addOnSuccessfulModifyListener(this::runOnSuccessfulModifyEvent);
 
@@ -73,7 +73,7 @@ public class SubjectViewManageButtons extends HorizontalLayout {
         }
 
         selectedItems.forEach(subject -> {
-            ModifyDialog<Subject> modifyDialog = new ModifyDialog<>(Subject.class, subjectRepository, notificationService);
+            ModifyDialog<Subject> modifyDialog = new ModifyDialog<>(Subject.class);
 
             modifyDialog.setBean(subject);
 
@@ -90,7 +90,7 @@ public class SubjectViewManageButtons extends HorizontalLayout {
         }
 
         selectedItems.forEach(item -> {
-            DeleteDialog deleteDialog = new DeleteDialog(item, subjectRepository);
+            DeleteDialog deleteDialog = new DeleteDialog(item);
 
             deleteDialog.addOnConfirmEvent(this::runOnSuccessfulModifyEvent);
 

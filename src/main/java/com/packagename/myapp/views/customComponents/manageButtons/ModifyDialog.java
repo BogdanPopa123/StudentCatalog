@@ -35,12 +35,10 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
     private Binder<T> binder;
 
 
-    public ModifyDialog(Class<T> clazz,
-                        CrudRepository<T, Integer> repository,
-                        NotificationService notificationService) {
-        this.notificationService = notificationService;
+    public ModifyDialog(Class<T> clazz) {
         this.clazz = clazz;
-        this.repository = repository;
+        this.repository = getItemRepository(clazz);
+        this.notificationService = NotificationService.getService();
 
 
         setDialog();
@@ -137,5 +135,16 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
         comboBox.setRequired(true);
         comboBox.setAllowCustomValue(false);
         comboBox.setPreventInvalidInput(true);
+    }
+
+    private CrudRepository<T, Integer> getItemRepository(Class<T> clazz) {
+        try {
+            return clazz.getDeclaredConstructor().newInstance().getRepository();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+
+        logger.error("Failed to get repository for: " + clazz.getSimpleName());
+        return null;
     }
 }

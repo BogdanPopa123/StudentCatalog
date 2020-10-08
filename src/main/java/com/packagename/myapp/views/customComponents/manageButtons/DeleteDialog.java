@@ -7,21 +7,19 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.repository.CrudRepository;
 
-public class DeleteDialog extends ConfirmDialog {
+public class DeleteDialog<T extends BaseModel> extends ConfirmDialog {
 
     private static final Logger logger = LogManager.getLogger(DeleteDialog.class);
 
-    private final BaseModel item;
-    private final CrudRepository<? extends BaseModel, Integer> repository;
+    private final T item;
+    private final CrudRepository<T, Integer> repository;
 
 
-    public DeleteDialog(BaseModel item,
-                        CrudRepository<? extends BaseModel, Integer> repository) {
+    public DeleteDialog(T item) {
         super(getMessage(item));
 
-
         this.item = item;
-        this.repository = repository;
+        this.repository = item.getRepository();
 
         setConfirmMessage(getDeleteMessage());
     }
