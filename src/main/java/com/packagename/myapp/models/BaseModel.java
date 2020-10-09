@@ -1,6 +1,8 @@
 package com.packagename.myapp.models;
 
+import com.google.common.collect.Lists;
 import com.packagename.myapp.Application;
+import com.packagename.myapp.models.annotations.Parent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -10,11 +12,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.repository.CrudRepository;
 
 import javax.persistence.Table;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class BaseModel {
     public abstract int getId();
@@ -23,6 +27,7 @@ public abstract class BaseModel {
 
     public abstract void setName(String name);
 
+    // TODO: 09-Oct-20 Use @Parent for getting parent
     public abstract BaseModel getParent();
 
     public abstract List<BaseModel> getChildren();
@@ -83,6 +88,40 @@ public abstract class BaseModel {
         return parentsTree;
     }
 
+    public List<ComboBox<BaseModel>> getParentTreeCombobox() {
+        ArrayList<ComboBox<BaseModel>> fields = new ArrayList<>();
+
+        BaseModel current = getParentNewInstance();
+        while (current != null) {
+            String propertyName = current.getEntityTableNameCapitalized();
+            CrudRepository<? extends BaseModel, Integer> repository = current.getRepository();
+
+            ComboBox<BaseModel> field = new ComboBox<>(propertyName);
+            field.setItemLabelGenerator(BaseModel::getName);
+            field.setItems(Lists.newArrayList(repository.findAll()));
+
+            fields.add(field);
+
+            current = current.getParentNewInstance();
+        }
+
+        return fields;
+    }
+
+    private BaseModel getParentNewInstance() {
+        Optional<Field> field = Arrays.stream(this.getClass().getDeclaredFields()).filter(f -> f.getAnnotation(Parent.class) != null).findFirst();
+
+        if (field.isPresent()) {
+            try {
+                return (BaseModel) field.get().getType().getDeclaredConstructor().newInstance();
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return null;
+    }
+
     public List<Component> getPropertiesField() {
         List<Class<?>> acceptedReturnType = Arrays.asList(String.class, Integer.class, BaseModel.class);
 
@@ -107,18 +146,7 @@ public abstract class BaseModel {
                     }
 
                     if (BaseModel.class.isAssignableFrom(returnType)) {
-                        try {
-                            BaseModel parent = (BaseModel) method.getReturnType().getDeclaredConstructor().newInstance();
-
-                            propertyName = parent.getEntityTableNameCapitalized();
-                            fields.add(new ComboBox<BaseModel>(propertyName));
-                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                            e.printStackTrace();
-                        }
-                        this.getParentsTree().forEach(baseModel -> {
-                            String parentName = baseModel.getEntityTableNameCapitalized();
-                            fields.add(new ComboBox<BaseModel>(parentName));
-                        });
+                        fields.addAll(this.getParentTreeCombobox());
                         return;
                     }
 
@@ -132,7 +160,8 @@ public abstract class BaseModel {
         return getEntityTableName() + "Repository";
     }
 
-    public <T extends BaseModel> CrudRepository<T, Integer> getRepository(){
+    @SuppressWarnings("unchecked")
+    public <T extends BaseModel> CrudRepository<T, Integer> getRepository() {
         return (CrudRepository<T, Integer>) Application.context.getBean(getRepositoryName());
     }
 }

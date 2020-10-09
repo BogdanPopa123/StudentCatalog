@@ -1,6 +1,8 @@
 package com.packagename.myapp.models;
 
 
+import com.packagename.myapp.models.annotations.Parent;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -18,6 +20,7 @@ public class Specialization extends BaseModel {
     @NotNull
     private String name;
 
+    @Parent
     @NotNull(message = "Select domain")
     @ManyToOne
     @JoinColumn(name = "domain_id", nullable = false)

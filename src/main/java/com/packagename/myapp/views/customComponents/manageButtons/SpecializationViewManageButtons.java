@@ -47,7 +47,7 @@ public class SpecializationViewManageButtons extends HorizontalLayout {
     private ComboBox<Department> department = new ComboBox<>("Department");
     private Runnable onSuccessfulModify;
 
-    private Set<Specialization> selectedItems;
+    private Set<BaseModel> selectedItems;
 
     private final Binder<Specialization> binder = new BeanValidationBinder<>(Specialization.class);
 
@@ -211,7 +211,7 @@ public class SpecializationViewManageButtons extends HorizontalLayout {
         }
 
         selectedItems.forEach(item -> {
-            DeleteDialog<Specialization> deleteDialog = new DeleteDialog<Specialization>(item);
+            DeleteDialog<BaseModel> deleteDialog = new DeleteDialog<>(item);
 
             deleteDialog.addOnConfirmEvent(this::runOnSuccessfulModifyEvent);
 
@@ -231,7 +231,7 @@ public class SpecializationViewManageButtons extends HorizontalLayout {
         return binder;
     }
 
-    public void setSelectedItems(Set<Specialization> selectedItems) {
+    public void setSelectedItems(Set<BaseModel> selectedItems) {
         this.selectedItems = selectedItems;
     }
 
