@@ -9,6 +9,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import org.apache.commons.lang3.StringUtils;
+import org.reflections.ReflectionUtils;
 import org.springframework.data.repository.CrudRepository;
 
 import javax.persistence.Table;
@@ -109,7 +110,7 @@ public abstract class BaseModel {
     }
 
     private BaseModel getParentNewInstance() {
-        Optional<Field> field = Arrays.stream(this.getClass().getDeclaredFields()).filter(f -> f.getAnnotation(Parent.class) != null).findFirst();
+        Optional<Field> field = Arrays.stream(this.getClass().getDeclaredFields()).filter(f -> f.isAnnotationPresent(Parent.class)).findFirst();
 
         if (field.isPresent()) {
             try {
@@ -127,10 +128,9 @@ public abstract class BaseModel {
 
         ArrayList<Component> fields = new ArrayList<>();
 
-        Arrays.stream(this.getClass().getMethods())
-                .filter(method -> Modifier.isPublic(method.getModifiers()))
-                .filter(method -> method.getName().matches("get(.*)") && acceptedReturnType.stream().anyMatch(c -> c.isAssignableFrom(method.getReturnType())))
-                .filter(method -> Arrays.stream(this.getClass().getDeclaredFields()).anyMatch(field -> field.getName().equalsIgnoreCase(method.getName().substring(3))))
+        ReflectionUtils.getAllMethods(this.getClass(), ReflectionUtils.withModifier(Modifier.PUBLIC), ReflectionUtils.withPrefix("get")).stream()
+                .filter(method -> acceptedReturnType.stream().anyMatch(c -> c.isAssignableFrom(method.getReturnType())))
+                .filter(method -> ReflectionUtils.getAllFields(this.getClass()).stream().anyMatch(field -> field.getName().equalsIgnoreCase(method.getName().substring(3))))
                 .forEach(method -> {
                     Class<?> returnType = method.getReturnType();
                     String propertyName = method.getName().substring(3);
@@ -163,5 +163,9 @@ public abstract class BaseModel {
     @SuppressWarnings("unchecked")
     public <T extends BaseModel> CrudRepository<T, Integer> getRepository() {
         return (CrudRepository<T, Integer>) Application.context.getBean(getRepositoryName());
+    }
+
+    public boolean hasParent(){
+        return ReflectionUtils.getAllFields(this.getClass(), ReflectionUtils.withAnnotation(Parent.class)).isEmpty();
     }
 }
