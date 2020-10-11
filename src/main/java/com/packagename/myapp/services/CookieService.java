@@ -16,7 +16,7 @@ public class CookieService {
     public Cookie getCookieByName(String name) {
         Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
 
-        logger.debug("Trying to get cookie: " + name);
+        logger.trace("Trying to get cookie: " + name);
         for (Cookie cookie : cookies) {
             if (name.equals(cookie.getName())) {
                 logger.debug("Found cookie " + name + " : " + cookie.getValue());

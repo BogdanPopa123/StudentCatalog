@@ -9,19 +9,25 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.reflections.ReflectionUtils;
 import org.springframework.data.repository.CrudRepository;
 
 import javax.persistence.Table;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.StreamSupport;
 
 public abstract class BaseModel {
+    private final static Logger logger = LogManager.getLogger(BaseModel.class);
+
     public abstract int getId();
 
     public abstract String getName();
@@ -30,6 +36,16 @@ public abstract class BaseModel {
 
     // TODO: 09-Oct-20 Use @Parent for getting parent
     public abstract BaseModel getParent();
+
+    public void setParent(BaseModel parent) {
+        getParentSetter().ifPresent(method -> {
+            try {
+                method.invoke(parent);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                logger.error("Failed to invoke parent setter", e);
+            }
+        });
+    }
 
     public abstract List<BaseModel> getChildren();
 
@@ -100,6 +116,7 @@ public abstract class BaseModel {
             ComboBox<BaseModel> field = new ComboBox<>(propertyName);
             field.setItemLabelGenerator(BaseModel::getName);
             field.setItems(Lists.newArrayList(repository.findAll()));
+            field.setPlaceholder(current.getEntityTableNameCapitalized());
 
             fields.add(field);
 
@@ -109,18 +126,23 @@ public abstract class BaseModel {
         return fields;
     }
 
-    private BaseModel getParentNewInstance() {
-        Optional<Field> field = Arrays.stream(this.getClass().getDeclaredFields()).filter(f -> f.isAnnotationPresent(Parent.class)).findFirst();
+    public BaseModel getParentNewInstance() {
+        Optional<? extends Class<?>> parentClass = getParentClass();
 
-        if (field.isPresent()) {
+        if (parentClass.isPresent()) {
             try {
-                return (BaseModel) field.get().getType().getDeclaredConstructor().newInstance();
+                return (BaseModel) parentClass.get().getDeclaredConstructor().newInstance();
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                e.printStackTrace();
+                logger.error("Failed to create new parent instance: " + parentClass.get().getSimpleName(), e);
             }
         }
-
         return null;
+    }
+
+    public Optional<? extends Class<?>> getParentClass() {
+        Optional<Field> parentField = getParentField();
+
+        return parentField.isPresent() ? Optional.of(parentField.get().getType()) : Optional.empty();
     }
 
     public List<Component> getPropertiesField() {
@@ -151,6 +173,7 @@ public abstract class BaseModel {
                     }
 
                     fields.add(new Text(propertyName + ": Undefined type"));
+                    logger.warn("Not a valid field type: "+propertyName);
                 });
 
         return fields;
@@ -165,7 +188,23 @@ public abstract class BaseModel {
         return (CrudRepository<T, Integer>) Application.context.getBean(getRepositoryName());
     }
 
-    public boolean hasParent(){
-        return ReflectionUtils.getAllFields(this.getClass(), ReflectionUtils.withAnnotation(Parent.class)).isEmpty();
+    public boolean hasParent() {
+        return getParentField().isPresent();
     }
+
+    private Optional<Field> getParentField() {
+        return ReflectionUtils.getAllFields(this.getClass(), ReflectionUtils.withAnnotation(Parent.class)).stream().findFirst();
+    }
+
+    private Optional<Method> getParentSetter() {
+        return ReflectionUtils.getAllMethods(this.getClass(),
+                ReflectionUtils.withModifier(Modifier.PUBLIC),
+                ReflectionUtils.withName("set" + getParentNewInstance().getEntityTableNameCapitalized()))
+                .stream().findFirst();
+    }
+
+    public boolean checkNameAvailability(String name){
+        return StreamSupport.stream(this.getRepository().findAll().spliterator(), false).noneMatch(t -> t.getName().equals(name));
+    }
+
 }

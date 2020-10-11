@@ -19,9 +19,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.repository.CrudRepository;
 
-import javax.persistence.Table;
 import java.lang.reflect.InvocationTargetException;
-import java.util.stream.StreamSupport;
+import java.util.List;
+import java.util.Optional;
 
 public class ModifyDialog<T extends BaseModel> extends Dialog {
     private static final Logger logger = LogManager.getLogger(ModifyDialog.class);
@@ -30,6 +30,8 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
     private final CrudRepository<T, Integer> repository;
     private final Class<T> clazz;
     private final TextField name = new TextField("Name");
+    private final T instance;
+    private Optional<ComboBox<BaseModel>> parent;
     private String tableName;
     private Runnable onSuccessfulModify;
     private Binder<T> binder;
@@ -37,9 +39,10 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
 
     public ModifyDialog(Class<T> clazz) {
         this.clazz = clazz;
-        this.repository = getItemRepository(clazz);
         this.notificationService = NotificationService.getService();
 
+        this.instance = createInstance();
+        this.repository = getItemRepository(clazz);
 
         setDialog();
         setBinder();
@@ -49,17 +52,29 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
         name.setWidth("300px");
         name.addKeyPressListener(Key.ENTER, this::save);
 
+        VerticalLayout formFields = new VerticalLayout(name);
+
+        if (instance.hasParent()) {
+
+            List<ComboBox<BaseModel>> parentFields = instance.getParentTreeCombobox();
+            this.parent = parentFields.stream().findFirst();
+
+            parentFields.forEach(formFields::add);
+        }
+
+        VerticalLayout subjectForm = new VerticalLayout(formFields, getDialogButtons());
+
+        add(subjectForm);
+    }
+
+    private HorizontalLayout getDialogButtons() {
         Button save = new Button("Save", this::save);
         Button cancel = new Button("Cancel", this::cancel);
 
         save.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
         cancel.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
-        HorizontalLayout createButtons = new HorizontalLayout(save, cancel);
-
-        VerticalLayout subjectForm = new VerticalLayout(name, createButtons);
-
-        add(subjectForm);
+        return new HorizontalLayout(save, cancel);
     }
 
     private void setBinder() {
@@ -69,27 +84,43 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
 
         binder.forField(name)
                 .asRequired("Enter name")
-                .withValidator(s -> StreamSupport.stream(repository.findAll().spliterator(), false).noneMatch(t -> t.getName().equals(s)), "Name already taken")
+                .withValidator(instance::checkNameAvailability, "Name already taken")
                 .bind(BaseModel::getName, BaseModel::setName);
+
+
+        parent.ifPresent(baseModelComboBox -> binder.forField(baseModelComboBox)
+                .asRequired("Select " + instance.getParentNewInstance().getEntityTableName())
+                .withValidator(item -> {
+                    Optional<BaseModel> parent = item.getRepository().findById(item.getId());
+                    return parent.isPresent() && parent.get().getName().equals(item.getName());
+                }, "Select a valid " + instance.getParentNewInstance().getEntityTableNameCapitalized())
+                .bind(BaseModel::getParent, BaseModel::setParent));
+
+        binder.bindInstanceFields(this);
+
 
     }
 
     private void save(ComponentEvent<? extends Component> event) {
-        logger.debug("Submit new " + getTableName() + " data");
+        logger.debug("Submit new " + instance.getEntityTableNameCapitalized() + " data");
 
         if (!binder.isValid()) {
-            logger.debug("Not valid " + getTableName() + " data");
+            logger.debug("Not valid " + instance.getEntityTableNameCapitalized() + " data");
             return;
         }
 
         T item = binder.getBean();
 
-        logger.info("Save new " + getTableName());
         repository.save(item);
+
+        String message = "Saved new " + instance.getEntityTableNameCapitalized();
+
+        logger.info(message);
+        notificationService.success(message);
+
 
         runOnSuccessfulModifyEvent();
 
-        notificationService.success("Saved subject!");
 
         close();
     }
@@ -106,13 +137,6 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
             logger.warn("Failed to instantiate object for class: " + this.clazz.getName(), e);
             return null;
         }
-    }
-
-    private String getTableName() {
-        if (tableName == null) {
-            tableName = clazz.getAnnotation(Table.class).name();
-        }
-        return tableName;
     }
 
     private void runOnSuccessfulModifyEvent() {
@@ -139,12 +163,15 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
 
     private CrudRepository<T, Integer> getItemRepository(Class<T> clazz) {
         try {
-            return clazz.getDeclaredConstructor().newInstance().getRepository();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            e.printStackTrace();
+            return instance.getRepository();
+        } catch (NullPointerException e) {
+            logger.error("Failed to get repository for: " + instance.getEntityTableNameCapitalized(), e);
         }
 
-        logger.error("Failed to get repository for: " + clazz.getSimpleName());
         return null;
+    }
+
+    private CrudRepository<? extends BaseModel, Integer> getParentRepository(Class<T> clazz) {
+        return instance.getParentNewInstance().getRepository();
     }
 }
