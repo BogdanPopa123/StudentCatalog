@@ -140,6 +140,10 @@ public class User {
         isAdmin = admin;
     }
 
+    public String getFullName(){
+        return this.name + " " + this.surname;
+    }
+
     @JsonIgnore
     public boolean isNotAdmin() {
         return !isAdmin();

@@ -65,6 +65,7 @@ public class MainLayout extends AppLayout {
         Button specialization = new NavigateButton("Specialization", SpecializationView.class);
         Button departments = new NavigateButton("Departments", DepartmentView.class);
         Button professors = new NavigateButton("Professors", ProfessorView.class);
+        Button profiles = new NavigateButton("Profiles", ProfileView.class);
         Button subject = new NavigateButton("Subject", SubjectView.class);
         Button classes = new NavigateButton("Classes", StudentClassView.class);
 
@@ -78,6 +79,8 @@ public class MainLayout extends AppLayout {
                 departments,
                 professors,
                 faculty,
+                specialization,
+                profiles,
                 specialization,
                 subject,
                 classes

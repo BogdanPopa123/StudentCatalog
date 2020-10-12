@@ -17,6 +17,8 @@ public class Profile {
     @ManyToOne
     private StudentClass studentClass;
 
+    
+
     public int getId() {
         return id;
     }
