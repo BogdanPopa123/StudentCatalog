@@ -62,6 +62,11 @@ public class Specialization extends BaseModel {
     }
 
     @Override
+    public void setParent(BaseModel parent) {
+        this.domain = (Domain) parent;
+    }
+
+    @Override
     public List<BaseModel> getChildren() {
         return null;
     }

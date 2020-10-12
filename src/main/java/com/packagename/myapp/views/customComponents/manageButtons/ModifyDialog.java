@@ -94,7 +94,12 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
                     Optional<BaseModel> parent = item.getRepository().findById(item.getId());
                     return parent.isPresent() && parent.get().getName().equals(item.getName());
                 }, "Select a valid " + instance.getParentNewInstance().getEntityTableNameCapitalized())
-                .bind(BaseModel::getParent, BaseModel::setParent));
+                .bind(BaseModel::getParent, (t, parent) -> {
+                    CrudRepository<? extends BaseModel, Integer> parentRepository = getParentRepository(clazz);
+                    Optional<? extends BaseModel> parentFromRepository = parentRepository.findById(parent.getId());
+
+                    parentFromRepository.ifPresent(t::setParent);
+                }));
 
         binder.bindInstanceFields(this);
 

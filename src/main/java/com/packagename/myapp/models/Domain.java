@@ -51,6 +51,11 @@ public class Domain extends BaseModel {
     }
 
     @Override
+    public void setParent(BaseModel parent) {
+        this.department = (Department) parent;
+    }
+
+    @Override
     public List<BaseModel> getChildren() {
         return new ArrayList<>(specializations);
     }

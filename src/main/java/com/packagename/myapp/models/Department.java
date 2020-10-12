@@ -66,6 +66,11 @@ public class Department extends BaseModel {
     }
 
     @Override
+    public void setParent(BaseModel parent) {
+        faculty = (Faculty) parent;
+    }
+
+    @Override
     public List<BaseModel> getChildren() {
         return new ArrayList<>(domains);
     }

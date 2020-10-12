@@ -37,15 +37,18 @@ public abstract class BaseModel {
     // TODO: 09-Oct-20 Use @Parent for getting parent
     public abstract BaseModel getParent();
 
-    public void setParent(BaseModel parent) {
-        getParentSetter().ifPresent(method -> {
-            try {
-                method.invoke(parent);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                logger.error("Failed to invoke parent setter", e);
-            }
-        });
-    }
+    // TODO: 12-Oct-20 Setter using reflection
+    public abstract void setParent(BaseModel parent);
+
+//    public void setParent(BaseModel parent) {
+//        getParentSetter().ifPresent(method -> {
+//            try {
+//                method.invoke(parent);
+//            } catch (IllegalAccessException | InvocationTargetException e) {
+//                logger.error("Failed to invoke parent setter", e);
+//            }
+//        });
+//    }
 
     public abstract List<BaseModel> getChildren();
 
