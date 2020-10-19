@@ -25,6 +25,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.HashSet;
 import java.util.Set;
 
 @Component
@@ -34,11 +35,14 @@ public class SubjectViewManageButtons extends HorizontalLayout {
     private final Logger logger = LogManager.getLogger(SpecializationView.class);
     private final SubjectRepository subjectRepository;
     private final NotificationService notificationService;
-    private final TextField name = new TextField("Name");
-    private final Binder<Subject> binder = new BeanValidationBinder<>(Subject.class);
+
     private Dialog dialog;
+    private final TextField name = new TextField("Name");
     private Runnable onSuccessfulModify;
-    private Set<Subject> selectedItems;
+
+    private Set<Subject> selectedItems =new HashSet<>();
+
+    private final Binder<Subject> binder = new BeanValidationBinder<>(Subject.class);
 
     public SubjectViewManageButtons(SubjectRepository subjectRepository, NotificationService notificationService) {
         this.subjectRepository = subjectRepository;
@@ -94,7 +98,6 @@ public class SubjectViewManageButtons extends HorizontalLayout {
                 .asRequired("Enter name")
                 .withValidator(s -> !subjectRepository.existsByName(s), "Name already taken")
                 .bind(Subject::getName, Subject::setName);
-
     }
 
     private void create(ClickEvent<Button> event) {
@@ -122,6 +125,7 @@ public class SubjectViewManageButtons extends HorizontalLayout {
     }
 
     private void details(ClickEvent<Button> event) {
+
         if (selectedItems.isEmpty()) {
             notificationService.alert("Select a valid subject!");
             return;

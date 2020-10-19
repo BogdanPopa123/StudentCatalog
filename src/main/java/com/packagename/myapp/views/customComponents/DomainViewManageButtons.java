@@ -1,25 +1,24 @@
-package com.packagename.myapp.views.customComponents.manageButtons;
+package com.packagename.myapp.views.customComponents;
 
 import com.google.common.collect.Lists;
 import com.packagename.myapp.dao.DepartmentRepository;
 import com.packagename.myapp.dao.DomainRepository;
 import com.packagename.myapp.dao.FacultyRepository;
-import com.packagename.myapp.dao.SpecializationRepository;
 import com.packagename.myapp.models.*;
 import com.packagename.myapp.services.NotificationService;
-import com.packagename.myapp.views.SpecializationView;
+import com.packagename.myapp.views.DomainView;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.HtmlComponent;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import org.apache.logging.log4j.LogManager;
@@ -28,17 +27,15 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+
 
 @Component
 @Scope(scopeName = "prototype")
-public class SpecializationViewManageButtons extends HorizontalLayout {
+public class DomainViewManageButtons extends HorizontalLayout {
 
-    private final Logger logger = LogManager.getLogger(SpecializationView.class);
-    private final SpecializationRepository specializationRepository;
+    private final Logger logger = LogManager.getLogger(DomainView.class);
     private final DomainRepository domainRepository;
     private final FacultyRepository facultyRepository;
     private final DepartmentRepository departmentRepository;
@@ -46,27 +43,23 @@ public class SpecializationViewManageButtons extends HorizontalLayout {
 
     private Dialog dialog;
     private TextField name = new TextField("Name");
-    private ComboBox<Domain> domain = new ComboBox<>("Domain");
+    private TextField acronym = new TextField("Acronym");
     private ComboBox<Faculty> faculty = new ComboBox<>("Faculty");
     private ComboBox<Department> department = new ComboBox<>("Department");
     private Runnable onSuccessfulModify;
 
     private Set<BaseModel> selectedItems = new HashSet<>();
 
-    private Binder<Specialization> binder = new BeanValidationBinder<>(Specialization.class);
+    private Binder<Domain> binder = new BeanValidationBinder<>(Domain.class);
 
-    public SpecializationViewManageButtons(SpecializationRepository specializationRepository,
-                                           DomainRepository domainRepository,
-                                           FacultyRepository facultyRepository,
-                                           DepartmentRepository departmentRepository,
-                                           NotificationService notificationService) {
-
-        this.specializationRepository = specializationRepository;
+    public DomainViewManageButtons(DomainRepository domainRepository,
+                                   FacultyRepository facultyRepository,
+                                   DepartmentRepository departmentRepository,
+                                   NotificationService notificationService) {
         this.domainRepository = domainRepository;
         this.facultyRepository = facultyRepository;
         this.departmentRepository = departmentRepository;
         this.notificationService = notificationService;
-
     }
 
     @PostConstruct
@@ -97,29 +90,22 @@ public class SpecializationViewManageButtons extends HorizontalLayout {
             Set<Department> departments = event.getValue().getDepartments();
             department.setItems(departments);
 
-            ArrayList<Domain> domains = departments.stream().map(Department::getDomains).collect(ArrayList::new, List::addAll, List::addAll);
-
-            domain.setItems(domains);
         });
+
         faculty.setItems(Lists.newArrayList(facultyRepository.findAll()));
         faculty.setItemLabelGenerator(Faculty::getName);
         configureComboBox(faculty, "Faculty", "300px");
 
-        department.addValueChangeListener(event -> domain.setItems(event.getValue() != null ? event.getValue().getDomains() : new ArrayList<>()));
         department.setItems(Lists.newArrayList(departmentRepository.findAll()));
         department.setItemLabelGenerator(Department::getName);
         configureComboBox(department, "Department", "300px");
-
-        domain.setItems(Lists.newArrayList(domainRepository.findAll()));
-        domain.setItemLabelGenerator(Domain::getName);
-        configureComboBox(domain, "Domain", "300px");
 
         name.setWidth("300px");
 
         Button save = new Button("Save", this::save);
         Button cancel = new Button("Cancel", event -> {
             dialog.close();
-            binder.setBean(new Specialization());
+            binder.setBean(new Domain());
         });
         save.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
         cancel.addThemeVariants(ButtonVariant.LUMO_ERROR);
@@ -128,23 +114,23 @@ public class SpecializationViewManageButtons extends HorizontalLayout {
 
         HorizontalLayout createButtons = new HorizontalLayout(save, cancel);
 
-        VerticalLayout specializationForm = new VerticalLayout(faculty, department, domain, name, createButtons);
+        VerticalLayout domainForm = new VerticalLayout(faculty, department, name, createButtons);
 
-        dialog = new Dialog(specializationForm);
+        dialog = new Dialog(domainForm);
     }
 
     private void setBinder() {
-        binder.setBean(new Specialization());
+        binder.setBean(new Domain());
 
-        binder.forField(domain)
+        binder.forField(department)
                 .asRequired("Select domain")
-                .withValidator(d -> domainRepository.existsByName(d.getName()), "Not valid domain")
-                .bind(Specialization::getDomain, Specialization::setDomain);
+                .withValidator(d -> departmentRepository.existsByName(d.getName()), "Not a valid department")
+                .bind(Domain::getDepartment, Domain::setDepartment);
 
         binder.forField(name)
                 .asRequired("Enter name")
-                .withValidator(s -> !specializationRepository.existsByName(s), "Name already taken")
-                .bind(Specialization::getName, Specialization::setName);
+                .withValidator(s -> !domainRepository.existsByName(s), "Name already taken")
+                .bind(Domain::getName, Domain::setName);
 
         binder.bindInstanceFields(this);
     }
@@ -154,50 +140,81 @@ public class SpecializationViewManageButtons extends HorizontalLayout {
     }
 
     private void save(ClickEvent<Button> event) {
-        logger.debug("Submit new specialization data");
+        logger.debug("Submit new domain data");
 
         if (!binder.isValid()) {
-            logger.debug("Not valid specialization data");
+            logger.debug("Not valid domain data");
             return;
         }
 
-        Specialization specialization = binder.getBean();
+        Domain domain = binder.getBean();
 
-        logger.info("Save new specialization");
-        specializationRepository.save(specialization);
+        logger.info("Save new domain");
+        domainRepository.save(domain);
 
         dialog.close();
         runOnSuccessfulModifyEvent();
-        notificationService.success("Saved specialization!");
+        notificationService.success("Saved domain!");
 
-        binder.setBean(new Specialization());
+        binder.setBean(new Domain());
     }
 
     private void details(ClickEvent<Button> event) {
-        if (selectedItems.isEmpty()) {
-            notificationService.alert("Select a valid specialization!");
-            return;
-        }
 
-        selectedItems.forEach(item -> new DetailsDialog(item).open());
-    }
-
-    private void modify(ClickEvent<Button> event) {
         if (selectedItems.isEmpty()) {
-            notificationService.alert("Select a valid specialization to modify!");
+            notificationService.alert("Select a valid domain!");
             return;
         }
 
         selectedItems.forEach(item -> {
-            binder.setBean((Specialization) item);
+            Domain domain = (Domain) item;
 
-            Domain domain = binder.getBean().getDomain();
+            int id = domain.getId();
+            String name = domain.getName();
             Department department = domain.getDepartment();
+            Faculty faculty = department.getFaculty();
+
+            Button close = new Button("Close");
+            close.addThemeVariants(ButtonVariant.LUMO_ERROR);
+
+            VerticalLayout domainDetails = new VerticalLayout(
+                    new H5("Id: " + id),
+                    new H5("Name: " + name),
+                    new H5("Department: " + department.getName()),
+                    new H5("Faculty: " + faculty.getName())
+            );
+
+            VerticalLayout details = new VerticalLayout(
+                    new H2("Domain"),
+                    new HtmlComponent("hr"),
+                    domainDetails,
+                    close
+            );
+
+            details.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+
+            Dialog detailsDialog = new Dialog(details);
+
+            close.addClickListener(click -> detailsDialog.close());
+
+            detailsDialog.open();
+        });
+    }
+
+    private void modify(ClickEvent<Button> event) {
+        if (selectedItems.isEmpty()) {
+            notificationService.alert("Select a valid domain to modify!");
+            return;
+        }
+
+        selectedItems.forEach(item -> {
+            binder.setBean((Domain) item);
+
+            Department department = binder.getBean().getDepartment();
             Faculty faculty = department.getFaculty();
 
             this.faculty.setValue(faculty);
             this.department.setValue(department);
-            this.domain.setValue(domain);
 
             dialog.open();
         });
@@ -205,14 +222,14 @@ public class SpecializationViewManageButtons extends HorizontalLayout {
 
     private void delete(ClickEvent<Button> event) {
         if (selectedItems.isEmpty()) {
-            notificationService.alert("Select a valid specialization to delete!");
+            notificationService.alert("Select a valid domain to delete!");
             return;
         }
 
         selectedItems.forEach(item -> {
 
-            H5 header = new H5("Are you sure you want to delete specialization:");
-            H5 specialization = new H5(item.toShortString() + " ?");
+            H5 header = new H5("Are you sure you want to delete the following domain:");
+            H5 domain = new H5(item.toShortString() + " ?");
 
             Button confirm = new Button("Confirm");
             Button cancel = new Button("Cancel");
@@ -222,17 +239,17 @@ public class SpecializationViewManageButtons extends HorizontalLayout {
 
             HorizontalLayout buttons = new HorizontalLayout(confirm, cancel);
 
-            VerticalLayout dialogBody = new VerticalLayout(header, specialization, buttons);
+            VerticalLayout dialogBody = new VerticalLayout(header, domain, buttons);
             dialogBody.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 
             Dialog confirmDialog = new Dialog(dialogBody);
 
             confirm.addClickListener(click -> {
-                specializationRepository.deleteById(item.getId());
+                domainRepository.deleteById(item.getId());
 
-                notificationService.success("Deleted specialization: " + item.toShortString());
+                notificationService.success("Deleted domain: " + item.toShortString());
 
-                logger.info("Deleted specialization: " + item.toString());
+                logger.info("Deleted domain: " + item.toString());
 
                 runOnSuccessfulModifyEvent();
                 confirmDialog.close();
@@ -252,7 +269,7 @@ public class SpecializationViewManageButtons extends HorizontalLayout {
         comboBox.setPreventInvalidInput(true);
     }
 
-    public Binder<Specialization> getBinder() {
+    public Binder<Domain> getBinder() {
         return binder;
     }
 
