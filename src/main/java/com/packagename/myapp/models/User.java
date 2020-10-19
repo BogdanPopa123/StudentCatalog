@@ -162,6 +162,7 @@ public class User {
         isAdmin = admin;
     }
 
+    @JsonIgnore
     public String getFullName(){
         return this.name + " " + this.surname;
     }

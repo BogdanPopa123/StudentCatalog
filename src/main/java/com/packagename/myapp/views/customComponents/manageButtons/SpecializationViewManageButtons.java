@@ -19,6 +19,7 @@ import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 @Component
 @Scope(scopeName = "prototype")
@@ -50,6 +52,9 @@ public class SpecializationViewManageButtons extends HorizontalLayout {
     private ComboBox<Faculty> faculty = new ComboBox<>("Faculty");
     private ComboBox<Department> department = new ComboBox<>("Department");
     private Runnable onSuccessfulModify;
+
+    Select<Integer> studyDuration = new Select<>(1, 2, 3, 4, 5, 6);
+
 
     private Set<BaseModel> selectedItems = new HashSet<>();
 
@@ -116,6 +121,10 @@ public class SpecializationViewManageButtons extends HorizontalLayout {
 
         name.setWidth("300px");
 
+        studyDuration.setValue(1);
+        studyDuration.setLabel("Study Duration");
+
+
         Button save = new Button("Save", this::save);
         Button cancel = new Button("Cancel", event -> {
             dialog.close();
@@ -128,7 +137,7 @@ public class SpecializationViewManageButtons extends HorizontalLayout {
 
         HorizontalLayout createButtons = new HorizontalLayout(save, cancel);
 
-        VerticalLayout specializationForm = new VerticalLayout(faculty, department, domain, name, createButtons);
+        VerticalLayout specializationForm = new VerticalLayout(faculty, department, domain, name, studyDuration, createButtons);
 
         dialog = new Dialog(specializationForm);
     }
@@ -145,6 +154,11 @@ public class SpecializationViewManageButtons extends HorizontalLayout {
                 .asRequired("Enter name")
                 .withValidator(s -> !specializationRepository.existsByName(s), "Name already taken")
                 .bind(Specialization::getName, Specialization::setName);
+
+        binder.forField(studyDuration)
+                .asRequired("Enter study duration")
+                .withValidator(study->true, "Choose valid study duration")
+                .bind(Specialization::getStudyDuration, Specialization::setStudyDuration);
 
         binder.bindInstanceFields(this);
     }
@@ -198,6 +212,8 @@ public class SpecializationViewManageButtons extends HorizontalLayout {
             this.faculty.setValue(faculty);
             this.department.setValue(department);
             this.domain.setValue(domain);
+            this.name.setValue(binder.getBean().getName());
+            this.studyDuration.setValue(binder.getBean().getStudyDuration());
 
             dialog.open();
         });

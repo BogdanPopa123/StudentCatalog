@@ -111,7 +111,7 @@ public class StudentClassView extends VerticalLayout {
 
                 addButton.addClickListener(e->{
                     if(!facultySelect.isEmpty() && !departmentSelect.isEmpty() && !domainSelect.isEmpty()
-                    && specializationSelect.isEmpty()){
+                    && !specializationSelect.isEmpty()){
                         StudentClass studentClass = new StudentClass();
                         studentClass.setName(textField.getValue());
                         studentClass.setStudyYear(studyYear.getValue());
