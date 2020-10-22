@@ -1,0 +1,74 @@
+package com.packagename.myapp.views;
+
+import com.google.common.collect.Lists;
+import com.packagename.myapp.dao.UserRepository;
+import com.packagename.myapp.models.Faculty;
+import com.packagename.myapp.models.User;
+import com.packagename.myapp.services.LoginService;
+import com.packagename.myapp.views.layouts.MainLayout;
+import com.packagename.myapp.views.layouts.VerticalLayoutAuthRestricted;
+import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.annotation.PostConstruct;
+import java.util.List;
+
+@Route(value = "students", layout = MainLayout.class)
+@PageTitle("Students")
+@CssImport("./styles/shared-styles.css")
+@CssImport("./styles/faculty-view.css")
+@CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
+public class StudentsView extends VerticalLayoutAuthRestricted {
+
+    private final Logger logger = LogManager.getLogger(StudentsView.class);
+
+    private final UserRepository userRepository;
+    private final LoginService loginService;
+
+    private List<User> students;
+    private Grid<User> studentsGrid;
+
+    public StudentsView(LoginService loginService, UserRepository userRepository) {
+        super(loginService);
+        this.loginService = loginService;
+        this.userRepository = userRepository;
+    }
+
+    @PostConstruct
+    private void init() {
+        addClassName("students-view");
+        setupHeader();
+        setupGrid();
+    }
+
+    private void setupHeader() {
+        H1 header = new H1("Students");
+        header.addClassName("faculty-header");
+        add(header);
+    }
+
+    private void setupGrid(){
+        students = Lists.newArrayList(userRepository.findAllStudents());
+
+        studentsGrid = new Grid<>();
+        studentsGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
+        studentsGrid.setItems(students);
+
+        studentsGrid.addColumn(User::getName).setHeader("Name").setKey("name").setWidth("15px");
+        studentsGrid.addColumn(User::getSurname).setHeader("Surname").setKey("surname").setWidth("15px");
+        studentsGrid.addColumn(User::getEmail).setHeader("e-mail").setKey("email").setWidth("20px");
+        studentsGrid.addColumn(User::getPhoneNumber). setHeader("Phone number").setKey("phonenumber").setWidth("15px");
+
+        add(studentsGrid);
+    }
+
+}
+

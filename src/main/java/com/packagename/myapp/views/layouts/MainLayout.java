@@ -1,5 +1,7 @@
 package com.packagename.myapp.views.layouts;
 
+import com.packagename.myapp.models.Domain;
+import com.packagename.myapp.models.Subject;
 import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.views.*;
 import com.packagename.myapp.views.customComponents.NavigateButton;
@@ -62,10 +64,12 @@ public class MainLayout extends AppLayout {
         Button myAccount = new NavigateButton("My account", MyAccountView.class);
         Button catalog = new NavigateButton("Catalog", CatalogView.class);
         Button faculty = new NavigateButton("Faculty", FacultyView.class);
+        Button students = new NavigateButton("Students", StudentsView.class);
         Button specialization = new NavigateButton("Specialization", SpecializationView.class);
         Button departments = new NavigateButton("Departments", DepartmentView.class);
         Button professors = new NavigateButton("Professors", ProfessorView.class);
         Button subject = new NavigateButton("Subject", SubjectView.class);
+        Button domain = new NavigateButton("Domain", DomainView.class);
 
 
         addToDrawer(new VerticalLayout(
@@ -74,11 +78,12 @@ public class MainLayout extends AppLayout {
                 myAccount,
                 catalog,
                 faculty,
+                students,
                 departments,
                 professors,
-                faculty,
                 specialization,
-                subject
+                subject,
+                domain
         ));
     }
 
