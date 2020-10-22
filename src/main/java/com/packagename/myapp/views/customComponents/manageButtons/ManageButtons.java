@@ -3,6 +3,7 @@ package com.packagename.myapp.views.customComponents.manageButtons;
 import com.packagename.myapp.models.BaseModel;
 import com.packagename.myapp.services.NotificationService;
 import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -10,6 +11,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -20,6 +23,10 @@ public class ManageButtons<T extends BaseModel> extends HorizontalLayout {
     private final Class<T> clazz;
     private final String tableName;
 
+    List<Component> customFormFields = new ArrayList<>();
+
+    ModifyDialog<T> modifyDialog;
+
     private Runnable onSuccessfulModify;
     private Set<T> selectedItems;
 
@@ -28,6 +35,8 @@ public class ManageButtons<T extends BaseModel> extends HorizontalLayout {
         this.clazz = clazz;
 
         this.tableName = this.getTableName();
+
+        modifyDialog = new ModifyDialog<>(clazz);
 
         init();
     }
@@ -48,7 +57,7 @@ public class ManageButtons<T extends BaseModel> extends HorizontalLayout {
     }
 
     private void create(ClickEvent<Button> event) {
-        ModifyDialog<T> modifyDialog = new ModifyDialog<>(clazz);
+        modifyDialog.setNewBean();
 
         modifyDialog.addOnSuccessfulModifyListener(this::runOnSuccessfulModifyEvent);
 
@@ -66,13 +75,11 @@ public class ManageButtons<T extends BaseModel> extends HorizontalLayout {
 
     private void modify(ClickEvent<Button> event) {
         if (selectedItems.isEmpty()) {
-            notificationService.alert("Select a valid "+tableName+" to modify!");
+            notificationService.alert("Select a valid " + tableName + " to modify!");
             return;
         }
 
         selectedItems.forEach(item -> {
-            ModifyDialog<T> modifyDialog = new ModifyDialog<>(clazz);
-
             modifyDialog.setBean(item);
 
             modifyDialog.addOnSuccessfulModifyListener(this::runOnSuccessfulModifyEvent);
@@ -83,7 +90,7 @@ public class ManageButtons<T extends BaseModel> extends HorizontalLayout {
 
     private void delete(ClickEvent<Button> event) {
         if (selectedItems.isEmpty()) {
-            notificationService.alert("Select a valid "+tableName+" to delete!");
+            notificationService.alert("Select a valid " + tableName + " to delete!");
             return;
         }
 
@@ -123,5 +130,9 @@ public class ManageButtons<T extends BaseModel> extends HorizontalLayout {
 
     public String getTableName() {
         return createNewInstance().isPresent() ? createNewInstance().get().getEntityTableName() : "UNKNOWN";
+    }
+
+    public ModifyDialog<T> getModifyDialog() {
+        return modifyDialog;
     }
 }

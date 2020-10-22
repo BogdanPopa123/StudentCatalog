@@ -88,7 +88,6 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
                 .withValidator(instance::existsByName, "Name already taken")
                 .bind(BaseModel::getName, BaseModel::setName);
 
-
         parent.ifPresent(baseModelComboBox -> binder.forField(baseModelComboBox)
                 .asRequired("Select " + instance.getParentNewInstance().getEntityTableName())
                 .withValidator(item -> {
@@ -178,5 +177,9 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
 
     public Binder<T> getBinder() {
         return binder;
+    }
+
+    public void setNewBean() {
+        this.binder.setBean(createInstance());
     }
 }

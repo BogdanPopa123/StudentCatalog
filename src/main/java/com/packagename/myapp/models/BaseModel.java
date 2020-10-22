@@ -80,9 +80,10 @@ public abstract class BaseModel extends ParentableModel {
         return StringUtils.capitalize(getEntityTableName());
     }
 
+    // TODO: 23-Oct-20 Generify fields and configure binder
     @SuppressWarnings("unchecked")
     public List<Component> getPropertiesField() {
-        List<Class<?>> acceptedReturnType = Arrays.asList(String.class, Integer.class, BaseModel.class);
+        List<Class<?>> acceptedReturnType = Arrays.asList(String.class, Integer.class);
 
         ArrayList<Component> fields = new ArrayList<>();
 

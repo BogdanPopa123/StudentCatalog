@@ -24,7 +24,6 @@ import java.util.Set;
 @CssImport("./styles/subject-view-styles.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
 public class SubjectView extends VerticalLayoutAuthRestricted {
-
     private final LoginService loginService;
     private final ManageButtons<Subject> manageButtons = new ManageButtons<>(Subject.class);
     private final SubjectRepository subjectRepository;
@@ -34,7 +33,6 @@ public class SubjectView extends VerticalLayoutAuthRestricted {
     public SubjectView(LoginService loginService, SubjectRepository subjectRepository) {
         super(loginService);
         this.loginService = loginService;
-//        this.manageButtons = manageButtons;
         this.subjectRepository = subjectRepository;
     }
 

@@ -17,8 +17,6 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.data.repository.CrudRepository;
 
 import javax.annotation.PostConstruct;
@@ -33,7 +31,6 @@ import java.util.stream.Collectors;
 @CssImport("./styles/specialization-style.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
 public class SpecializationView extends VerticalLayoutAuthRestricted {
-    private final Logger logger = LogManager.getLogger(SpecializationView.class);
     private final LoginService loginService;
     private final List<CrudRepository<? extends BaseModel, Integer>> repositories;
     private final ManageButtons<Specialization> manageButtons = new ManageButtons<>(Specialization.class);
