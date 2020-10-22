@@ -31,7 +31,7 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
     private final Class<T> clazz;
     private final TextField name = new TextField("Name");
     private final T instance;
-    private Optional<ComboBox<BaseModel>> parent;
+    private Optional<ComboBox<BaseModel>> parent = Optional.empty();
     private String tableName;
     private Runnable onSuccessfulModify;
     private Binder<T> binder;
@@ -84,7 +84,7 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
 
         binder.forField(name)
                 .asRequired("Enter name")
-                .withValidator(instance::checkNameAvailability, "Name already taken")
+                .withValidator(instance::existsByName, "Name already taken")
                 .bind(BaseModel::getName, BaseModel::setName);
 
 
@@ -156,14 +156,6 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
 
     public void setBean(T item) {
         binder.setBean(item);
-    }
-
-    private void configureComboBox(ComboBox<? extends BaseModel> comboBox, String placeholder, String width) {
-        comboBox.setPlaceholder(placeholder);
-        comboBox.setWidth(width);
-        comboBox.setRequired(true);
-        comboBox.setAllowCustomValue(false);
-        comboBox.setPreventInvalidInput(true);
     }
 
     private CrudRepository<T, Integer> getItemRepository(Class<T> clazz) {
