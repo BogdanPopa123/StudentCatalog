@@ -9,7 +9,7 @@ import com.packagename.myapp.models.BaseModel;
 import com.packagename.myapp.models.Specialization;
 import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.views.customComponents.BaseModelTreeGrid;
-import com.packagename.myapp.views.customComponents.manageButtons.SpecializationViewManageButtons;
+import com.packagename.myapp.views.customComponents.manageButtons.ManageButtons;
 import com.packagename.myapp.views.layouts.MainLayout;
 import com.packagename.myapp.views.layouts.VerticalLayoutAuthRestricted;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -36,18 +36,16 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
     private final Logger logger = LogManager.getLogger(SpecializationView.class);
     private final LoginService loginService;
     private final List<CrudRepository<? extends BaseModel, Integer>> repositories;
-    private final SpecializationViewManageButtons manageButtons;
+    private final ManageButtons<Specialization> manageButtons = new ManageButtons<>(Specialization.class);
     private BaseModelTreeGrid grid = new BaseModelTreeGrid();
 
     public SpecializationView(LoginService loginService,
                               SpecializationRepository specializationRepository,
                               DomainRepository domainRepository,
                               FacultyRepository facultyRepository,
-                              DepartmentRepository departmentRepository,
-                              SpecializationViewManageButtons manageButtons) {
+                              DepartmentRepository departmentRepository) {
         super(loginService);
         this.loginService = loginService;
-        this.manageButtons = manageButtons;
 
         repositories = Arrays.asList(facultyRepository, departmentRepository, domainRepository, specializationRepository);
     }

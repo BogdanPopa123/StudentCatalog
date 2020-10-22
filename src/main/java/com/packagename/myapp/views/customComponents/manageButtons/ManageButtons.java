@@ -1,39 +1,37 @@
 package com.packagename.myapp.views.customComponents.manageButtons;
 
-
-import com.packagename.myapp.dao.SubjectRepository;
-import com.packagename.myapp.models.Subject;
+import com.packagename.myapp.models.BaseModel;
 import com.packagename.myapp.services.NotificationService;
-import com.packagename.myapp.views.SpecializationView;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Optional;
 import java.util.Set;
 
-@Component
-@Scope(scopeName = "prototype")
-public class SubjectViewManageButtons extends HorizontalLayout {
+public class ManageButtons<T extends BaseModel> extends HorizontalLayout {
+    private final static Logger logger = LogManager.getLogger(ManageButtons.class);
 
-    private final Logger logger = LogManager.getLogger(SpecializationView.class);
-
-    private final SubjectRepository subjectRepository;
     private final NotificationService notificationService;
-    private Runnable onSuccessfulModify;
-    private Set<Subject> selectedItems;
+    private final Class<T> clazz;
+    private final String tableName;
 
-    public SubjectViewManageButtons(SubjectRepository subjectRepository, NotificationService notificationService) {
-        this.subjectRepository = subjectRepository;
-        this.notificationService = notificationService;
+    private Runnable onSuccessfulModify;
+    private Set<T> selectedItems;
+
+    public ManageButtons(Class<T> clazz) {
+        this.notificationService = NotificationService.getService();
+        this.clazz = clazz;
+
+        this.tableName = this.getTableName();
+
+        init();
     }
 
-    @PostConstruct
     private void init() {
         Button create = new Button("Create", this::create);
         Button details = new Button("Details", this::details);
@@ -49,8 +47,8 @@ public class SubjectViewManageButtons extends HorizontalLayout {
         add(manageButtons);
     }
 
-    private void create(ClickEvent<Button> clickEvent) {
-        ModifyDialog<Subject> modifyDialog = new ModifyDialog<>(Subject.class);
+    private void create(ClickEvent<Button> event) {
+        ModifyDialog<T> modifyDialog = new ModifyDialog<>(clazz);
 
         modifyDialog.addOnSuccessfulModifyListener(this::runOnSuccessfulModifyEvent);
 
@@ -59,23 +57,23 @@ public class SubjectViewManageButtons extends HorizontalLayout {
 
     private void details(ClickEvent<Button> event) {
         if (selectedItems.isEmpty()) {
-            notificationService.alert("Select a valid subject!");
+            notificationService.alert("Select a valid " + tableName + "!");
             return;
         }
 
-        selectedItems.forEach(subject -> new DetailsDialog(subject).open());
+        selectedItems.forEach(item -> new DetailsDialog(item).open());
     }
 
     private void modify(ClickEvent<Button> event) {
         if (selectedItems.isEmpty()) {
-            notificationService.alert("Select a valid subject to modify!");
+            notificationService.alert("Select a valid "+tableName+" to modify!");
             return;
         }
 
-        selectedItems.forEach(subject -> {
-            ModifyDialog<Subject> modifyDialog = new ModifyDialog<>(Subject.class);
+        selectedItems.forEach(item -> {
+            ModifyDialog<T> modifyDialog = new ModifyDialog<>(clazz);
 
-            modifyDialog.setBean(subject);
+            modifyDialog.setBean(item);
 
             modifyDialog.addOnSuccessfulModifyListener(this::runOnSuccessfulModifyEvent);
 
@@ -85,12 +83,12 @@ public class SubjectViewManageButtons extends HorizontalLayout {
 
     private void delete(ClickEvent<Button> event) {
         if (selectedItems.isEmpty()) {
-            notificationService.alert("Select a valid subject to delete!");
+            notificationService.alert("Select a valid "+tableName+" to delete!");
             return;
         }
 
         selectedItems.forEach(item -> {
-            DeleteDialog deleteDialog = new DeleteDialog(item);
+            DeleteDialog<BaseModel> deleteDialog = new DeleteDialog<>(item);
 
             deleteDialog.addOnConfirmEvent(this::runOnSuccessfulModifyEvent);
 
@@ -98,7 +96,7 @@ public class SubjectViewManageButtons extends HorizontalLayout {
         });
     }
 
-    public void setSelectedItems(Set<Subject> selectedItems) {
+    public void setSelectedItems(Set<T> selectedItems) {
         this.selectedItems = selectedItems;
     }
 
@@ -110,5 +108,20 @@ public class SubjectViewManageButtons extends HorizontalLayout {
         if (this.onSuccessfulModify != null) {
             onSuccessfulModify.run();
         }
+    }
+
+    private Optional<T> createNewInstance() {
+        try {
+            return Optional.of(clazz.getDeclaredConstructor().newInstance());
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+
+        logger.error("Failed to create new instance of class: " + clazz.getSimpleName());
+        return Optional.empty();
+    }
+
+    public String getTableName() {
+        return createNewInstance().isPresent() ? createNewInstance().get().getEntityTableName() : "UNKNOWN";
     }
 }

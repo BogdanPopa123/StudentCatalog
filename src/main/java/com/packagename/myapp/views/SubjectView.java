@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.packagename.myapp.dao.SubjectRepository;
 import com.packagename.myapp.models.Subject;
 import com.packagename.myapp.services.LoginService;
-import com.packagename.myapp.views.customComponents.manageButtons.SubjectViewManageButtons;
+import com.packagename.myapp.views.customComponents.manageButtons.ManageButtons;
 import com.packagename.myapp.views.layouts.MainLayout;
 import com.packagename.myapp.views.layouts.VerticalLayoutAuthRestricted;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -26,15 +26,15 @@ import java.util.Set;
 public class SubjectView extends VerticalLayoutAuthRestricted {
 
     private final LoginService loginService;
-    private final SubjectViewManageButtons manageButtons;
+    private final ManageButtons<Subject> manageButtons = new ManageButtons<>(Subject.class);
     private final SubjectRepository subjectRepository;
 
     private Grid<Subject> grid;
 
-    public SubjectView(LoginService loginService, SubjectViewManageButtons manageButtons, SubjectRepository subjectRepository) {
+    public SubjectView(LoginService loginService, SubjectRepository subjectRepository) {
         super(loginService);
         this.loginService = loginService;
-        this.manageButtons = manageButtons;
+//        this.manageButtons = manageButtons;
         this.subjectRepository = subjectRepository;
     }
 
