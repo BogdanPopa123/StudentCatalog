@@ -76,11 +76,12 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
 //        grid.addColumn(baseModel -> baseModel.getClass().getSimpleName()).setHeader("Category");
 
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
-        grid.setHeight("100vh");
+        grid.setHeight("70vh");
 
         grid.addSelectionListener(event -> {
-            Set<BaseModel> selectedItems = event.getAllSelectedItems().stream()
+            Set<Specialization> selectedItems = event.getAllSelectedItems().stream()
                     .filter(item -> item instanceof Specialization)
+                    .map(item -> (Specialization) item)
                     .collect(Collectors.toSet());
 
             manageButtons.setSelectedItems(selectedItems);
@@ -100,7 +101,7 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
     }
 
     private void configureManageButton() {
-        manageButtons.getBinder().setBean(new Specialization());
+//        manageButtons.getBinder().setBean(new Specialization());
         manageButtons.addOnSuccessfulModifyListener(grid::updateDataAndExpandAll);
     }
 }

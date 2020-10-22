@@ -1,20 +1,13 @@
 package com.packagename.myapp.views.customComponents.manageButtons;
 
-import com.packagename.myapp.dao.DepartmentRepository;
-import com.packagename.myapp.dao.DomainRepository;
-import com.packagename.myapp.dao.FacultyRepository;
-import com.packagename.myapp.dao.SpecializationRepository;
-import com.packagename.myapp.models.*;
+import com.packagename.myapp.models.BaseModel;
+import com.packagename.myapp.models.Specialization;
 import com.packagename.myapp.services.NotificationService;
 import com.packagename.myapp.views.SpecializationView;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.binder.BeanValidationBinder;
-import com.vaadin.flow.data.binder.Binder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Scope;
@@ -28,30 +21,26 @@ import java.util.Set;
 public class SpecializationViewManageButtons extends HorizontalLayout {
 
     private final Logger logger = LogManager.getLogger(SpecializationView.class);
-    private final SpecializationRepository specializationRepository;
-    private final DomainRepository domainRepository;
-    private final FacultyRepository facultyRepository;
-    private final DepartmentRepository departmentRepository;
+    //    private final SpecializationRepository specializationRepository;
+//    private final DomainRepository domainRepository;
+//    private final FacultyRepository facultyRepository;
+//    private final DepartmentRepository departmentRepository;
     private final NotificationService notificationService;
-    private final Binder<Specialization> binder = new BeanValidationBinder<>(Specialization.class);
+    //    private final Binder<Specialization> binder = new BeanValidationBinder<>(Specialization.class);
 //    private Dialog dialog;
-    private TextField name = new TextField("Name");
-    private ComboBox<Domain> domain = new ComboBox<>("Domain");
-    private ComboBox<Faculty> faculty = new ComboBox<>("Faculty");
-    private ComboBox<Department> department = new ComboBox<>("Department");
+//    private TextField name = new TextField("Name");
+//    private ComboBox<Domain> domain = new ComboBox<>("Domain");
+//    private ComboBox<Faculty> faculty = new ComboBox<>("Faculty");
+//    private ComboBox<Department> department = new ComboBox<>("Department");
     private Runnable onSuccessfulModify;
-    private Set<BaseModel> selectedItems;
+    private Set<Specialization> selectedItems;
 
-    public SpecializationViewManageButtons(SpecializationRepository specializationRepository,
-                                           DomainRepository domainRepository,
-                                           FacultyRepository facultyRepository,
-                                           DepartmentRepository departmentRepository,
-                                           NotificationService notificationService) {
+    public SpecializationViewManageButtons(NotificationService notificationService) {
 
-        this.specializationRepository = specializationRepository;
-        this.domainRepository = domainRepository;
-        this.facultyRepository = facultyRepository;
-        this.departmentRepository = departmentRepository;
+//        this.specializationRepository = specializationRepository;
+//        this.domainRepository = domainRepository;
+//        this.facultyRepository = facultyRepository;
+//        this.departmentRepository = departmentRepository;
         this.notificationService = notificationService;
 
     }
@@ -66,16 +55,16 @@ public class SpecializationViewManageButtons extends HorizontalLayout {
     private void setButtons() {
         Button create = new Button("Create", this::create);
         Button details = new Button("Details", this::details);
-//        Button modify = new Button("Modify", this::modify);
+        Button modify = new Button("Modify", this::modify);
         Button delete = new Button("Delete", this::delete);
 
         create.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
         details.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-//        modify.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        modify.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
-        HorizontalLayout manageButtons = new HorizontalLayout(create, details, delete);
-//        HorizontalLayout manageButtons = new HorizontalLayout(create, details, modify, delete);
+//        HorizontalLayout manageButtons = new HorizontalLayout(create, details, delete);
+        HorizontalLayout manageButtons = new HorizontalLayout(create, details, modify, delete);
         add(manageButtons);
     }
 
@@ -178,14 +167,22 @@ public class SpecializationViewManageButtons extends HorizontalLayout {
         selectedItems.forEach(item -> new DetailsDialog(item).open());
     }
 
-//    private void modify(ClickEvent<Button> event) {
-//        if (selectedItems.isEmpty()) {
-//            notificationService.alert("Select a valid specialization to modify!");
-//            return;
-//        }
-//
-//        selectedItems.forEach(item -> {
-//            binder.setBean((Specialization) item);
+    private void modify(ClickEvent<Button> event) {
+        if (selectedItems.isEmpty()) {
+            notificationService.alert("Select a valid specialization to modify!");
+            return;
+        }
+
+        selectedItems.forEach(specialization -> {
+            ModifyDialog<Specialization> modifyDialog = new ModifyDialog<>(Specialization.class);
+
+            modifyDialog.setBean(specialization);
+
+            modifyDialog.addOnSuccessfulModifyListener(this::runOnSuccessfulModifyEvent);
+
+            modifyDialog.open();
+
+//            binder.setBean((item);
 //
 //            Domain domain = binder.getBean().getDomain();
 //            Department department = domain.getDepartment();
@@ -196,8 +193,8 @@ public class SpecializationViewManageButtons extends HorizontalLayout {
 //            this.domain.setValue(domain);
 //
 //            dialog.open();
-//        });
-//    }
+        });
+    }
 
     private void delete(ClickEvent<Button> event) {
         if (selectedItems.isEmpty()) {
@@ -214,19 +211,11 @@ public class SpecializationViewManageButtons extends HorizontalLayout {
         });
     }
 
-    private void configureComboBox(ComboBox<? extends BaseModel> comboBox, String placeholder, String width) {
-        comboBox.setPlaceholder(placeholder);
-        comboBox.setWidth(width);
-        comboBox.setRequired(true);
-        comboBox.setAllowCustomValue(false);
-        comboBox.setPreventInvalidInput(true);
-    }
+//    public Binder<Specialization> getBinder() {
+//        return binder;
+//    }
 
-    public Binder<Specialization> getBinder() {
-        return binder;
-    }
-
-    public void setSelectedItems(Set<BaseModel> selectedItems) {
+    public void setSelectedItems(Set<Specialization> selectedItems) {
         this.selectedItems = selectedItems;
     }
 

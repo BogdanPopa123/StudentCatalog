@@ -15,6 +15,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.BinderValidationStatus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.repository.CrudRepository;
@@ -35,6 +36,7 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
     private String tableName;
     private Runnable onSuccessfulModify;
     private Binder<T> binder;
+    private VerticalLayout formFields;
 
 
     public ModifyDialog(Class<T> clazz) {
@@ -52,7 +54,7 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
         name.setWidth("300px");
         name.addKeyPressListener(Key.ENTER, this::save);
 
-        VerticalLayout formFields = new VerticalLayout(name);
+        formFields = new VerticalLayout(name);
 
         if (instance.hasParent()) {
             List<HierarchicalCombobox> parentFields = instance.getParentTreeCombobox();
@@ -100,14 +102,13 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
                     parentFromRepository.ifPresent(t::setParent);
                 }));
 
-        binder.bindInstanceFields(this);
-
-
+//        binder.bindInstanceFields(this);
     }
 
     private void save(ComponentEvent<? extends Component> event) {
         logger.debug("Submit new " + instance.getEntityTableNameCapitalized() + " data");
 
+        BinderValidationStatus<T> validate = binder.validate();
         if (!binder.isValid()) {
             logger.debug("Not valid " + instance.getEntityTableNameCapitalized() + " data");
             return;
@@ -169,5 +170,13 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
 
     private CrudRepository<? extends BaseModel, Integer> getParentRepository(Class<T> clazz) {
         return instance.getParentNewInstance().getRepository();
+    }
+
+    public void addField(Component field) {
+        formFields.add(field);
+    }
+
+    public Binder<T> getBinder() {
+        return binder;
     }
 }

@@ -80,6 +80,7 @@ public abstract class BaseModel extends ParentableModel {
         return StringUtils.capitalize(getEntityTableName());
     }
 
+    @SuppressWarnings("unchecked")
     public List<Component> getPropertiesField() {
         List<Class<?>> acceptedReturnType = Arrays.asList(String.class, Integer.class, BaseModel.class);
 
@@ -124,6 +125,6 @@ public abstract class BaseModel extends ParentableModel {
     }
 
     public boolean existsByName(String name) {
-        return StreamSupport.stream(this.getRepository().findAll().spliterator(), false).noneMatch(t -> t.getName().equals(name));
+        return StreamSupport.stream(this.getRepository().findAll().spliterator(), false).noneMatch(t -> t.getName().equals(name) && t.getId() == this.getId());
     }
 }

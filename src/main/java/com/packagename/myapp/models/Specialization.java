@@ -86,4 +86,15 @@ public class Specialization extends BaseModel {
     public void setPlan(LearningPlan plan) {
         this.plan = plan;
     }
+
+    @Override
+    public String toString() {
+        return "Specialization{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", domain=" + domain +
+                ", studentClasses=" + studentClasses +
+                ", plan=" + plan +
+                '}';
+    }
 }

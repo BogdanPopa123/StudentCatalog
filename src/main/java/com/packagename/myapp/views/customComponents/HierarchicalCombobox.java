@@ -19,14 +19,15 @@ public class HierarchicalCombobox extends ComboBox<BaseModel> {
     }
 
     private void changeValueEvent(ComponentValueChangeEvent<ComboBox<BaseModel>, BaseModel> event) {
+        BaseModel value = event.getValue();
+
+        if (value == null) {
+            return;
+        }
+
+        this.getParentComboBox().ifPresent(parent -> parent.setValue(value.getParent()));
+
         getChildComboBox().ifPresent(child -> {
-            BaseModel value = event.getValue();
-
-            if (value == null) {
-                child.setItems(new ArrayList<>());
-                return;
-            }
-
             List<BaseModel> children = event.getValue().getChildren();
 
             child.setItems(children);
@@ -37,6 +38,8 @@ public class HierarchicalCombobox extends ComboBox<BaseModel> {
                 childOfChild.setItems(list);
             });
         });
+
+        this.setValue(value);
     }
 
 
@@ -47,7 +50,7 @@ public class HierarchicalCombobox extends ComboBox<BaseModel> {
     public void setParentCombBox(HierarchicalCombobox parent) {
         this.parent = parent;
 
-        if (parent.getChildComboBox().isPresent() && !this.equals(parent.getChildComboBox().get())) {
+        if (!parent.getChildComboBox().isPresent() || !this.equals(parent.getChildComboBox().get())) {
             parent.setChildComboBox(this);
         }
     }
@@ -59,8 +62,8 @@ public class HierarchicalCombobox extends ComboBox<BaseModel> {
     public void setChildComboBox(HierarchicalCombobox child) {
         this.child = child;
 
-        if (child.getParentComboBox().isPresent() && !this.equals(child.getParentComboBox().get())) {
-            child.setChildComboBox(this);
+        if (!child.getParentComboBox().isPresent() || !this.equals(child.getParentComboBox().get())) {
+            child.setParentCombBox(this);
         }
     }
 
