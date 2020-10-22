@@ -76,7 +76,7 @@ public class SpecializationView extends VerticalLayoutAuthRestricted {
 //        grid.addColumn(baseModel -> baseModel.getClass().getSimpleName()).setHeader("Category");
 
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
-        grid.setHeight("800px");
+        grid.setHeight("100vh");
 
         grid.addSelectionListener(event -> {
             Set<BaseModel> selectedItems = event.getAllSelectedItems().stream()

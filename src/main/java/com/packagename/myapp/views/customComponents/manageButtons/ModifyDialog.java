@@ -2,13 +2,13 @@ package com.packagename.myapp.views.customComponents.manageButtons;
 
 import com.packagename.myapp.models.BaseModel;
 import com.packagename.myapp.services.NotificationService;
+import com.packagename.myapp.views.customComponents.HierarchicalCombobox;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -31,7 +31,7 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
     private final Class<T> clazz;
     private final TextField name = new TextField("Name");
     private final T instance;
-    private Optional<ComboBox<BaseModel>> parent = Optional.empty();
+    private Optional<HierarchicalCombobox> parent = Optional.empty();
     private String tableName;
     private Runnable onSuccessfulModify;
     private Binder<T> binder;
@@ -55,8 +55,7 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
         VerticalLayout formFields = new VerticalLayout(name);
 
         if (instance.hasParent()) {
-
-            List<ComboBox<BaseModel>> parentFields = instance.getParentTreeCombobox();
+            List<HierarchicalCombobox> parentFields = instance.getParentTreeCombobox();
             this.parent = parentFields.stream().findFirst();
 
             parentFields.forEach(formFields::add);

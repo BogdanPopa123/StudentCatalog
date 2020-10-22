@@ -1,8 +1,9 @@
 package com.packagename.myapp.models;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.packagename.myapp.models.annotations.Parent;
-import com.vaadin.flow.component.combobox.ComboBox;
+import com.packagename.myapp.views.customComponents.HierarchicalCombobox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.reflections.ReflectionUtils;
@@ -41,15 +42,15 @@ public abstract class ParentableModel {
     }
 
     // TODO: 12-Oct-20 Add change value listener to filter valid parent items
-    public List<ComboBox<BaseModel>> getParentTreeCombobox() {
-        ArrayList<ComboBox<BaseModel>> fields = new ArrayList<>();
+    public ArrayList<HierarchicalCombobox> getParentTreeCombobox() {
+        ArrayList<HierarchicalCombobox> hierarchicalComboboxes = new ArrayList<>();
 
         BaseModel current = getParentNewInstance();
         while (current != null) {
             String propertyName = current.getEntityTableNameCapitalized();
             CrudRepository<? extends BaseModel, Integer> repository = current.getRepository();
 
-            ComboBox<BaseModel> field = new ComboBox<>(propertyName);
+            HierarchicalCombobox field = new HierarchicalCombobox(propertyName);
 
             field.setItemLabelGenerator(BaseModel::getName);
             field.setItems(Lists.newArrayList(repository.findAll()));
@@ -59,12 +60,16 @@ public abstract class ParentableModel {
             field.setAllowCustomValue(false);
             field.setPreventInvalidInput(true);
 
-            fields.add(field);
+            if(!hierarchicalComboboxes.isEmpty()){
+                field.setChildComboBox(Iterables.getLast(hierarchicalComboboxes));
+            }
+
+            hierarchicalComboboxes.add(field);
 
             current = current.getParentNewInstance();
         }
 
-        return fields;
+        return hierarchicalComboboxes;
     }
 
     public BaseModel getParentNewInstance() {
