@@ -5,7 +5,6 @@ import com.packagename.myapp.dao.UserRepository;
 import com.packagename.myapp.models.User;
 import com.packagename.myapp.models.UserRole;
 import com.packagename.myapp.services.HashingService;
-import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.views.layouts.MainLayout;
 import com.packagename.myapp.views.layouts.VerticalLayoutAuthRestricted;
 import com.vaadin.flow.component.Key;
@@ -30,12 +29,9 @@ import javax.annotation.PostConstruct;
 @CssImport("./styles/shared-styles.css")
 public class AdminPanelView extends VerticalLayoutAuthRestricted {
 
-    private final LoginService loginService;
     private final UserRepository userRepository;
 
-    public AdminPanelView(LoginService loginService, UserRepository userRepository) {
-        super(loginService);
-        this.loginService = loginService;
+    public AdminPanelView(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

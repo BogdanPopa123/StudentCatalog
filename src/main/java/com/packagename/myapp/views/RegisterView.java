@@ -1,7 +1,6 @@
 package com.packagename.myapp.views;
 
 import com.packagename.myapp.models.User;
-import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.views.layouts.VerticalLayoutAuthRestricted;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Key;
@@ -29,7 +28,6 @@ public class RegisterView extends VerticalLayoutAuthRestricted {
 
     private static final Logger logger = LogManager.getLogger(RegisterView.class);
 
-    private final LoginService loginService;
     private final Binder<User> binder = new BeanValidationBinder<>(User.class);
     private TextField username = new TextField("Username");
     private TextField email = new TextField("Email");
@@ -41,9 +39,7 @@ public class RegisterView extends VerticalLayoutAuthRestricted {
     private TextField birthDay = new TextField("Birth Date");
     private User user = new User();
 
-    public RegisterView(LoginService loginService) {
-        super(loginService);
-        this.loginService = loginService;
+    public RegisterView() {
     }
 
     @PostConstruct

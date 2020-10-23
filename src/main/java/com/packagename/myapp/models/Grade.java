@@ -15,6 +15,7 @@ public class Grade {
     @Column(name = "grade_id")
     private int id;
 
+    // TODO: 09-Oct-20 Need parents?
     @ManyToOne(cascade = CascadeType.REMOVE)
     private Student student;
 

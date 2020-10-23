@@ -87,7 +87,7 @@ public class LoginService {
     }
 
     public User getAuthenticatedUser() {
-        logger.debug("Trying to get authenticated user");
+        logger.trace("Trying to get authenticated user");
 
 
         User user = cookieService.getCurrentUserFromCookies();

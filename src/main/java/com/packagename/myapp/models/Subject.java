@@ -2,11 +2,12 @@ package com.packagename.myapp.models;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "subject")
-public class Subject {
+public class Subject extends BaseModel{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,7 +16,6 @@ public class Subject {
 
     @NotNull(message = "Enter name")
     private String name;
-
 
     @ManyToMany
     private Set<Professor> professors;
@@ -67,10 +67,16 @@ public class Subject {
     }
 
     @Override
-    public String toString() {
-        return "Subject{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+    public BaseModel getParent() {
+        return null;
     }
+
+    @Override
+    public void setParent(BaseModel parent) {}
+
+    @Override
+    public List<BaseModel> getChildren() {
+        return null;
+    }
+
 }

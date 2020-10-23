@@ -18,7 +18,6 @@ public class HomeView extends VerticalLayoutAuthRestricted {
     private final LoginService loginService;
 
     public HomeView(LoginService loginService) {
-        super(loginService);
         this.loginService = loginService;
     }
 

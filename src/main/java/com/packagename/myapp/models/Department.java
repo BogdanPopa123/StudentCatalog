@@ -1,5 +1,7 @@
 package com.packagename.myapp.models;
 
+import com.packagename.myapp.models.annotations.Parent;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -15,6 +17,7 @@ public class Department extends BaseModel {
     @Column(name = "department_id")
     private int id;
 
+    @Parent
     @NotNull(message = "Select faculty")
     @ManyToOne
     @JoinColumn(name = "faculty_id", nullable = false)
@@ -60,6 +63,11 @@ public class Department extends BaseModel {
     @Override
     public BaseModel getParent() {
         return faculty;
+    }
+
+    @Override
+    public void setParent(BaseModel parent) {
+        faculty = (Faculty) parent;
     }
 
     @Override

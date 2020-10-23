@@ -1,5 +1,6 @@
 package com.packagename.myapp.services;
 
+import com.packagename.myapp.Application;
 import com.vaadin.flow.component.notification.Notification;
 import org.springframework.stereotype.Service;
 
@@ -60,5 +61,9 @@ public class NotificationService {
         public String getValue() {
             return value;
         }
+    }
+
+    public static NotificationService getService(){
+        return Application.context.getBean(NotificationService.class);
     }
 }

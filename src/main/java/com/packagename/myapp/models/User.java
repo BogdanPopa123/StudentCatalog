@@ -194,7 +194,7 @@ public class User {
 
     public static User jsonParse(String jsonString) {
         try {
-            logger.debug("Trying to parse JSON to User model");
+            logger.trace("Trying to parse JSON to User model");
             return getMapper().readValue(jsonString, User.class);
         } catch (JsonProcessingException e) {
             logger.warn("Error on parsing user FROM JSON: " + jsonString, e);
