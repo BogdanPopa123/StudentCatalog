@@ -3,7 +3,6 @@ package com.packagename.myapp.views.customComponents.manageButtons;
 import com.packagename.myapp.models.BaseModel;
 import com.packagename.myapp.services.NotificationService;
 import com.vaadin.flow.component.ClickEvent;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -11,8 +10,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -23,9 +20,7 @@ public class ManageButtons<T extends BaseModel> extends HorizontalLayout {
     private final Class<T> clazz;
     private final String tableName;
 
-    List<Component> customFormFields = new ArrayList<>();
-
-    ModifyDialog<T> modifyDialog;
+    private ModifyDialog<T> modifyDialog;
 
     private Runnable onSuccessfulModify;
     private Set<T> selectedItems;

@@ -126,6 +126,8 @@ public abstract class BaseModel extends ParentableModel {
     }
 
     public boolean existsByName(String name) {
-        return StreamSupport.stream(this.getRepository().findAll().spliterator(), false).noneMatch(t -> t.getName().equals(name) && t.getId() == this.getId());
+        return StreamSupport
+                .stream(this.getRepository().findAll().spliterator(), false)
+                .noneMatch(t -> t.getName().equals(name) && t.getId() == this.getId());
     }
 }

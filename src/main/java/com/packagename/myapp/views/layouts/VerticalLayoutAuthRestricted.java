@@ -1,5 +1,6 @@
 package com.packagename.myapp.views.layouts;
 
+import com.packagename.myapp.Application;
 import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.services.NotificationService;
 import com.packagename.myapp.views.HomeView;
@@ -8,20 +9,17 @@ import com.packagename.myapp.views.RegisterView;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 
-@Component
 public class VerticalLayoutAuthRestricted extends VerticalLayout {
 
-    private final LoginService loginService;
+    protected final LoginService loginService;
 
-    @Autowired
-    private NotificationService notificationService;
+    private final NotificationService notificationService;
 
-    public VerticalLayoutAuthRestricted(LoginService loginService) {
-        this.loginService = loginService;
+    public VerticalLayoutAuthRestricted() {
+        notificationService = NotificationService.getService();
+        loginService = Application.context.getBean(LoginService.class);
     }
 
     @Override

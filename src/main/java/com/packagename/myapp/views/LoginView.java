@@ -35,7 +35,6 @@ public class LoginView extends VerticalLayoutAuthRestricted {
     private User user = new User();
 
     public LoginView(LoginService loginService) {
-        super(loginService);
         this.loginService = loginService;
     }
 
