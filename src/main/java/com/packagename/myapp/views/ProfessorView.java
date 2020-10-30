@@ -1,21 +1,28 @@
 package com.packagename.myapp.views;
 
+import com.packagename.myapp.Application;
 import com.packagename.myapp.dao.DepartmentRepository;
 import com.packagename.myapp.dao.ProfessorRepository;
 import com.packagename.myapp.dao.UserRepository;
 import com.packagename.myapp.models.Department;
 import com.packagename.myapp.models.Professor;
+import com.packagename.myapp.models.Student;
+import com.packagename.myapp.models.User;
 import com.packagename.myapp.services.LoginService;
-import com.packagename.myapp.views.customComponents.UserForm;
+import com.packagename.myapp.views.customComponents.manageButtons.ModifyDialog;
 import com.packagename.myapp.views.layouts.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.EmailField;
+import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.value.ValueChangeMode;
+import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -61,15 +68,43 @@ public class ProfessorView extends VerticalLayout {
                 Professor professor = new Professor();
                 professor.setDepartment(departmentComboBox.getValue());
 
-                Runnable onclose = ()->{
+                Runnable onclose = () -> {
                     professorRepository.save(professor);
                     Notification.show("Professor saved successfully!");
                     List<Professor> professors = professorRepository.findAll();
                     grid.setItems(professors);
                 };
-                UserForm dialogBox = new UserForm(loginService, userRepository, professor, onclose);
 
-                dialogBox.open();
+//                UserForm dialogBox = new UserForm(loginService, repository, professor, onclose);
+//
+//                dialogBox.open();
+                ModifyDialog<Student> modifyDialog = new ModifyDialog<>(Student.class);
+                Binder<Student> binder = modifyDialog.getBinder();
+
+                TextField username = new TextField("Username *", "username");
+                EmailField email = new EmailField("Email", "email");
+                TextField name = new TextField("Name *", "name");
+                TextField surname = new TextField("Surname *", "surname");
+                TextField phoneNumber = new TextField("Phone Number", "phone number");
+                PasswordField password = new PasswordField("Password *", "password");
+                PasswordField confirmPassword = new PasswordField("Confirm your password *", "confirm your password");
+                DatePicker dateOfBirth = new DatePicker("Date of birth");
+
+                UserRepository repository = Application.context.getBean(UserRepository.class);
+
+                binder.forField(username)
+                        .asRequired("Enter a name")
+                        .withValidator(repository::existsByUsername, "Not a valid username!")
+                        .bind(User::getUsername, User::setUsername);
+
+                modifyDialog.addField(new HorizontalLayout(
+                        new VerticalLayout(username, email, name, surname, phoneNumber),
+                        new VerticalLayout(password, confirmPassword, dateOfBirth)));
+
+//                binder.bindInstanceFields(modifyDialog);
+
+                modifyDialog.open();
+
 
                 departmentComboBox.setValue(departments.get(0));
             });

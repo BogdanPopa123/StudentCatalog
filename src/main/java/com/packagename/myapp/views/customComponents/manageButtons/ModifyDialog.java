@@ -171,9 +171,10 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
         return instance.getParentNewInstance().getRepository();
     }
 
-    public void addField(Component field) {
+    public void addField(Component ...field) {
         formFields.add(field);
     }
+
 
     public Binder<T> getBinder() {
         return binder;

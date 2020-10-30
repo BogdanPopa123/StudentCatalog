@@ -10,11 +10,12 @@ import org.hibernate.validator.constraints.Email;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
+import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "user")
-public class User {
+public class User extends BaseModel {
 
     private static final Logger logger = LogManager.getLogger(User.class);
     private static ObjectMapper mapper;
@@ -212,6 +213,7 @@ public class User {
         }
     }
 
+    @JsonIgnore
     public static User getAnonymousUser() {
         User anonymousUser = new User();
         anonymousUser.setUsername("AnonymousUsername");
@@ -221,6 +223,24 @@ public class User {
 
     public boolean checkAnonymous() {
         return getAnonymousUser().getUsername().equals(this.getUsername());
+    }
+
+    @Override
+    @JsonIgnore
+    public BaseModel getParent() {
+        return null;
+    }
+
+    @Override
+    @JsonIgnore
+    public void setParent(BaseModel parent) {
+
+    }
+
+    @Override
+    @JsonIgnore
+    public List<BaseModel> getChildren() {
+        return null;
     }
 }
 
