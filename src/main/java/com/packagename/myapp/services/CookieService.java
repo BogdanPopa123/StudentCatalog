@@ -19,7 +19,7 @@ public class CookieService {
         logger.trace("Trying to get cookie: " + name);
         for (Cookie cookie : cookies) {
             if (name.equals(cookie.getName())) {
-                logger.debug("Found cookie " + name + " : " + cookie.getValue());
+                logger.trace("Found cookie " + name + " : " + cookie.getValue());
                 return cookie;
             }
         }
