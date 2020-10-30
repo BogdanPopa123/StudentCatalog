@@ -9,6 +9,7 @@ import com.packagename.myapp.models.Professor;
 import com.packagename.myapp.models.Student;
 import com.packagename.myapp.models.User;
 import com.packagename.myapp.services.LoginService;
+import com.packagename.myapp.views.customComponents.UserDialog;
 import com.packagename.myapp.views.customComponents.manageButtons.ModifyDialog;
 import com.packagename.myapp.views.layouts.MainLayout;
 import com.vaadin.flow.component.button.Button;
@@ -75,35 +76,38 @@ public class ProfessorView extends VerticalLayout {
                     grid.setItems(professors);
                 };
 
+                UserDialog userDialog = new UserDialog();
+                userDialog.open();
+
 //                UserForm dialogBox = new UserForm(loginService, repository, professor, onclose);
 //
 //                dialogBox.open();
-                ModifyDialog<Student> modifyDialog = new ModifyDialog<>(Student.class);
-                Binder<Student> binder = modifyDialog.getBinder();
+//                ModifyDialog<Student> modifyDialog = new ModifyDialog<>(Student.class);
+//                Binder<Student> binder = modifyDialog.getBinder();
+//
+//                TextField username = new TextField("Username *", "username");
+//                EmailField email = new EmailField("Email", "email");
+//                TextField name = new TextField("Name *", "name");
+//                TextField surname = new TextField("Surname *", "surname");
+//                TextField phoneNumber = new TextField("Phone Number", "phone number");
+//                PasswordField password = new PasswordField("Password *", "password");
+//                PasswordField confirmPassword = new PasswordField("Confirm your password *", "confirm your password");
+//                DatePicker dateOfBirth = new DatePicker("Date of birth");
+//
+//                UserRepository repository = Application.context.getBean(UserRepository.class);
+//
+//                binder.forField(username)
+//                        .asRequired("Enter a name")
+//                        .withValidator(repository::existsByUsername, "Not a valid username!")
+//                        .bind(User::getUsername, User::setUsername);
+//
+//                modifyDialog.addField(new HorizontalLayout(
+//                        new VerticalLayout(username, email, name, surname, phoneNumber),
+//                        new VerticalLayout(password, confirmPassword, dateOfBirth)));
+//
+////                binder.bindInstanceFields(modifyDialog);
 
-                TextField username = new TextField("Username *", "username");
-                EmailField email = new EmailField("Email", "email");
-                TextField name = new TextField("Name *", "name");
-                TextField surname = new TextField("Surname *", "surname");
-                TextField phoneNumber = new TextField("Phone Number", "phone number");
-                PasswordField password = new PasswordField("Password *", "password");
-                PasswordField confirmPassword = new PasswordField("Confirm your password *", "confirm your password");
-                DatePicker dateOfBirth = new DatePicker("Date of birth");
-
-                UserRepository repository = Application.context.getBean(UserRepository.class);
-
-                binder.forField(username)
-                        .asRequired("Enter a name")
-                        .withValidator(repository::existsByUsername, "Not a valid username!")
-                        .bind(User::getUsername, User::setUsername);
-
-                modifyDialog.addField(new HorizontalLayout(
-                        new VerticalLayout(username, email, name, surname, phoneNumber),
-                        new VerticalLayout(password, confirmPassword, dateOfBirth)));
-
-//                binder.bindInstanceFields(modifyDialog);
-
-                modifyDialog.open();
+            //    modifyDialog.open();
 
 
                 departmentComboBox.setValue(departments.get(0));
