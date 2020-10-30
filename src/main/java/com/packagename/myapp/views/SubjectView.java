@@ -3,7 +3,6 @@ package com.packagename.myapp.views;
 import com.google.common.collect.Lists;
 import com.packagename.myapp.dao.SubjectRepository;
 import com.packagename.myapp.models.Subject;
-import com.packagename.myapp.views.customComponents.manageButtons.ManageButtons;
 import com.packagename.myapp.views.layouts.MainLayout;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;

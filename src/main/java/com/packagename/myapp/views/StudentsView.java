@@ -48,7 +48,7 @@ public class StudentsView extends VerticalLayoutAuthRestricted {
         add(header);
     }
 
-    private void setupGrid(){
+    private void setupGrid() {
         students = Lists.newArrayList(userRepository.findAllStudents());
 
         studentsGrid = new Grid<>();
@@ -58,10 +58,9 @@ public class StudentsView extends VerticalLayoutAuthRestricted {
         studentsGrid.addColumn(User::getName).setHeader("Name").setKey("name").setWidth("15px");
         studentsGrid.addColumn(User::getSurname).setHeader("Surname").setKey("surname").setWidth("15px");
         studentsGrid.addColumn(User::getEmail).setHeader("e-mail").setKey("email").setWidth("20px");
-        studentsGrid.addColumn(User::getPhoneNumber). setHeader("Phone number").setKey("phonenumber").setWidth("15px");
+        studentsGrid.addColumn(User::getPhoneNumber).setHeader("Phone number").setKey("phonenumber").setWidth("15px");
 
         add(studentsGrid);
     }
-
 }
 

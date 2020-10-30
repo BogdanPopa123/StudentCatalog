@@ -78,5 +78,4 @@ public class Subject extends BaseModel{
     public List<BaseModel> getChildren() {
         return null;
     }
-
 }
