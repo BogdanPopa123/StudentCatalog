@@ -16,7 +16,6 @@ import javax.annotation.PostConstruct;
 public class CatalogView extends VerticalLayoutAuthRestricted {
 
     public CatalogView(LoginService loginService) {
-        super(loginService);
     }
 
     @PostConstruct

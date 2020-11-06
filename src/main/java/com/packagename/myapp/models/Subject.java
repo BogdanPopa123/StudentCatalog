@@ -72,8 +72,10 @@ public class Subject extends BaseModel{
     }
 
     @Override
+    public void setParent(BaseModel parent) {}
+
+    @Override
     public List<BaseModel> getChildren() {
         return null;
     }
-
 }

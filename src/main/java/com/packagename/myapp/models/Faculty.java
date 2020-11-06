@@ -3,7 +3,6 @@ package com.packagename.myapp.models;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -41,6 +40,9 @@ public class Faculty extends BaseModel {
     public BaseModel getParent() {
         return null;
     }
+
+    @Override
+    public void setParent(BaseModel parent) {}
 
     @Override
     public List<BaseModel> getChildren() {

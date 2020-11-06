@@ -72,6 +72,7 @@ public class MainLayout extends AppLayout {
         Button subject = new NavigateButton("Subject", SubjectView.class);
         Button classes = new NavigateButton("Classes", StudentClassView.class);
         Button domain = new NavigateButton("Domain", DomainView.class);
+        Button course = new NavigateButton("Course", CourseView.class);
 
 
         addToDrawer(new VerticalLayout(
@@ -87,7 +88,8 @@ public class MainLayout extends AppLayout {
                 specialization,
                 classes,
                 subject,
-                domain
+                domain,
+                course
         ));
     }
 

@@ -1,6 +1,8 @@
 package com.packagename.myapp.models;
 
 
+import com.packagename.myapp.models.annotations.Parent;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -18,6 +20,7 @@ public class Specialization extends BaseModel {
     @NotNull
     private String name;
 
+    @Parent
     @NotNull(message = "Select domain")
     @ManyToOne
     @JoinColumn(name = "domain_id", nullable = false)
@@ -70,6 +73,11 @@ public class Specialization extends BaseModel {
     }
 
     @Override
+    public void setParent(BaseModel parent) {
+        this.domain = (Domain) parent;
+    }
+
+    @Override
     public List<BaseModel> getChildren() {
         return null;
     }
@@ -88,5 +96,16 @@ public class Specialization extends BaseModel {
 
     public void setPlan(LearningPlan plan) {
         this.plan = plan;
+    }
+
+    @Override
+    public String toString() {
+        return "Specialization{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", domain=" + domain +
+                ", studentClasses=" + studentClasses +
+                ", plan=" + plan +
+                '}';
     }
 }

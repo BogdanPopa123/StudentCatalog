@@ -48,7 +48,6 @@ public class DomainView extends VerticalLayoutAuthRestricted {
                       DomainRepository domainRepository,
                       DepartmentRepository departmentRepository,
                       DomainViewManageButtons manageButtons) {
-        super(loginService);
         this.loginService = loginService;
         this.facultyRepository = facultyRepository;
         this.domainRepository = domainRepository;

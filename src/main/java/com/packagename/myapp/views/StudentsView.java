@@ -2,17 +2,13 @@ package com.packagename.myapp.views;
 
 import com.google.common.collect.Lists;
 import com.packagename.myapp.dao.UserRepository;
-import com.packagename.myapp.models.Faculty;
 import com.packagename.myapp.models.User;
-import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.views.layouts.MainLayout;
 import com.packagename.myapp.views.layouts.VerticalLayoutAuthRestricted;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.data.binder.BeanValidationBinder;
-import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.apache.logging.log4j.LogManager;
@@ -31,14 +27,11 @@ public class StudentsView extends VerticalLayoutAuthRestricted {
     private final Logger logger = LogManager.getLogger(StudentsView.class);
 
     private final UserRepository userRepository;
-    private final LoginService loginService;
 
     private List<User> students;
     private Grid<User> studentsGrid;
 
-    public StudentsView(LoginService loginService, UserRepository userRepository) {
-        super(loginService);
-        this.loginService = loginService;
+    public StudentsView(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -55,7 +48,7 @@ public class StudentsView extends VerticalLayoutAuthRestricted {
         add(header);
     }
 
-    private void setupGrid(){
+    private void setupGrid() {
         students = Lists.newArrayList(userRepository.findAllStudents());
 
         studentsGrid = new Grid<>();
@@ -65,10 +58,9 @@ public class StudentsView extends VerticalLayoutAuthRestricted {
         studentsGrid.addColumn(User::getName).setHeader("Name").setKey("name").setWidth("15px");
         studentsGrid.addColumn(User::getSurname).setHeader("Surname").setKey("surname").setWidth("15px");
         studentsGrid.addColumn(User::getEmail).setHeader("e-mail").setKey("email").setWidth("20px");
-        studentsGrid.addColumn(User::getPhoneNumber). setHeader("Phone number").setKey("phonenumber").setWidth("15px");
+        studentsGrid.addColumn(User::getPhoneNumber).setHeader("Phone number").setKey("phonenumber").setWidth("15px");
 
         add(studentsGrid);
     }
-
 }
 
