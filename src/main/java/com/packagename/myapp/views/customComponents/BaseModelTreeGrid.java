@@ -5,11 +5,15 @@ import com.packagename.myapp.models.BaseModel;
 import com.vaadin.flow.component.treegrid.TreeGrid;
 import com.vaadin.flow.data.provider.hierarchy.TreeData;
 import com.vaadin.flow.data.provider.hierarchy.TreeDataProvider;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.data.repository.CrudRepository;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public class BaseModelTreeGrid extends TreeGrid<BaseModel> {
+    private static final Logger logger = LogManager.getLogger(BaseModelTreeGrid.class);
 
     private List<CrudRepository<? extends BaseModel, Integer>> repositories;
 
@@ -17,6 +21,18 @@ public class BaseModelTreeGrid extends TreeGrid<BaseModel> {
         super();
         this.repositories = repositories;
         this.setGridItemsFromRepositories(repositories);
+    }
+
+    public BaseModelTreeGrid(Class<? extends BaseModel> clazz) {
+        super();
+        try {
+            this.repositories = clazz.getDeclaredConstructor().newInstance().getHierarchicalRepositories();
+            this.setGridItemsFromRepositories(repositories);
+
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            logger.warn("Failed to load parents tree grid", e);
+        }
+
     }
 
     public BaseModelTreeGrid() {
@@ -61,7 +77,7 @@ public class BaseModelTreeGrid extends TreeGrid<BaseModel> {
         repositories.forEach(repository -> repository.findAll().forEach(this::expand));
     }
 
-    public void updateDataAndExpandAll(){
+    public void updateDataAndExpandAll() {
         updateData();
         expandAll();
     }

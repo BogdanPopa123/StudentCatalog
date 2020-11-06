@@ -49,14 +49,15 @@ public class SpecializationView extends BaseModelView<Specialization> {
     }
 
     protected void addGrid() {
-        grid = new BaseModelTreeGrid(repositories);
+        grid = new BaseModelTreeGrid(Specialization.class);
+//        grid = new BaseModelTreeGrid(repositories);
 
         grid.addHierarchyColumn(BaseModel::getName).setHeader("Specializations");
 //        grid.addColumn(baseModel -> baseModel.getClass().getSimpleName()).setHeader("Category");
 
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
         grid.setHeight("70vh");
-
+ 
         grid.addSelectionListener(event -> {
             Set<Specialization> selectedItems = event.getAllSelectedItems().stream()
                     .filter(item -> item instanceof Specialization)

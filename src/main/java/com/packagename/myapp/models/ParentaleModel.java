@@ -17,9 +17,10 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-public abstract class ParentableModel {
-    private final static Logger logger = LogManager.getLogger(ParentableModel.class);
+public abstract class ParentaleModel {
+    private final static Logger logger = LogManager.getLogger(ParentaleModel.class);
 
     // TODO: 09-Oct-20 Use @Parent for getting parent
     @JsonIgnore
@@ -45,6 +46,25 @@ public abstract class ParentableModel {
         return parentsTree;
     }
 
+    @JsonIgnore
+    public List<BaseModel> getEmptyParentsTree() {
+        ArrayList<BaseModel> parentsTree = new ArrayList<>();
+
+        BaseModel currentParent = getParentNewInstance();
+        while (currentParent != null) {
+            parentsTree.add(currentParent);
+
+            currentParent = currentParent.getParentNewInstance();
+        }
+
+        return parentsTree;
+    }
+
+    @JsonIgnore
+    public List<CrudRepository<? extends BaseModel, Integer>> getParentsRepository() {
+        return getEmptyParentsTree().stream().map(BaseModel::getRepository).collect(Collectors.toList());
+    }
+
     // TODO: 12-Oct-20 Add change value listener to filter valid parent items
     @JsonIgnore
     public ArrayList<HierarchicalCombobox> getParentTreeCombobox() {
@@ -65,7 +85,7 @@ public abstract class ParentableModel {
             field.setAllowCustomValue(false);
             field.setPreventInvalidInput(true);
 
-            if(!hierarchicalComboboxes.isEmpty()){
+            if (!hierarchicalComboboxes.isEmpty()) {
                 field.setChildComboBox(Iterables.getLast(hierarchicalComboboxes));
             }
 

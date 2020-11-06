@@ -16,10 +16,12 @@ import javax.persistence.Table;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public abstract class BaseModel extends ParentableModel {
+public abstract class BaseModel extends ParentaleModel {
     private final static Logger logger = LogManager.getLogger(BaseModel.class);
 
     public abstract int getId();
@@ -136,4 +138,15 @@ public abstract class BaseModel extends ParentableModel {
                 .stream(this.getRepository().findAll().spliterator(), false)
                 .noneMatch(t -> t.getName().equals(name) && t.getId() == this.getId());
     }
+
+    @JsonIgnore
+    public List<CrudRepository<? extends BaseModel, Integer>> getHierarchicalRepositories() {
+        List<CrudRepository<? extends BaseModel, Integer>> repositories = this.getEmptyParentsTree().stream()
+                .map(BaseModel::getRepository)
+                .collect(Collectors.toList());
+        Collections.reverse(repositories);
+        repositories.add(this.getRepository());
+        return repositories;
+    }
+
 }
