@@ -1,7 +1,6 @@
 package com.packagename.myapp.views;
 
 import com.packagename.myapp.models.BaseModel;
-import com.packagename.myapp.models.Specialization;
 import com.packagename.myapp.views.customComponents.BaseModelTreeGrid;
 import com.packagename.myapp.views.customComponents.manageButtons.ManageButtons;
 import com.packagename.myapp.views.layouts.VerticalLayoutAuthRestricted;
@@ -69,7 +68,10 @@ public abstract class BaseModelView<T extends BaseModel> extends VerticalLayoutA
         });
 
         add(grid);
-        ((BaseModelTreeGrid)grid).expandAll();
+
+        if (grid instanceof BaseModelTreeGrid) {
+            ((BaseModelTreeGrid) grid).expandAll();
+        }
     }
 
     protected void configureManageButtons() {
@@ -77,10 +79,12 @@ public abstract class BaseModelView<T extends BaseModel> extends VerticalLayoutA
     }
 
     protected void updateGrid() {
-        ((BaseModelTreeGrid)grid).updateDataAndExpandAll();
+        if (grid instanceof BaseModelTreeGrid) {
+            ((BaseModelTreeGrid) grid).updateDataAndExpandAll();
+        }
     }
 
-    private T createNewInstanceOfT(){
+    private T createNewInstanceOfT() {
         try {
             return clazz.getDeclaredConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
