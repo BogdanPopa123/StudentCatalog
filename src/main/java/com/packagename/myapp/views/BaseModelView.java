@@ -6,9 +6,12 @@ import com.packagename.myapp.views.customComponents.BaseModelTreeGrid;
 import com.packagename.myapp.views.customComponents.manageButtons.ManageButtons;
 import com.packagename.myapp.views.layouts.VerticalLayoutAuthRestricted;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.treegrid.TreeGrid;
 
 import javax.annotation.PostConstruct;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,7 +34,11 @@ public abstract class BaseModelView<T extends BaseModel> extends VerticalLayoutA
         configureManageButtons();
     }
 
-    protected abstract void addHeader();
+    protected void addHeader() {
+        H1 header = new H1(Objects.requireNonNull(createNewInstanceOfT()).getEntityTableNameCapitalized());
+        add(header);
+    }
+
 
     protected void addManageButtons() {
         if (loginService.getAuthenticatedUser().isNotAdmin()) {
@@ -54,19 +61,32 @@ public abstract class BaseModelView<T extends BaseModel> extends VerticalLayoutA
 
         grid.addSelectionListener(event -> {
             Set<T> selectedItems = event.getAllSelectedItems().stream()
-                    .filter(item -> item instanceof clazz)
-                    .map(item -> item)
+                    .filter(clazz::isInstance)
+                    .map(clazz::cast)
                     .collect(Collectors.toSet());
 
             manageButtons.setSelectedItems(selectedItems);
         });
 
         add(grid);
-        grid.expandAll();
+        ((BaseModelTreeGrid)grid).expandAll();
     }
 
-    protected abstract void configureManageButtons();
+    protected void configureManageButtons() {
+        manageButtons.addOnSuccessfulModifyListener(this::updateGrid);
+    }
 
-    protected abstract void updateGrid();
+    protected void updateGrid() {
+        ((BaseModelTreeGrid)grid).updateDataAndExpandAll();
+    }
+
+    private T createNewInstanceOfT(){
+        try {
+            return clazz.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 }
