@@ -1,5 +1,6 @@
 package com.packagename.myapp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.packagename.myapp.models.annotations.Parent;
@@ -16,18 +17,22 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-public abstract class ParentableModel {
-    private final static Logger logger = LogManager.getLogger(ParentableModel.class);
+public abstract class ParentaleModel {
+    private final static Logger logger = LogManager.getLogger(ParentaleModel.class);
 
     // TODO: 09-Oct-20 Use @Parent for getting parent
+    @JsonIgnore
     public abstract BaseModel getParent();
 
     // TODO: 12-Oct-20 Setter using reflection
     public abstract void setParent(BaseModel parent);
 
+    @JsonIgnore
     public abstract List<BaseModel> getChildren();
 
+    @JsonIgnore
     public List<BaseModel> getParentsTree() {
         ArrayList<BaseModel> parentsTree = new ArrayList<>();
 
@@ -41,7 +46,27 @@ public abstract class ParentableModel {
         return parentsTree;
     }
 
+    @JsonIgnore
+    public List<BaseModel> getEmptyParentsTree() {
+        ArrayList<BaseModel> parentsTree = new ArrayList<>();
+
+        BaseModel currentParent = getParentNewInstance();
+        while (currentParent != null) {
+            parentsTree.add(currentParent);
+
+            currentParent = currentParent.getParentNewInstance();
+        }
+
+        return parentsTree;
+    }
+
+    @JsonIgnore
+    public List<CrudRepository<? extends BaseModel, Integer>> getParentsRepository() {
+        return getEmptyParentsTree().stream().map(BaseModel::getRepository).collect(Collectors.toList());
+    }
+
     // TODO: 12-Oct-20 Add change value listener to filter valid parent items
+    @JsonIgnore
     public ArrayList<HierarchicalCombobox> getParentTreeCombobox() {
         ArrayList<HierarchicalCombobox> hierarchicalComboboxes = new ArrayList<>();
 
@@ -60,7 +85,7 @@ public abstract class ParentableModel {
             field.setAllowCustomValue(false);
             field.setPreventInvalidInput(true);
 
-            if(!hierarchicalComboboxes.isEmpty()){
+            if (!hierarchicalComboboxes.isEmpty()) {
                 field.setChildComboBox(Iterables.getLast(hierarchicalComboboxes));
             }
 
@@ -72,6 +97,7 @@ public abstract class ParentableModel {
         return hierarchicalComboboxes;
     }
 
+    @JsonIgnore
     public BaseModel getParentNewInstance() {
         Optional<? extends Class<?>> parentClass = getParentClass();
 
@@ -85,6 +111,7 @@ public abstract class ParentableModel {
         return null;
     }
 
+    @JsonIgnore
     public Optional<? extends Class<?>> getParentClass() {
         Optional<Field> parentField = getParentField();
 
@@ -92,11 +119,13 @@ public abstract class ParentableModel {
     }
 
     @SuppressWarnings("unchecked")
+    @JsonIgnore
     protected Optional<Field> getParentField() {
         return ReflectionUtils.getAllFields(this.getClass(), ReflectionUtils.withAnnotation(Parent.class)).stream().findFirst();
     }
 
     @SuppressWarnings("unchecked")
+    @JsonIgnore
     private Optional<Method> getParentSetter() {
         return ReflectionUtils.getAllMethods(this.getClass(),
                 ReflectionUtils.withModifier(Modifier.PUBLIC),

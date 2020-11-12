@@ -38,13 +38,6 @@ public class CourseView extends BaseModelView<Course> {
     }
 
     @Override
-    protected void addHeader() {
-        H2 header = new H2("Courses");
-
-        add(header);
-    }
-
-    @Override
     protected void addGrid() {
         grid = new Grid<>();
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);

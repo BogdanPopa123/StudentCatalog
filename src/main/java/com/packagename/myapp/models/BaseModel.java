@@ -1,5 +1,6 @@
 package com.packagename.myapp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.packagename.myapp.Application;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
@@ -15,10 +16,12 @@ import javax.persistence.Table;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public abstract class BaseModel extends ParentableModel {
+public abstract class BaseModel extends ParentaleModel {
     private final static Logger logger = LogManager.getLogger(BaseModel.class);
 
     public abstract int getId();
@@ -72,16 +75,19 @@ public abstract class BaseModel extends ParentableModel {
         return "id= '" + getId() + " - " + "name= " + getName();
     }
 
+    @JsonIgnore
     public String getEntityTableName() {
         return this.getClass().getAnnotation(Table.class).name();
     }
 
+    @JsonIgnore
     public String getEntityTableNameCapitalized() {
         return StringUtils.capitalize(getEntityTableName());
     }
 
     // TODO: 23-Oct-20 Generify fields and configure binder
     @SuppressWarnings("unchecked")
+    @JsonIgnore
     public List<Component> getPropertiesField() {
         List<Class<?>> acceptedReturnType = Arrays.asList(String.class, Integer.class);
 
@@ -116,11 +122,13 @@ public abstract class BaseModel extends ParentableModel {
         return fields;
     }
 
+    @JsonIgnore
     public String getRepositoryName() {
         return getEntityTableName() + "Repository";
     }
 
     @SuppressWarnings("unchecked")
+    @JsonIgnore
     public <T extends BaseModel> CrudRepository<T, Integer> getRepository() {
         return (CrudRepository<T, Integer>) Application.context.getBean(getRepositoryName());
     }
@@ -130,4 +138,15 @@ public abstract class BaseModel extends ParentableModel {
                 .stream(this.getRepository().findAll().spliterator(), false)
                 .noneMatch(t -> t.getName().equals(name) && t.getId() == this.getId());
     }
+
+    @JsonIgnore
+    public List<CrudRepository<? extends BaseModel, Integer>> getHierarchicalRepositories() {
+        List<CrudRepository<? extends BaseModel, Integer>> repositories = this.getEmptyParentsTree().stream()
+                .map(BaseModel::getRepository)
+                .collect(Collectors.toList());
+        Collections.reverse(repositories);
+        repositories.add(this.getRepository());
+        return repositories;
+    }
+
 }
