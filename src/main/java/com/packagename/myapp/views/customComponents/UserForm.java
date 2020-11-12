@@ -44,9 +44,9 @@ public class UserForm extends Dialog {
         PasswordField newPasswordField = new PasswordField("Password *", "password");
         PasswordField newConfirmField = new PasswordField("Confirm your password *", "confirm your password");
         DatePicker newDateOfBirthField = new DatePicker("Date of birth");
-        ListBox<UserRole> newUserRoleListBox = new ListBox<>();
-        newUserRoleListBox.setItems(UserRole.TEACHER, UserRole.STUDENT);
-        newUserRoleListBox.setValue(UserRole.STUDENT);
+    //    ListBox<UserRole> newUserRoleListBox = new ListBox<>();
+    //    newUserRoleListBox.setItems(UserRole.TEACHER, UserRole.STUDENT);
+     //   newUserRoleListBox.setValue(UserRole.STUDENT);
         RadioButtonGroup<String> newUserIsAdmin = new RadioButtonGroup<>();
         newUserIsAdmin.setLabel("Give this user Admin privileges?");
         newUserIsAdmin.setItems("Yes", "No");
@@ -75,8 +75,8 @@ public class UserForm extends Dialog {
                     newNameField.getValue() == null || newNameField.getValue().trim().equals("") ||
                     newSurnameField.getValue() == null || newSurnameField.getValue().trim().equals("") ||
                     newPasswordField.getValue() == null || newPasswordField.getValue().trim().equals("") ||
-                    newConfirmField.getValue() == null || newConfirmField.getValue().trim().equals("") ||
-                    newUserRoleListBox.getDataProvider() == null
+                    newConfirmField.getValue() == null || newConfirmField.getValue().trim().equals("")
+           //         newUserRoleListBox.getDataProvider() == null
 
             ) {
                 //warningText.concat("Fields marked with * are mandatory\n");
@@ -114,11 +114,6 @@ public class UserForm extends Dialog {
                     Notification.show("This username has already been used!\n");
                     isok = false;
                 }
-                if (newUserRoleListBox.getValue() == null) {
-                    Notification.show("You must select a role");
-                    isok = false;
-                }
-
                 if (isok) {
                     close();
                 }
@@ -138,7 +133,7 @@ public class UserForm extends Dialog {
         HorizontalLayout row3 = new HorizontalLayout(newUsernameField, newEmailField);
         HorizontalLayout row4 = new HorizontalLayout(newPhoneNumber, newDateOfBirthField);
         HorizontalLayout row5 = new HorizontalLayout(newPasswordField, newConfirmField);
-        HorizontalLayout row6 = new HorizontalLayout(newUserRoleListBox, newUserIsAdmin);
+        HorizontalLayout row6 = new HorizontalLayout(newUserIsAdmin);
         HorizontalLayout row7 = new HorizontalLayout(addUserButton, new Button("Cancel", e -> {
             close();
         }));

@@ -5,6 +5,7 @@ import com.packagename.myapp.dao.ProfessorRepository;
 import com.packagename.myapp.dao.UserRepository;
 import com.packagename.myapp.models.Department;
 import com.packagename.myapp.models.Professor;
+import com.packagename.myapp.models.UserRole;
 import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.views.customComponents.UserForm;
 import com.packagename.myapp.views.layouts.MainLayout;
@@ -60,6 +61,7 @@ public class ProfessorView extends VerticalLayout {
 
                 Professor professor = new Professor();
                 professor.setDepartment(departmentComboBox.getValue());
+                professor.setRole(UserRole.TEACHER);
 
                 Runnable onclose = ()->{
                     professorRepository.save(professor);
