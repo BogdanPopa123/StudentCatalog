@@ -68,4 +68,9 @@ public class Faculty extends BaseModel {
     public void setAbbreviation(String abbreviation) {
         this.abbreviation = abbreviation;
     }
+
+    @Override
+    public String toString() {
+        return this.getName();
+    }
 }
