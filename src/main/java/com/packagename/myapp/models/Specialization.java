@@ -40,6 +40,17 @@ public class Specialization extends BaseModel {
         this.studentClasses = studentClasses;
     }
 
+    @NotNull
+    private int studyDuration;
+
+    public int getStudyDuration() {
+        return studyDuration;
+    }
+
+    public void setStudyDuration(int studyDuration) {
+        this.studyDuration = studyDuration;
+    }
+
     public int getId() {
         return id;
     }
