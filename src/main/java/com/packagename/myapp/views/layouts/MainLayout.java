@@ -1,6 +1,7 @@
 package com.packagename.myapp.views.layouts;
 
 import com.packagename.myapp.models.Domain;
+import com.packagename.myapp.models.LearningPlan;
 import com.packagename.myapp.models.Subject;
 import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.views.*;
@@ -73,6 +74,7 @@ public class MainLayout extends AppLayout {
         Button classes = new NavigateButton("Classes", StudentClassView.class);
         Button domain = new NavigateButton("Domain", DomainView.class);
         Button course = new NavigateButton("Course", CourseView.class);
+        Button learningPlan = new NavigateButton("Learning Plan", LearningPlanView.class);
 
 
         addToDrawer(new VerticalLayout(
@@ -89,7 +91,8 @@ public class MainLayout extends AppLayout {
                 classes,
                 subject,
                 domain,
-                course
+                course,
+                learningPlan
         ));
     }
 
