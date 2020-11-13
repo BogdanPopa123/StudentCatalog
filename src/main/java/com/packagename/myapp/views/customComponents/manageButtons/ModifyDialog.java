@@ -35,7 +35,7 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
     private Optional<HierarchicalCombobox> parent = Optional.empty();
     private String tableName;
     private Runnable onSuccessfulModify;
-    private Binder<T> binder;
+    protected Binder<T> binder;
     private VerticalLayout formFields;
 
 
@@ -171,9 +171,10 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
         return instance.getParentNewInstance().getRepository();
     }
 
-    public void addField(Component field) {
+    public void addField(Component ...field) {
         formFields.add(field);
     }
+
 
     public Binder<T> getBinder() {
         return binder;
