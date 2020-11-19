@@ -1,25 +1,51 @@
 package com.packagename.myapp.views;
 
+import com.packagename.myapp.dao.GradeRepository;
+import com.packagename.myapp.models.Grade;
 import com.packagename.myapp.services.LoginService;
-import com.packagename.myapp.views.layouts.VerticalLayoutAuthRestricted;
+import com.packagename.myapp.views.customComponents.manageButtons.ManageButtons;
 import com.packagename.myapp.views.layouts.MainLayout;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
-import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
 
 @Route(value = "catalog", layout = MainLayout.class)
 @PageTitle("Catalog")
 @CssImport("./styles/shared-styles.css")
-public class CatalogView extends VerticalLayoutAuthRestricted {
+public class CatalogView extends GradeView {
 
-    public CatalogView(LoginService loginService) {
+    private final LoginService loginService;
+    private final GradeRepository gradeRepository;
+
+    public CatalogView(LoginService loginService, GradeRepository gradeRepository) {
+        super();
+        this.loginService = loginService;
+        this.gradeRepository = gradeRepository;
     }
 
-    @PostConstruct
-    private void init() {
-        add(new H5("Catalog"));
+    @Override
+    protected void addHeader() {
+        H5 header = new H5("Catalog");
+        add(header);
+    }
+
+    @Override
+    protected void addGrid() {
+        super.addGrid();
+
+        List<Grade> studentGrades = gradeRepository.findALlByStudent_Id(loginService.getAuthenticatedUser().getId());
+        grid.setItems(new ArrayList<>(studentGrades));
+    }
+
+    @Override
+    protected void addManageButtons() {
+    }
+
+    @Override
+    protected void configureManageButtons(ManageButtons<Grade> manageButtons) {
     }
 }
