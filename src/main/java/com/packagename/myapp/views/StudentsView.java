@@ -19,7 +19,7 @@ import java.util.List;
 
 @Route(value = "students", layout = MainLayout.class)
 @PageTitle("Students")
-@CssImport("./styles/shared-styles.css")
+//@CssImport("./styles/shared-styles.css")
 @CssImport("./styles/faculty-view.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
 public class StudentsView extends VerticalLayoutAuthRestricted {
