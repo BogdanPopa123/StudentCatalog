@@ -1,6 +1,7 @@
 package com.packagename.myapp.models;
 
 
+import com.packagename.myapp.dao.SpecializationRepository;
 import com.packagename.myapp.models.annotations.Parent;
 
 import javax.persistence.*;
@@ -80,8 +81,8 @@ public class Specialization extends BaseModel {
 
     @Override
     public List<BaseModel> getChildren() {
-//        return new ArrayList<>(plan);
-       return null;
+  //      return ArrayList<>(plan);
+         return null;
     }
 
     public Domain getDomain() {

@@ -31,17 +31,18 @@ public class LearningPlan extends BaseModel {
 
     @Override
     public BaseModel getParent() {
-        return specialization;
+        return null;
     }
 
     @Override
     public void setParent(BaseModel parent) {
-        this.specialization = (Specialization) parent;
+
     }
 
     @Override
     public List<BaseModel> getChildren() {
-        return new ArrayList<>(courses);
+       return new ArrayList<>(courses);
+//        return null;
     }
 
     public int getId() {
