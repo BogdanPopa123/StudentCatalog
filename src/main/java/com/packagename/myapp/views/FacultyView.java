@@ -2,6 +2,7 @@ package com.packagename.myapp.views;
 
 import com.packagename.myapp.dao.FacultyRepository;
 import com.packagename.myapp.models.Faculty;
+import com.packagename.myapp.views.customComponents.manageButtons.ManageButtons;
 import com.packagename.myapp.views.customComponents.manageButtons.ModifyDialog;
 import com.packagename.myapp.views.layouts.MainLayout;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -23,19 +24,19 @@ public class FacultyView extends BaseModelView<Faculty> {
         this.repository = repository;
     }
 
-    protected void configureManageButtons() {
-        ModifyDialog<Faculty> modifyDialog = manageButtons.getModifyDialog();
+    protected void configureManageButtons(ManageButtons<Faculty> manageButtons) {
+        ModifyDialog<Faculty> modifyDialog = this.manageButtons.getModifyDialog();
         Binder<Faculty> binder = modifyDialog.getBinder();
 
         TextField abbreviation = new TextField("Abbreviation");
 
-        modifyDialog.addField(abbreviation);
+        modifyDialog.addFields(abbreviation);
         binder.forField(abbreviation)
                 .asRequired("Enter abbreviation!")
                 .withValidator(s -> !repository.existsByAbbreviation(s), "Abbreviation already taken!")
                 .bind(Faculty::getAbbreviation, Faculty::setAbbreviation);
 
-        super.configureManageButtons();
+        super.configureManageButtons(manageButtons);
     }
 }
 

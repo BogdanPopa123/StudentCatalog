@@ -1,11 +1,13 @@
 package com.packagename.myapp.models;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "grade")
-public class Grade {
+public class Grade extends BaseModel {
 
     @Temporal(TemporalType.TIMESTAMP)
     private final Date createdAt = new Date();
@@ -14,6 +16,9 @@ public class Grade {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "grade_id")
     private int id;
+
+    @NotNull
+    private int mark;
 
     // TODO: 09-Oct-20 Need parents?
     @ManyToOne(cascade = CascadeType.REMOVE)
@@ -28,6 +33,16 @@ public class Grade {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    @Override
+    public String getName() {
+        return Integer.toString(id);
+    }
+
+    @Override
+    public void setName(String name) {
+
     }
 
     public Student getStudent() {
@@ -48,5 +63,28 @@ public class Grade {
 
     public Date getCreatedAt() {
         return createdAt;
+    }
+
+    @Override
+    public BaseModel getParent() {
+        return null;
+    }
+
+    @Override
+    public void setParent(BaseModel parent) {
+
+    }
+
+    @Override
+    public List<BaseModel> getChildren() {
+        return null;
+    }
+
+    public int getMark() {
+        return mark;
+    }
+
+    public void setMark(int mark) {
+        this.mark = mark;
     }
 }

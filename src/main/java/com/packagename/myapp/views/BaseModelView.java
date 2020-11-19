@@ -30,11 +30,11 @@ public abstract class BaseModelView<T extends BaseModel> extends VerticalLayoutA
         addHeader();
         addManageButtons();
         addGrid();
-        configureManageButtons();
+        configureManageButtons(manageButtons);
     }
 
     protected void addHeader() {
-        H1 header = new H1(Objects.requireNonNull(createNewInstanceOfT()).getEntityTableNameCapitalized());
+        H1 header = new H1(getTableNameCapitalized());
         add(header);
     }
 
@@ -52,7 +52,7 @@ public abstract class BaseModelView<T extends BaseModel> extends VerticalLayoutA
         grid = new BaseModelTreeGrid(clazz);
 //        grid = new BaseModelTreeGrid(repositories);
 
-        grid.addHierarchyColumn(BaseModel::getName).setHeader("Specializations");
+        grid.addHierarchyColumn(BaseModel::getName).setHeader(getTableNameCapitalized());
 //        grid.addColumn(baseModel -> baseModel.getClass().getSimpleName()).setHeader("Category");
 
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
@@ -74,7 +74,7 @@ public abstract class BaseModelView<T extends BaseModel> extends VerticalLayoutA
         }
     }
 
-    protected void configureManageButtons() {
+    protected void configureManageButtons(ManageButtons<T> manageButtons) {
         manageButtons.addOnSuccessfulModifyListener(this::updateGrid);
     }
 
@@ -82,6 +82,10 @@ public abstract class BaseModelView<T extends BaseModel> extends VerticalLayoutA
         if (grid instanceof BaseModelTreeGrid) {
             ((BaseModelTreeGrid) grid).updateDataAndExpandAll();
         }
+    }
+
+    protected String getTableNameCapitalized() {
+        return Objects.requireNonNull(createNewInstanceOfT()).getEntityTableNameCapitalized();
     }
 
     private T createNewInstanceOfT() {

@@ -18,6 +18,7 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.BinderValidationStatus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.repository.CrudRepository;
 
 import java.lang.reflect.InvocationTargetException;
@@ -32,10 +33,10 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
     private final Class<T> clazz;
     private final TextField name = new TextField("Name");
     private final T instance;
+    protected Binder<T> binder;
     private Optional<HierarchicalCombobox> parent = Optional.empty();
     private String tableName;
     private Runnable onSuccessfulModify;
-    protected Binder<T> binder;
     private VerticalLayout formFields;
 
 
@@ -171,7 +172,7 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
         return instance.getParentNewInstance().getRepository();
     }
 
-    public void addField(Component ...field) {
+    public void addFields(Component... field) {
         formFields.add(field);
     }
 
@@ -182,5 +183,11 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
 
     public void setNewBean() {
         this.binder.setBean(createInstance());
+    }
+
+    public void removeAllFields() {
+        formFields.removeAll();
+
+        binder.removeBinding(name);
     }
 }

@@ -5,13 +5,13 @@ import com.packagename.myapp.dao.CourseRepository;
 import com.packagename.myapp.dao.ProfessorRepository;
 import com.packagename.myapp.models.Course;
 import com.packagename.myapp.models.Professor;
+import com.packagename.myapp.views.customComponents.manageButtons.ManageButtons;
 import com.packagename.myapp.views.customComponents.manageButtons.ModifyDialog;
 import com.packagename.myapp.views.layouts.MainLayout;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -57,8 +57,8 @@ public class CourseView extends BaseModelView<Course> {
     }
 
     @Override
-    protected void configureManageButtons() {
-        ModifyDialog<Course> modifyDialog = manageButtons.getModifyDialog();
+    protected void configureManageButtons(ManageButtons<Course> manageButtons) {
+        ModifyDialog<Course> modifyDialog = this.manageButtons.getModifyDialog();
         Binder<Course> binder = modifyDialog.getBinder();
 
         ComboBox<Professor> professor = new ComboBox<>("Professor");
@@ -69,10 +69,10 @@ public class CourseView extends BaseModelView<Course> {
                 .withValidator(p -> p == null || professorRepository.existsByName(p.getName()), "Select a valid professor")
                 .bind(Course::getProfessor, Course::setProfessor);
 
-        modifyDialog.addField(professor);
+        modifyDialog.addFields(professor);
 
 
-        manageButtons.addOnSuccessfulModifyListener(this::updateGrid);
+        this.manageButtons.addOnSuccessfulModifyListener(this::updateGrid);
     }
 
     @Override

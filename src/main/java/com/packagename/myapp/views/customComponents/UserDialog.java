@@ -86,7 +86,7 @@ public class UserDialog extends ModifyDialog<User> {
                 .bind(User::isAdmin, User::setAdmin);
 
 
-        this.addField(new HorizontalLayout(
+        this.addFields(new HorizontalLayout(
                 new VerticalLayout(username, email, surname, phoneNumber, cnp, address),
                 new VerticalLayout(password, confirmPassword, userRole, isAdmin)));
 //                new VerticalLayout(password, confirmPassword, birthDay)));

@@ -8,10 +8,8 @@ import com.packagename.myapp.views.customComponents.BaseModelTreeGrid;
 import com.packagename.myapp.views.customComponents.manageButtons.ManageButtons;
 import com.packagename.myapp.views.layouts.MainLayout;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.treegrid.TreeGrid;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.data.repository.CrudRepository;
@@ -61,8 +59,8 @@ public class DepartmentView extends BaseModelView<Department> {
     }
 
     @Override
-    protected void configureManageButtons() {
-        manageButtons.addOnSuccessfulModifyListener(this::updateGrid);
+    protected void configureManageButtons(ManageButtons<Department> manageButtons) {
+        this.manageButtons.addOnSuccessfulModifyListener(this::updateGrid);
     }
 
     @Override

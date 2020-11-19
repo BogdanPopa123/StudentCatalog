@@ -17,4 +17,8 @@ public class Application extends SpringBootServletInitializer {
         context = SpringApplication.run(Application.class, args);
     }
 
+    public static  <T> T getService(Class<T> clazz) {
+        return context.getBean(clazz);
+    }
+
 }
