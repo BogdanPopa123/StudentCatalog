@@ -1,31 +1,34 @@
 package com.packagename.myapp.views;
 
+import com.google.common.collect.Lists;
 import com.packagename.myapp.dao.*;
 import com.packagename.myapp.models.*;
 import com.packagename.myapp.services.LoginService;
+import com.packagename.myapp.views.customComponents.manageButtons.ModifyDialog;
 import com.packagename.myapp.views.layouts.MainLayout;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import org.hibernate.stat.internal.DeprecatedNaturalIdCacheStatisticsImpl;
-//import sun.rmi.runtime.Log;
 
 import javax.annotation.PostConstruct;
-import javax.xml.transform.dom.DOMResult;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+
+//import sun.rmi.runtime.Log;
 
 @Route(value = "profiles", layout = MainLayout.class)
 @PageTitle("Student Profiles")
 @CssImport("./styles/shared-styles.css")
-public class ProfileView extends VerticalLayout {
+public class ProfileView extends BaseModelView<Profile> {
 
+    private final ProfileRepository profileRepository;
     private final LoginService loginService;
     private final FacultyRepository facultyRepository;
     private final DepartmentRepository departmentRepository;
@@ -33,111 +36,143 @@ public class ProfileView extends VerticalLayout {
     private final SpecializationRepository specializationRepository;
     private final StudentRepository studentRepository;
 
-    public ProfileView(LoginService loginService, FacultyRepository facultyRepository,
-                       DepartmentRepository departmentRepository, DomainRepository domainRepository,
-                       SpecializationRepository specializationRepository, StudentRepository studentRepository){
-        this.loginService = loginService;
+    private Grid<Profile> profileGrid;
+    private List<Profile> profiles;
+
+    public ProfileView(ProfileRepository profileRepository, FacultyRepository facultyRepository,
+                       LoginService loginService, DepartmentRepository departmentRepository,
+                       DomainRepository domainRepository, SpecializationRepository specializationRepository,
+                       StudentRepository studentRepository) {
+        super(Profile.class);
+
+        this.profileRepository = profileRepository;
         this.facultyRepository = facultyRepository;
+        this.loginService = loginService;
         this.departmentRepository = departmentRepository;
         this.domainRepository = domainRepository;
         this.specializationRepository = specializationRepository;
         this.studentRepository = studentRepository;
+
+        addClassName("profile-view");
     }
 
     @PostConstruct
-    private void init(){
+    private void init() {
 
 
+    }
 
-        if(loginService.getAuthenticatedUser().isAdmin()){
-            Select<Faculty> facultySelect = new Select<>();
-            facultySelect.setLabel("Faculty");
-            Select<Department> departmentSelect = new Select<>();
-            departmentSelect.setLabel("Department");
-            Select<Domain> domainSelect = new Select<>();
-            domainSelect.setLabel("Domain");
-            Select<Specialization> specializationSelect = new Select<>();
-            specializationSelect.setLabel("Specialization");
-            Select<Integer> studyYear = new Select<>(1, 2, 3, 4);
-            studyYear.setLabel("Study Year");
-            Select<StudentClass> groupSelect = new Select<>();
-            groupSelect.setLabel("Group");
-            Select<Student> studentSelect = new Select<>();
-            studentSelect.setLabel("Student");
-            Select<Statut> statusSelect = new Select<>();
-            statusSelect.setLabel("Status");
-            Select<FormaFinantare> financingFormSelect = new Select<>();
-            financingFormSelect.setLabel("Financing form");
-            Select<TipBursa> scholarshipSelect = new Select<>();
-            scholarshipSelect.setLabel("Scholarship type");
-            Button addButton = new Button("Save");
-            addButton.setEnabled(false);
+    @Override
+    protected void addHeader() {
 
-            facultySelect.setItems(facultyRepository.findAll());
-            facultySelect.addValueChangeListener(e->{
-                departmentSelect.setValue(null);
-                domainSelect.setValue(null);
-                specializationSelect.setValue(null);
-                addButton.setEnabled(false);
+        H1 header = new H1("Profiles");
+        header.addClassName("profile-header");
+        add(header);
+    }
 
-                departmentSelect.setItems(departmentRepository.findAllByFaculty_Id(facultySelect.getValue().getId()));
-            });
+    @Override
+    protected void addGrid() {
 
-            departmentSelect.addValueChangeListener(e2->{
-                domainSelect.setValue(null);
-                specializationSelect.setValue(null);
-                addButton.setEnabled(false);
+        profiles = Lists.newArrayList(profileRepository.findAll());
 
-                domainSelect.setItems(domainRepository.findAllByDepartment(departmentSelect.getValue()));
-            });
+        profileGrid = new Grid<>();
+        profileGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
+        profileGrid.setItems(profiles);
 
-            domainSelect.addValueChangeListener(e3->{
-                specializationSelect.setValue(null);
-                addButton.setEnabled(false);
+//        facultyGrid.addColumn(Faculty::getId).setHeader("Id").setKey("id").setWidth("10px");
+        profileGrid.addColumn(Profile::getName).setHeader("Name").setKey("name").setWidth("20px");
+        //profileGrid.addColumn(Profile::getAbbreviation).setHeader("Abbreviation").setKey("abbreviation").setWidth("20px");
 
-                specializationSelect.setItems(specializationRepository.findAllByDomain(domainSelect.getValue()));
-            });
+        add(profileGrid);
+    }
 
-            specializationSelect.addValueChangeListener(e4->{
-                addButton.setEnabled(true);
-            });
+    @Override
+    protected void configureManageButtons() {
 
-            studyYear.setValue(1);
-            //groupSelect.setValue(1);
-            List<Student> studentList = studentRepository.findAll();
-//            ArrayList<String> studentNames = new ArrayList<>();
-//            for(Student student: studentList){
-//                studentNames.add(student.getFullName());
-//            }
-            statusSelect.setItems(Statut.values());
-            statusSelect.setValue(Statut.Inscris);
-            financingFormSelect.setItems(FormaFinantare.values());
-            financingFormSelect.setValue(FormaFinantare.Buget);
-            scholarshipSelect.setItems(TipBursa.values());
-            scholarshipSelect.setValue(TipBursa.Niciuna);
+        ModifyDialog<Profile> modifyDialog = manageButtons.getModifyDialog();
+        Binder<Profile> binder = modifyDialog.getBinder();
+
+        Select<Faculty> facultySelect = new Select<>();
+        facultySelect.setLabel("Select a faculty");
+
+        Select<Department> departmentSelect = new Select<>();
+        departmentSelect.setLabel("Select a department");
+        departmentSelect.setItemLabelGenerator(Department::getName);
+
+        Select<Domain> domainSelect = new Select<>();
+        domainSelect.setLabel("Select a domain");
+        domainSelect.setItemLabelGenerator(Domain::getName);
+
+        Select<Specialization> specializationSelect = new Select<>();
+        specializationSelect.setLabel("Select a specialization");
+        specializationSelect.setItemLabelGenerator(Specialization::getName);
+
+        facultySelect.setItems(facultyRepository.findAll());
+        facultySelect.addValueChangeListener(e -> {
+            departmentSelect.setValue(null);
+            domainSelect.setValue(null);
+            specializationSelect.setValue(null);
+
+            departmentSelect.setItems(departmentRepository.findAllByFaculty_Id(facultySelect.getValue().getId()));
+        });
+
+        departmentSelect.addValueChangeListener(e2 -> {
+            domainSelect.setValue(null);
+            specializationSelect.setValue(null);
+            domainSelect.setItems(domainRepository.findAllByDepartment(departmentSelect.getValue()));
+        });
+
+        domainSelect.addValueChangeListener(e3 -> {
+            specializationSelect.setValue(null);
+
+            specializationSelect.setItems(specializationRepository.findAllByDomain(domainSelect.getValue()));
+        });
+
+        Select<FormaFinantare> financingForm = new Select<>();
+        financingForm.setLabel("Financing Form");
+        financingForm.setItems(FormaFinantare.values());
+        financingForm.setValue(FormaFinantare.Buget);
+
+        Select<Statut> status = new Select<>();
+        status.setLabel("Status");
+        status.setItems(Statut.values());
+        status.setValue(Statut.Inscris);
+
+        Select<TipBursa> scholarshipType = new Select<>();
+        scholarshipType.setLabel("Scholarship type");
+        scholarshipType.setItems(TipBursa.values());
+        scholarshipType.setValue(TipBursa.Niciuna);
+
+        Select<Integer> year = new Select<>();
+        year.setLabel("Select study year");
+        year.setItems(1, 2, 3, 4, 5, 6);
+        year.setValue(1);
+
+        binder.forField(status).bind(Profile::getStatus, Profile::setStatus);
+        binder.forField(financingForm).bind(Profile::getFinancingForm, Profile::setFinancingForm);
+        binder.forField(scholarshipType).bind(Profile::getScholarshipType, Profile::setScholarshipType);
+
+        binder.forField(year).bind(Profile::getStudyYear, Profile::setStudyYear);
+
+        modifyDialog.add(new VerticalLayout(
+                new HorizontalLayout(facultySelect, departmentSelect),
+                new HorizontalLayout(domainSelect, specializationSelect),
+                new HorizontalLayout(financingForm, status),
+                new HorizontalLayout(scholarshipType, year)
+        ));
+//  E NEVOIE DE BINDERE???
 
 
+        manageButtons.addOnSuccessfulModifyListener(this::updateGrid);
 
 
-            addButton.addClickListener(e5->{
-                if(!facultySelect.isEmpty() && !departmentSelect.isEmpty() && !domainSelect.isEmpty() &&
-                !specializationSelect.isEmpty()){
-                    Notification.show("Profile saved");
-                }
-            });
+    }
 
+    @Override
+    protected void updateGrid() {
 
+        ArrayList<Profile> profiles = Lists.newArrayList(profileRepository.findAll());
+        profileGrid.setItems(profiles);
 
-
-
-
-
-            add(facultySelect,
-                    departmentSelect,
-                    domainSelect,
-                    specializationSelect,
-                    new HorizontalLayout(studyYear, groupSelect, studentSelect),
-                    new HorizontalLayout(statusSelect, financingFormSelect, scholarshipSelect));
-        }
     }
 }
