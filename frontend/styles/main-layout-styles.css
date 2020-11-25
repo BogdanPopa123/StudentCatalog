@@ -4,15 +4,15 @@
 }
 
 .logout-button {
-    background: rgb(255,193,7);
-    background: linear-gradient(90deg, rgba(255,193,7,0.8550770650056898) 0%, rgba(255,218,107,0.8830882694874825) 51%, rgba(255,193,7,0.7934524151457458) 100%);
-    color: #fff3e0;
+    background: #FDFCF5;
+    color: #026670;
     margin-left: auto;
 }
 
 .logo {
     margin-top: 0;
     margin-bottom: 0;
+    color: #FDFCF5;
 }
 
 .active-link {
@@ -29,4 +29,8 @@
 
 .navbar-header{
     align-self: center;
+}
+
+html {
+    --_lumo-button-color: #4eba9c;
 }
