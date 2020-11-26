@@ -1,10 +1,12 @@
 package com.packagename.myapp.models;
 
 
+import com.packagename.myapp.dao.SpecializationRepository;
 import com.packagename.myapp.models.annotations.Parent;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -79,7 +81,8 @@ public class Specialization extends BaseModel {
 
     @Override
     public List<BaseModel> getChildren() {
-        return null;
+  //      return ArrayList<>(plan);
+         return null;
     }
 
     public Domain getDomain() {
