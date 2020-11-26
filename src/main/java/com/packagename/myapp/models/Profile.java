@@ -16,7 +16,7 @@ public class Profile extends BaseModel {
     private int id;
 
     @JsonIgnore
-    private Integer studyYear;
+    private Integer studyYear = 1;
 
     @NotNull
     private String name;
@@ -37,7 +37,7 @@ public class Profile extends BaseModel {
 
     @JsonIgnore
     @NotNull
-    FormaFinantare financingForm;
+    FormaFinantare financingForm = FormaFinantare.Buget;
 
     public FormaFinantare getFinancingForm() {
         return financingForm;
@@ -65,11 +65,11 @@ public class Profile extends BaseModel {
 
     @JsonIgnore
     @NotNull
-    Statut status;
+    Statut status = Statut.Inscris;
 
     @JsonIgnore
     @NotNull
-    TipBursa scholarshipType;
+    TipBursa scholarshipType = TipBursa.Niciuna;
 
     public int getId() {
         return id;

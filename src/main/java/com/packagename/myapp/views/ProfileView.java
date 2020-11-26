@@ -4,8 +4,10 @@ import com.google.common.collect.Lists;
 import com.packagename.myapp.dao.*;
 import com.packagename.myapp.models.*;
 import com.packagename.myapp.services.LoginService;
+import com.packagename.myapp.views.customComponents.BaseModelTreeGrid;
 import com.packagename.myapp.views.customComponents.manageButtons.ModifyDialog;
 import com.packagename.myapp.views.layouts.MainLayout;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
@@ -16,10 +18,17 @@ import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.apache.commons.compress.utils.Sets;
 
 import javax.annotation.PostConstruct;
+import javax.swing.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static com.google.common.collect.Sets.newHashSet;
 
 //import sun.rmi.runtime.Log;
 
@@ -36,8 +45,7 @@ public class ProfileView extends BaseModelView<Profile> {
     private final SpecializationRepository specializationRepository;
     private final StudentRepository studentRepository;
 
-    private Grid<Profile> profileGrid;
-    private List<Profile> profiles;
+    private Set<Profile> profiles;
 
     public ProfileView(ProfileRepository profileRepository, FacultyRepository facultyRepository,
                        LoginService loginService, DepartmentRepository departmentRepository,
@@ -72,18 +80,14 @@ public class ProfileView extends BaseModelView<Profile> {
 
     @Override
     protected void addGrid() {
-
-        profiles = Lists.newArrayList(profileRepository.findAll());
-
-        profileGrid = new Grid<>();
-        profileGrid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
-        profileGrid.setItems(profiles);
-
+          super.addGrid();
+          grid.removeAllColumns();
 //        facultyGrid.addColumn(Faculty::getId).setHeader("Id").setKey("id").setWidth("10px");
-        profileGrid.addColumn(Profile::getName).setHeader("Name").setKey("name").setWidth("20px");
+        grid.addColumn(BaseModel::getName).setHeader("Name").setKey("name").setWidth("20px");
         //profileGrid.addColumn(Profile::getAbbreviation).setHeader("Abbreviation").setKey("abbreviation").setWidth("20px");
 
-        add(profileGrid);
+        add(grid);
+
     }
 
     @Override
@@ -130,8 +134,10 @@ public class ProfileView extends BaseModelView<Profile> {
 
         Select<FormaFinantare> financingForm = new Select<>();
         financingForm.setLabel("Financing Form");
-        financingForm.setItems(FormaFinantare.values());
+        financingForm.setItems(FormaFinantare.values());//FormaFinantare.values());
         financingForm.setValue(FormaFinantare.Buget);
+
+
 
         Select<Statut> status = new Select<>();
         status.setLabel("Status");
@@ -147,6 +153,8 @@ public class ProfileView extends BaseModelView<Profile> {
         year.setLabel("Select study year");
         year.setItems(1, 2, 3, 4, 5, 6);
         year.setValue(1);
+
+
 
         binder.forField(status).bind(Profile::getStatus, Profile::setStatus);
         binder.forField(financingForm).bind(Profile::getFinancingForm, Profile::setFinancingForm);
@@ -171,8 +179,7 @@ public class ProfileView extends BaseModelView<Profile> {
     @Override
     protected void updateGrid() {
 
-        ArrayList<Profile> profiles = Lists.newArrayList(profileRepository.findAll());
-        profileGrid.setItems(profiles);
+        grid.setItems(Lists.newArrayList(profileRepository.findAll()));
 
     }
 }
