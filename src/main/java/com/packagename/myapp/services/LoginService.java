@@ -97,7 +97,7 @@ public class LoginService {
         }
 
         logger.info("Found not valid user from cookies: " + user);
-        return logout();
+        return cookieService.setAnonymousUser();
     }
 
     public boolean isAuthenticated() {

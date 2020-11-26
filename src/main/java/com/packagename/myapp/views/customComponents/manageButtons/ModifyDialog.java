@@ -15,10 +15,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.binder.BinderValidationStatus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.repository.CrudRepository;
 
 import java.lang.reflect.InvocationTargetException;
@@ -102,13 +100,12 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
                     parentFromRepository.ifPresent(t::setParent);
                 }));
 
-//        binder.bindInstanceFields(this);
     }
 
     private void save(ComponentEvent<? extends Component> event) {
         logger.debug("Submit new " + instance.getEntityTableNameCapitalized() + " data");
 
-        BinderValidationStatus<T> validate = binder.validate();
+        binder.validate();
         if (!binder.isValid()) {
             logger.debug("Not valid " + instance.getEntityTableNameCapitalized() + " data");
             return;
@@ -125,7 +122,6 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
 
 
         runOnSuccessfulModifyEvent();
-
 
         close();
     }

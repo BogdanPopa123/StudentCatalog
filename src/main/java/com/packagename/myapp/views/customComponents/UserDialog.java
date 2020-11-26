@@ -12,19 +12,16 @@ import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.validator.EmailValidator;
 
-public class UserDialog extends ModifyDialog<User> {
+public abstract class UserDialog {
 
-    private final UserRepository userRepository;
+    private static final UserRepository userRepository = Application.context.getBean(UserRepository.class);
 
-    public UserDialog() {
-        super(User.class);
-        userRepository = Application.context.getBean(UserRepository.class);
-        addUserFields();
-    }
+    public static <T extends User> void addUserFieldsToManageButtons(ModifyDialog<T> modifyDialog) {
+        Binder<T> binder = modifyDialog.getBinder();
 
-    private void addUserFields() {
         TextField username = new TextField("Username");
         EmailField email = new EmailField("Email");
         PasswordField password = new PasswordField("Password");
@@ -47,24 +44,24 @@ public class UserDialog extends ModifyDialog<User> {
         binder.forField(username)
                 .asRequired("Enter a name")
                 .withValidator(username1 -> !userRepository.existsByUsername(username1), "Not a valid username!")
-                .bind(User::getUsername, User::setUsername);
+                .bind(T::getUsername, T::setUsername);
 
         binder.forField(surname)
                 .asRequired("Enter a surname")
-                .bind(User::getSurname, User::setSurname);
+                .bind(T::getSurname, T::setSurname);
 
         binder.forField(phoneNumber)
                 .asRequired("Enter a phone number")
-                .bind(User::getUsername, User::setUsername);
+                .bind(T::getUsername, T::setUsername);
 
         binder.forField(email)
                 .asRequired("Enter an email")
                 .withValidator(new EmailValidator("not an email"))
-                .bind(User::getEmail, User::setEmail);
+                .bind(T::getEmail, T::setEmail);
 
         binder.forField(password)
                 .asRequired("Enter a password")
-                .bind(User::getPassword, User::setPassword);
+                .bind(T::getPassword, T::setPassword);
 
         binder.forField(confirmPassword)
                 .asRequired("Confirm password")
@@ -72,21 +69,21 @@ public class UserDialog extends ModifyDialog<User> {
 
         binder.forField(cnp)
                 .asRequired("Enter a CNP")
-                .bind(User::getCnp, User::setCnp);
+                .bind(T::getCnp, T::setCnp);
 
         binder.forField(address)
                 .asRequired("Enter an address")
-                .bind(User::getAddress, User::setAddress);
+                .bind(T::getAddress, T::setAddress);
 
         binder.forField(userRole)
                 //   .asRequired("Enter a role")
-                .bind(User::getRole, User::setRole);
+                .bind(T::getRole, T::setRole);
 
         binder.forField(isAdmin)
-                .bind(User::isAdmin, User::setAdmin);
+                .bind(T::isAdmin, T::setAdmin);
 
 
-        this.addFields(new HorizontalLayout(
+        modifyDialog.addFields(new HorizontalLayout(
                 new VerticalLayout(username, email, surname, phoneNumber, cnp, address),
                 new VerticalLayout(password, confirmPassword, userRole, isAdmin)));
 //                new VerticalLayout(password, confirmPassword, birthDay)));

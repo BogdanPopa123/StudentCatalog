@@ -78,8 +78,8 @@ public class ProfessorView extends VerticalLayout {
                     grid.setItems(professors);
                 };
 
-                UserDialog userDialog = new UserDialog();
-                userDialog.open();
+//                UserDialog userDialog = new Stud();
+//                userDialog.open();
 
                 departmentComboBox.setValue(departments.get(0));
             });

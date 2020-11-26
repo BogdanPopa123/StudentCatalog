@@ -41,7 +41,7 @@ public class GradeView extends BaseModelView<Grade> {
     }
 
     @Override
-    protected void configureManageButtons(ManageButtons<Grade> manageButtons) {
+    protected void configureManageButtons() {
         ModifyDialog<Grade> modifyDialog = manageButtons.getModifyDialog();
         Binder<Grade> binder = modifyDialog.getBinder();
 

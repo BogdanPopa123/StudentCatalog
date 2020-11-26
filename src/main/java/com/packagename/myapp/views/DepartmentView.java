@@ -59,7 +59,7 @@ public class DepartmentView extends BaseModelView<Department> {
     }
 
     @Override
-    protected void configureManageButtons(ManageButtons<Department> manageButtons) {
+    protected void configureManageButtons() {
         this.manageButtons.addOnSuccessfulModifyListener(this::updateGrid);
     }
 

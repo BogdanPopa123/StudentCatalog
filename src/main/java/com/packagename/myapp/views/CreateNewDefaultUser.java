@@ -30,16 +30,14 @@ public class CreateNewDefaultUser extends VerticalLayout {
         this.studentRepository = studentRepository;
 
 
-//        newUser(userRepository, notification, loginService);
+        newUser();
 
 //        newStudent();
 
-        debug();
+//        debug();
     }
 
     private void debug() {
-
-
         studentRepository.findAll().forEach(student -> notification.success(student.toString()));
     }
 
@@ -58,7 +56,9 @@ public class CreateNewDefaultUser extends VerticalLayout {
         user.setPassword(HashingService.hashThis("root"));
         user.setAdmin(true);
 
-        userRepository.save(user);
+        if (!userRepository.existsByUsername(user.getUsername())) {
+            userRepository.save(user);
+        }
 
         notification.success("Create new user");
 

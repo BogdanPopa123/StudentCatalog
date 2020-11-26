@@ -130,4 +130,8 @@ public class ManageButtons<T extends BaseModel> extends HorizontalLayout {
     public ModifyDialog<T> getModifyDialog() {
         return modifyDialog;
     }
+
+    public void setModifyDialog(ModifyDialog<T> modifyDialog) {
+        this.modifyDialog = modifyDialog;
+    }
 }

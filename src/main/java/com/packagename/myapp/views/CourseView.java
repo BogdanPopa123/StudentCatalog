@@ -57,7 +57,7 @@ public class CourseView extends BaseModelView<Course> {
     }
 
     @Override
-    protected void configureManageButtons(ManageButtons<Course> manageButtons) {
+    protected void configureManageButtons() {
         ModifyDialog<Course> modifyDialog = this.manageButtons.getModifyDialog();
         Binder<Course> binder = modifyDialog.getBinder();
 

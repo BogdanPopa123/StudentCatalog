@@ -46,6 +46,6 @@ public class CatalogView extends GradeView {
     }
 
     @Override
-    protected void configureManageButtons(ManageButtons<Grade> manageButtons) {
+    protected void configureManageButtons() {
     }
 }

@@ -8,7 +8,6 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.treegrid.TreeGrid;
 
-import javax.annotation.PostConstruct;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 import java.util.Set;
@@ -23,14 +22,15 @@ public abstract class BaseModelView<T extends BaseModel> extends VerticalLayoutA
     public BaseModelView(Class<T> clazz) {
         this.clazz = clazz;
         manageButtons = new ManageButtons<>(this.clazz);
+
+        init();
     }
 
-    @PostConstruct
     private void init() {
         addHeader();
         addManageButtons();
         addGrid();
-        configureManageButtons(manageButtons);
+        configureManageButtons();
     }
 
     protected void addHeader() {
@@ -74,7 +74,7 @@ public abstract class BaseModelView<T extends BaseModel> extends VerticalLayoutA
         }
     }
 
-    protected void configureManageButtons(ManageButtons<T> manageButtons) {
+    protected void configureManageButtons() {
         manageButtons.addOnSuccessfulModifyListener(this::updateGrid);
     }
 
