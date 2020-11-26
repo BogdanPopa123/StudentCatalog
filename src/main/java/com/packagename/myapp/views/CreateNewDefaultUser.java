@@ -32,7 +32,7 @@ public class CreateNewDefaultUser extends VerticalLayout {
 
 //        newUser(userRepository, notification, loginService);
 
-        newStudent();
+//        newStudent();
 
         debug();
     }

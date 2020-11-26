@@ -7,7 +7,6 @@ import com.packagename.myapp.dao.SubjectRepository;
 import com.packagename.myapp.models.Grade;
 import com.packagename.myapp.models.Student;
 import com.packagename.myapp.models.Subject;
-import com.packagename.myapp.models.User;
 import com.packagename.myapp.views.customComponents.manageButtons.ManageButtons;
 import com.packagename.myapp.views.customComponents.manageButtons.ModifyDialog;
 import com.packagename.myapp.views.layouts.MainLayout;

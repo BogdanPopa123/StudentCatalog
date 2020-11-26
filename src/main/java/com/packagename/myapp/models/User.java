@@ -26,28 +26,28 @@ public class User extends BaseModel {
     private int id;
 
     @NotNull(message = "Enter message")
-    private String username;
+    private String username = "default";
 
     @NotNull(message = "Enter email")
     @Email(message = "Not an email")
-    private String email;
+    private String email = "default@default.com";
 
     @NotNull(message = "Enter password")
-    private String password;
+    private String password = "default";
 
     @NotNull(message = "Enter name")
-    private String name;
+    private String name = "default";
 
     @NotNull(message = "Enter surname")
-    private String surname;
+    private String surname = "default";
 
     private String birthDay;
 
     @NotNull
-    private String cnp;
+    private String cnp = "default";
 
     @NotNull
-    private String address;
+    private String address = "default";
 
     @NotNull
     @Enumerated(EnumType.STRING)
