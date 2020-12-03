@@ -8,6 +8,7 @@ import com.packagename.myapp.views.layouts.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
@@ -46,6 +47,9 @@ public class StudentClassView extends VerticalLayout {
 
         @PostConstruct
     private void init(){
+
+            H1 header = new H1("Student Classes");
+            add(header);
 
         Grid<StudentClass> grid = new Grid<>(StudentClass.class);
         List<StudentClass> list = studentClassRepository.findAll();

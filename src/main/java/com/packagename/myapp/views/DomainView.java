@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 @Route(value = "domain", layout = MainLayout.class)
 @PageTitle("Domains")
 @CssImport("./styles/shared-styles.css")
-@CssImport("./styles/base-style-views.css")
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
 public class DomainView extends VerticalLayoutAuthRestricted {
 
