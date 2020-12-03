@@ -2,7 +2,8 @@
 }
 
 .faculty-header {
-    margin: 20px auto;
+    /*margin: 20px auto;*/
+    text-align: left;
 }
 
 .faculty-name-field{

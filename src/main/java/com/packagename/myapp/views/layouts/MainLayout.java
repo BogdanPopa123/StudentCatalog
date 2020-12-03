@@ -1,8 +1,5 @@
 package com.packagename.myapp.views.layouts;
 
-import com.packagename.myapp.models.Domain;
-import com.packagename.myapp.models.LearningPlan;
-import com.packagename.myapp.models.Subject;
 import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.views.*;
 import com.packagename.myapp.views.customComponents.NavigateButton;
@@ -81,18 +78,18 @@ public class MainLayout extends AppLayout {
                 navbarHeader,
                 home,
                 myAccount,
-                catalog,
                 faculty,
-                students,
                 departments,
-                professors,
-                profiles,
+                domain,
                 specialization,
+                learningPlan,
+                course,
+                catalog,
                 classes,
                 subject,
-                domain,
-                course,
-                learningPlan
+                students,
+                professors,
+                profiles
         ));
     }
 
