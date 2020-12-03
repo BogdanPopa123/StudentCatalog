@@ -56,7 +56,7 @@ public class LoginService {
     }
 
     public User logout() {
-        logger.debug("Logout user: " + getAuthenticatedUser().getUsername());
+        logger.debug("Logout User: " + getAuthenticatedUser().getUsername());
         return cookieService.setAnonymousUser();
     }
 
@@ -66,7 +66,7 @@ public class LoginService {
         String password = user.getPassword();
         user.setPassword(HashingService.hashThis(user.getPassword()));
 
-        logger.info("Registering new user: " + user.toString());
+        logger.info("Registering new User: " + user.toString());
         userRepository.save(user);
 
         return login(user.getUsername(), password);
@@ -87,7 +87,7 @@ public class LoginService {
     }
 
     public User getAuthenticatedUser() {
-        logger.trace("Trying to get authenticated user");
+        logger.trace("Trying to get authenticated User");
 
 
         User user = cookieService.getCurrentUserFromCookies();
@@ -96,7 +96,7 @@ public class LoginService {
             return user;
         }
 
-        logger.info("Found not valid user from cookies: " + user);
+        logger.info("Found not valid User from cookies: " + user);
         return cookieService.setAnonymousUser();
     }
 

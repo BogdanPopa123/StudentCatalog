@@ -1,7 +1,9 @@
 package com.packagename.myapp.views;
 
+import com.packagename.myapp.Application;
 import com.packagename.myapp.dao.FacultyRepository;
 import com.packagename.myapp.models.Faculty;
+import com.packagename.myapp.views.customComponents.BaseModelTreeGrid;
 import com.packagename.myapp.views.customComponents.manageButtons.ModifyDialog;
 import com.packagename.myapp.views.layouts.MainLayout;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -9,6 +11,8 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+
+import java.util.Collections;
 
 @Route(value = "faculty", layout = MainLayout.class)
 @PageTitle("Faculty")
@@ -22,6 +26,13 @@ public class FacultyView extends BaseModelView<Faculty> {
     public FacultyView(FacultyRepository repository) {
         super(Faculty.class);
         this.repository = repository;
+    }
+
+    @Override
+    protected void addGrid() {
+        super.addGrid();
+
+        this.grid = new BaseModelTreeGrid(Collections.singletonList(Application.getService(FacultyRepository.class)));
     }
 
     protected void configureManageButtons() {

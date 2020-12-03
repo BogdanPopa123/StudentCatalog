@@ -30,31 +30,31 @@ public class CookieService {
 
 
     public User getCurrentUserFromCookies() {
-        Cookie userCookie = getCookieByName("user");
+        Cookie userCookie = getCookieByName("User");
 
         if (userCookie != null) {
             return User.jsonParse(userCookie.getValue());
         }
 
         logger.debug("User cookie not found");
-        logger.debug("Set anonymous user");
+        logger.debug("Set anonymous User");
 
         return setAnonymousUser();
     }
 
     public User addUserCookie(User authUser) {
-        Cookie userCookie = new Cookie("user", authUser.toJSON());
+        Cookie userCookie = new Cookie("User", authUser.toJSON());
         userCookie.setMaxAge(604800);
         userCookie.setPath(VaadinService.getCurrentRequest().getContextPath());
 
-        logger.debug("Update user auth cookie data");
+        logger.debug("Update User auth cookie data");
         VaadinService.getCurrentResponse().addCookie(userCookie);
 
         return authUser;
     }
 
     public User setAnonymousUser() {
-        logger.debug("Set anonymous user to cookies");
+        logger.debug("Set anonymous User to cookies");
         return addUserCookie(User.getAnonymousUser());
     }
 }

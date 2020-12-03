@@ -47,7 +47,7 @@ public class BaseModelTreeGrid extends TreeGrid<BaseModel> {
         this.setGridItemsFromRepositories(repositories);
     }
 
-    public void setGridItemsFromRepositories(List<CrudRepository<? extends BaseModel, Integer>> repositories) {
+    public void setGridItemsFromRepositories(List<CrudRepository<? extends  BaseModel, Integer>> repositories) {
         TreeData<BaseModel> treeData = new TreeData<>();
 
         repositories.forEach(crudRepository -> addItemsToTreeDataFromRepository(crudRepository, treeData));

@@ -203,7 +203,7 @@ public class User extends BaseModel {
             logger.trace("Trying to parse JSON to User model");
             return getMapper().readValue(jsonString, User.class);
         } catch (JsonProcessingException e) {
-            logger.warn("Error on parsing user FROM JSON: " + jsonString, e);
+            logger.warn("Error on parsing User FROM JSON: " + jsonString, e);
             return new User();
         }
 
@@ -213,7 +213,7 @@ public class User extends BaseModel {
             logger.debug("Trying to parse User model to JSON");
             return getMapper().writeValueAsString(this);
         } catch (JsonProcessingException e) {
-            logger.warn("Error on parsing user TO JSON: " + this.toString(), e);
+            logger.warn("Error on parsing User TO JSON: " + this.toString(), e);
             return "";
         }
     }

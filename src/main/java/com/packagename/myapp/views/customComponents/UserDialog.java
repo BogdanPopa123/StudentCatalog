@@ -36,7 +36,7 @@ public abstract class UserDialog {
         userRole.setItems(UserRole.TEACHER, UserRole.STUDENT);
         userRole.setValue(UserRole.STUDENT);
         RadioButtonGroup<Boolean> isAdmin = new RadioButtonGroup<>();
-        isAdmin.setLabel("Give this user Admin privileges?");
+        isAdmin.setLabel("Give this User Admin privileges?");
         isAdmin.setItems(true, false);
         isAdmin.setValue(false);
 

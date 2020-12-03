@@ -53,7 +53,7 @@ public abstract class BaseModelView<T extends BaseModel> extends VerticalLayoutA
 //        grid = new BaseModelTreeGrid(repositories);
 
         grid.addHierarchyColumn(BaseModel::getName).setHeader(getTableNameCapitalized());
-//        grid.addColumn(baseModel -> baseModel.getClass().getSimpleName()).setHeader("Category");
+//        grid.addColumn(BaseModel -> BaseModel.getClass().getSimpleName()).setHeader("Category");
 
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
         grid.setHeight("70vh");

@@ -5,7 +5,6 @@ import com.packagename.myapp.dao.FacultyRepository;
 import com.packagename.myapp.models.BaseModel;
 import com.packagename.myapp.models.Department;
 import com.packagename.myapp.views.customComponents.BaseModelTreeGrid;
-import com.packagename.myapp.views.customComponents.manageButtons.ManageButtons;
 import com.packagename.myapp.views.layouts.MainLayout;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.GridVariant;
