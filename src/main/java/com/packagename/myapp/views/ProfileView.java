@@ -44,13 +44,14 @@ public class ProfileView extends BaseModelView<Profile> {
     private final DomainRepository domainRepository;
     private final SpecializationRepository specializationRepository;
     private final StudentRepository studentRepository;
+    private final StudentClassRepository studentClassRepository;
 
     private Set<Profile> profiles;
 
     public ProfileView(ProfileRepository profileRepository, FacultyRepository facultyRepository,
                        LoginService loginService, DepartmentRepository departmentRepository,
                        DomainRepository domainRepository, SpecializationRepository specializationRepository,
-                       StudentRepository studentRepository) {
+                       StudentRepository studentRepository, StudentClassRepository studentClassRepository) {
         super(Profile.class);
 
         this.profileRepository = profileRepository;
@@ -60,6 +61,7 @@ public class ProfileView extends BaseModelView<Profile> {
         this.domainRepository = domainRepository;
         this.specializationRepository = specializationRepository;
         this.studentRepository = studentRepository;
+        this.studentClassRepository = studentClassRepository;
 
         addClassName("profile-view");
     }
@@ -154,6 +156,19 @@ public class ProfileView extends BaseModelView<Profile> {
         year.setItems(1, 2, 3, 4, 5, 6);
         year.setValue(1);
 
+        Select<StudentClass> group = new Select<>();
+        group.setLabel("Select a group");
+        group.setItems(studentClassRepository.findAll());
+        group.setItemLabelGenerator(StudentClass::getName);
+
+        Select<Student> students = new Select<>();
+        students.setLabel("Student name");
+        students.setItemLabelGenerator(Student::getName);
+
+        group.addValueChangeListener(e4->{
+            students.setItems(studentRepository.findAll());
+        });
+
 
 
         binder.forField(status).bind(Profile::getStatus, Profile::setStatus);
@@ -166,7 +181,8 @@ public class ProfileView extends BaseModelView<Profile> {
                 new HorizontalLayout(facultySelect, departmentSelect),
                 new HorizontalLayout(domainSelect, specializationSelect),
                 new HorizontalLayout(financingForm, status),
-                new HorizontalLayout(scholarshipType, year)
+                new HorizontalLayout(scholarshipType, year),
+                new HorizontalLayout(group, students)
         ));
 //  E NEVOIE DE BINDERE???
 
