@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 
@@ -32,6 +33,8 @@ public class ManageButtons<T extends BaseModel> extends HorizontalLayout {
         this.tableName = this.getTableName();
 
         modifyDialog = new ModifyDialog<>(clazz);
+
+        this.selectedItems = Collections.emptySet();
 
         init();
     }

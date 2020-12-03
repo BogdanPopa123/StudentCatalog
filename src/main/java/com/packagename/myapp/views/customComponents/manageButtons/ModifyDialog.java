@@ -183,4 +183,10 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
     public void setNewBean() {
         this.binder.setBean(createInstance());
     }
+
+    public void removeAllFields() {
+        formFields.removeAll();
+
+        binder.removeBinding(name);
+    }
 }
