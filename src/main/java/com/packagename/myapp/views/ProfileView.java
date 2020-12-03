@@ -15,6 +15,7 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -22,6 +23,7 @@ import org.apache.commons.compress.utils.Sets;
 
 import javax.annotation.PostConstruct;
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -72,6 +74,8 @@ public class ProfileView extends BaseModelView<Profile> {
 
     }
 
+
+
     @Override
     protected void addHeader() {
 
@@ -95,8 +99,16 @@ public class ProfileView extends BaseModelView<Profile> {
     @Override
     protected void configureManageButtons() {
 
+
+
         ModifyDialog<Profile> modifyDialog = manageButtons.getModifyDialog();
+
+        modifyDialog.removeAllFields();
+
         Binder<Profile> binder = modifyDialog.getBinder();
+
+        TextField name = new TextField();
+        name.setLabel("Profile name");
 
         Select<Faculty> facultySelect = new Select<>();
         facultySelect.setLabel("Select a faculty");
@@ -169,6 +181,10 @@ public class ProfileView extends BaseModelView<Profile> {
             students.setItems(studentRepository.findAll());
         });
 
+        binder.forField(name).withValidator(name1 -> !profileRepository.existsByName(name1), "This name is already taken")
+                .bind(Profile::getName, Profile::setName);
+
+
 
 
         binder.forField(status).bind(Profile::getStatus, Profile::setStatus);
@@ -177,7 +193,8 @@ public class ProfileView extends BaseModelView<Profile> {
 
         binder.forField(year).bind(Profile::getStudyYear, Profile::setStudyYear);
 
-        modifyDialog.add(new VerticalLayout(
+        modifyDialog.addField(new VerticalLayout(
+                new HorizontalLayout(name),
                 new HorizontalLayout(facultySelect, departmentSelect),
                 new HorizontalLayout(domainSelect, specializationSelect),
                 new HorizontalLayout(financingForm, status),
