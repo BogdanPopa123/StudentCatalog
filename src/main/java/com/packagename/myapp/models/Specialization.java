@@ -81,8 +81,8 @@ public class Specialization extends BaseModel {
 
     @Override
     public List<BaseModel> getChildren() {
-  //      return ArrayList<>(plan);
-         return null;
+        return new ArrayList<>(studentClasses);
+  //       return null;
     }
 
     public Domain getDomain() {

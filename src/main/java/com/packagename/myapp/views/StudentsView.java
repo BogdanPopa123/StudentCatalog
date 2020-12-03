@@ -24,8 +24,6 @@ import java.util.List;
 @CssImport(value = "./styles/vaadin-text-field-styles.css", themeFor = "vaadin-text-field")
 public class StudentsView extends VerticalLayoutAuthRestricted {
 
-    private final Logger logger = LogManager.getLogger(StudentsView.class);
-
     private final UserRepository userRepository;
 
     private List<User> students;
