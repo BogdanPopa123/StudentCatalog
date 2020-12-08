@@ -177,9 +177,7 @@ public class ProfileView extends BaseModelView<Profile> {
         students.setLabel("Student name");
         students.setItemLabelGenerator(Student::getName);
 
-        group.addValueChangeListener(e4->{
-            students.setItems(studentRepository.findAll());
-        });
+        group.addValueChangeListener(e4-> students.setItems(studentRepository.findAll()));
 
         binder.forField(name).withValidator(name1 -> !profileRepository.existsByName(name1), "This name is already taken")
                 .bind(Profile::getName, Profile::setName);
@@ -193,7 +191,7 @@ public class ProfileView extends BaseModelView<Profile> {
 
         binder.forField(year).bind(Profile::getStudyYear, Profile::setStudyYear);
 
-        modifyDialog.addField(new VerticalLayout(
+        modifyDialog.addFields(new VerticalLayout(
                 new HorizontalLayout(name),
                 new HorizontalLayout(facultySelect, departmentSelect),
                 new HorizontalLayout(domainSelect, specializationSelect),

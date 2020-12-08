@@ -1,25 +1,14 @@
 package com.packagename.myapp.views;
 
-import com.packagename.myapp.Application;
 import com.packagename.myapp.dao.FacultyRepository;
-import com.packagename.myapp.models.BaseModel;
 import com.packagename.myapp.models.Faculty;
-import com.packagename.myapp.views.customComponents.BaseModelTreeGrid;
 import com.packagename.myapp.views.customComponents.manageButtons.ModifyDialog;
 import com.packagename.myapp.views.layouts.MainLayout;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import org.springframework.data.repository.CrudRepository;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Route(value = "faculty", layout = MainLayout.class)
 @PageTitle("Faculty")
