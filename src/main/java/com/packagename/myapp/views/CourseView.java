@@ -5,7 +5,6 @@ import com.packagename.myapp.dao.CourseRepository;
 import com.packagename.myapp.dao.ProfessorRepository;
 import com.packagename.myapp.models.Course;
 import com.packagename.myapp.models.Professor;
-import com.packagename.myapp.views.customComponents.manageButtons.ManageButtons;
 import com.packagename.myapp.views.customComponents.manageButtons.ModifyDialog;
 import com.packagename.myapp.views.layouts.MainLayout;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -62,6 +61,7 @@ public class CourseView extends BaseModelView<Course> {
         Binder<Course> binder = modifyDialog.getBinder();
 
         ComboBox<Professor> professor = new ComboBox<>("Professor");
+        professor.setItemLabelGenerator(Professor::getName);
         professor.setItems(professorRepository.findAll());
         professor.setWidth("300px");
 

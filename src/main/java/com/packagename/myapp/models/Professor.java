@@ -1,6 +1,8 @@
 
 package com.packagename.myapp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -10,10 +12,12 @@ import java.util.Set;
 //EXTENDS USER !!!
 public class Professor extends User  {
 
+    @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "department_id", nullable = false)
+    @JoinColumn(name = "department_id")
     private Department department;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "professor_subject",
@@ -23,6 +27,7 @@ public class Professor extends User  {
     private Set<Subject> knownSubjects;
 
 
+    @JsonIgnore
     @OneToMany(mappedBy = "professor", fetch = FetchType.EAGER)
     private Set<Course> courses;
 

@@ -30,7 +30,7 @@ public class CreateNewDefaultUser extends VerticalLayout {
         this.studentRepository = studentRepository;
 
 
-//        newUser();
+        newUser();
 
 //        newStudent();
 
