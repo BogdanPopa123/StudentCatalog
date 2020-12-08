@@ -7,7 +7,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "subject")
-public class Subject extends BaseModel{
+public class Subject extends BaseModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -72,7 +72,8 @@ public class Subject extends BaseModel{
     }
 
     @Override
-    public void setParent(BaseModel parent) {}
+    public void setParent(BaseModel parent) {
+    }
 
     @Override
     public List<BaseModel> getChildren() {
