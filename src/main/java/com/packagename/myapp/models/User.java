@@ -33,7 +33,7 @@ public class User extends BaseModel {
     private String email = "default@default.com";
 
     @NotNull(message = "Enter password")
-    private String password = "default";
+    private String password;
 
     @NotNull(message = "Enter name")
     private String name = "default";
@@ -58,6 +58,32 @@ public class User extends BaseModel {
     private byte[] image;
 
     private String phoneNumber;
+
+    private static ObjectMapper getMapper() {
+        if (mapper == null) {
+            mapper = new ObjectMapper();
+        }
+
+        return mapper;
+    }
+
+    public static User jsonParse(String jsonString) {
+        try {
+            logger.trace("Trying to parse JSON to User model");
+            return getMapper().readValue(jsonString, User.class);
+        } catch (JsonProcessingException e) {
+            logger.warn("Error on parsing User FROM JSON: " + jsonString, e);
+            return new User();
+        }
+
+    }
+
+    @JsonIgnore
+    public static User getAnonymousUser() {
+        User anonymousUser = new User();
+        anonymousUser.setUsername("AnonymousUsername");
+        return anonymousUser;
+    }
 
     public int getId() {
         return id;
@@ -164,7 +190,7 @@ public class User extends BaseModel {
     }
 
     @JsonIgnore
-    public String getFullName(){
+    public String getFullName() {
         return this.name + " " + this.surname;
     }
 
@@ -190,24 +216,6 @@ public class User extends BaseModel {
                 '}';
     }
 
-    private static ObjectMapper getMapper() {
-        if (mapper == null) {
-            mapper = new ObjectMapper();
-        }
-
-        return mapper;
-    }
-
-    public static User jsonParse(String jsonString) {
-        try {
-            logger.trace("Trying to parse JSON to User model");
-            return getMapper().readValue(jsonString, User.class);
-        } catch (JsonProcessingException e) {
-            logger.warn("Error on parsing User FROM JSON: " + jsonString, e);
-            return new User();
-        }
-
-    }
     public String toJSON() {
         try {
             logger.debug("Trying to parse User model to JSON");
@@ -217,14 +225,6 @@ public class User extends BaseModel {
             return "";
         }
     }
-
-    @JsonIgnore
-    public static User getAnonymousUser() {
-        User anonymousUser = new User();
-        anonymousUser.setUsername("AnonymousUsername");
-        return anonymousUser;
-    }
-
 
     public boolean checkAnonymous() {
         return getAnonymousUser().getUsername().equals(this.getUsername());

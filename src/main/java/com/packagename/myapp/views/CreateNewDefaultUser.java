@@ -30,7 +30,7 @@ public class CreateNewDefaultUser extends VerticalLayout {
         this.studentRepository = studentRepository;
 
 
-        newUser();
+//        newUser();
 
 //        newStudent();
 
@@ -47,6 +47,10 @@ public class CreateNewDefaultUser extends VerticalLayout {
         student.setPassword(HashingService.hashThis("student"));
 
         Application.getService(StudentRepository.class).save(student);
+    }
+
+    private void updateUserPass(){
+//        userRepository.findAllById(2)
     }
 
     private void newUser() {

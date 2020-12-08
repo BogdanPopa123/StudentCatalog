@@ -18,7 +18,7 @@ public class Grade extends BaseModel {
     private int id;
 
     @NotNull
-    private int mark;
+    private int value;
 
     // TODO: 09-Oct-20 Need parents?
     @ManyToOne(cascade = CascadeType.REMOVE)
@@ -80,11 +80,11 @@ public class Grade extends BaseModel {
         return null;
     }
 
-    public int getMark() {
-        return mark;
+    public int getValue() {
+        return value;
     }
 
-    public void setMark(int mark) {
-        this.mark = mark;
+    public void setValue(int value) {
+        this.value = value;
     }
 }

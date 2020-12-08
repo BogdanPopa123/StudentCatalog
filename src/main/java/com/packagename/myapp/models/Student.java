@@ -1,5 +1,7 @@
 package com.packagename.myapp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -8,9 +10,11 @@ import java.util.Set;
 @Table(name = "student")
 public class Student extends User  {
 
+    @JsonIgnore
     @OneToMany(mappedBy = "student", fetch = FetchType.EAGER)
     private Set<Profile> profiles;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "student", fetch = FetchType.EAGER)
     private Set<Grade> grades;
 

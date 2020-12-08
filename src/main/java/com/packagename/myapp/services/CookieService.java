@@ -16,11 +16,14 @@ public class CookieService {
     public Cookie getCookieByName(String name) {
         Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
 
-        logger.trace("Trying to get cookie: " + name);
-        for (Cookie cookie : cookies) {
-            if (name.equals(cookie.getName())) {
-                logger.trace("Found cookie " + name + " : " + cookie.getValue());
-                return cookie;
+
+        if (cookies != null) {
+            logger.trace("Trying to get cookie: " + name);
+            for (Cookie cookie : cookies) {
+                if (name.equals(cookie.getName())) {
+                    logger.trace("Found cookie " + name + " : " + cookie.getValue());
+                    return cookie;
+                }
             }
         }
 

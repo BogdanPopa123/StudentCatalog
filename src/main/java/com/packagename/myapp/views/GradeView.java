@@ -7,7 +7,6 @@ import com.packagename.myapp.dao.SubjectRepository;
 import com.packagename.myapp.models.Grade;
 import com.packagename.myapp.models.Student;
 import com.packagename.myapp.models.Subject;
-import com.packagename.myapp.views.customComponents.manageButtons.ManageButtons;
 import com.packagename.myapp.views.customComponents.manageButtons.ModifyDialog;
 import com.packagename.myapp.views.layouts.MainLayout;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -35,13 +34,15 @@ public class GradeView extends BaseModelView<Grade> {
 
         grid.removeAllColumns();
 
-        grid.addColumn(o -> Objects.toString(((Grade) o).getStudent(), "empty")).setKey("student").setHeader("Student");
-        grid.addColumn(o -> Objects.toString(((Grade) o).getMark(), "empty")).setKey("grade").setHeader("Grade");
+        grid.addColumn(o -> Objects.toString(((Grade) o).getStudent().getName(), "empty")).setKey("student").setHeader("Student");
+        grid.addColumn(o -> Objects.toString(((Grade) o).getValue(), "empty")).setKey("grade").setHeader("Grade");
         grid.addColumn(o -> Objects.toString(((Grade) o).getSubject().getName(), "empty")).setKey("subject").setHeader("Subject");
     }
 
     @Override
     protected void configureManageButtons() {
+        super.configureManageButtons();
+
         ModifyDialog<Grade> modifyDialog = manageButtons.getModifyDialog();
         Binder<Grade> binder = modifyDialog.getBinder();
 
@@ -59,7 +60,7 @@ public class GradeView extends BaseModelView<Grade> {
 
         binder.forField(grade)
                 .withValidator(g -> g > 0 && g < 11, "Enter a valid grade (1-10)")
-                .bind(Grade::getMark, Grade::setMark);
+                .bind(Grade::getValue, Grade::setValue);
 
         binder.forField(student)
                 .bind(Grade::getStudent, Grade::setStudent);
@@ -68,6 +69,5 @@ public class GradeView extends BaseModelView<Grade> {
                 .bind(Grade::getSubject, Grade::setSubject);
 
         modifyDialog.addFields(grade, student, subject);
-
     }
 }
