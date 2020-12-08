@@ -34,6 +34,8 @@ public class ManageButtons<T extends BaseModel> extends HorizontalLayout {
 
         modifyDialog = new ModifyDialog<>(clazz);
 
+        this.selectedItems = Collections.emptySet();
+
         init();
     }
 

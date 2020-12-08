@@ -13,6 +13,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
@@ -41,6 +42,9 @@ public class ProfessorView extends VerticalLayout {
 
     @PostConstruct
     private void init() {
+
+        H1 header = new H1("Professors");
+        add(header);
 
         Grid<Professor> grid = new Grid<>(Professor.class);
 

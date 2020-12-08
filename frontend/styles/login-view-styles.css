@@ -1,5 +1,5 @@
 body {
-    background-color: rgba(120, 213, 117, 0.25);
+    background-color: #9FEDD7;
 }
 
 .main-view-form-style {
@@ -15,7 +15,9 @@ body {
 .login-form-style {
     align-items: center;
     height: 100%;
-    background-color: rgba(17, 15, 15, 0.24);
+    /*background-image: linear-gradient(to bottom right, #fce181, #FDF0A6);*/
+    background-image:
+            radial-gradient(ellipse closest-side, #FCFFD4, #F8E098);
 }
 
 .username-style {
@@ -31,10 +33,10 @@ body {
 }
 
 .login-button-style{
-    background-color: rgba(0, 123, 255, 0.89);
-    color: white;
+    background-color: #026670;
+    color: #F6F6F6;
 }
 
 .register-button-style{
-
+    color: #026670;
 }

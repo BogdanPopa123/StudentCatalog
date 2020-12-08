@@ -71,23 +71,25 @@ public class MainLayout extends AppLayout {
         Button classes = new NavigateButton("Classes", StudentClassView.class);
         Button domain = new NavigateButton("Domain", DomainView.class);
         Button course = new NavigateButton("Course", CourseView.class);
+        Button learningPlan = new NavigateButton("Learning Plan", LearningPlanView.class);
 
 
         addToDrawer(new VerticalLayout(
                 navbarHeader,
                 home,
                 myAccount,
-                catalog,
                 faculty,
-                students,
                 departments,
-                professors,
-                profiles,
+                domain,
                 specialization,
+                learningPlan,
+                course,
+                catalog,
                 classes,
                 subject,
-                domain,
-                course
+                students,
+                professors,
+                profiles
         ));
     }
 

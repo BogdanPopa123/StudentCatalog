@@ -79,6 +79,7 @@ public class Specialization extends BaseModel {
 
     @Override
     public List<BaseModel> getChildren() {
+        //return studentClasses;
         return null;
     }
 
