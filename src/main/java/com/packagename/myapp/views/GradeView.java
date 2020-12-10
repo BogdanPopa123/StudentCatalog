@@ -2,10 +2,10 @@ package com.packagename.myapp.views;
 
 
 import com.packagename.myapp.Application;
-import com.packagename.myapp.dao.StudentRepository;
+import com.packagename.myapp.dao.ProfileRepository;
 import com.packagename.myapp.dao.SubjectRepository;
 import com.packagename.myapp.models.Grade;
-import com.packagename.myapp.models.Student;
+import com.packagename.myapp.models.Profile;
 import com.packagename.myapp.models.Subject;
 import com.packagename.myapp.views.customComponents.manageButtons.ModifyDialog;
 import com.packagename.myapp.views.layouts.MainLayout;
@@ -34,7 +34,7 @@ public class GradeView extends BaseModelView<Grade> {
 
         grid.removeAllColumns();
 
-        grid.addColumn(o -> Objects.toString(((Grade) o).getStudent().getName(), "empty")).setKey("student").setHeader("Student");
+        grid.addColumn(o -> Objects.toString(((Grade) o).getProfile().getStudent().getName(), "empty")).setKey("student").setHeader("Student");
         grid.addColumn(o -> Objects.toString(((Grade) o).getValue(), "empty")).setKey("grade").setHeader("Grade");
         grid.addColumn(o -> Objects.toString(((Grade) o).getSubject().getName(), "empty")).setKey("subject").setHeader("Subject");
     }
@@ -49,25 +49,25 @@ public class GradeView extends BaseModelView<Grade> {
         modifyDialog.removeAllFields();
 
         IntegerField grade = new IntegerField("Grade");
-        ComboBox<Student> student = new ComboBox<>("Student");
+        ComboBox<Profile> profile = new ComboBox<>("Profile");
         ComboBox<Subject> subject = new ComboBox<>("Subject");
 
-        student.setItemLabelGenerator(Student::getFullName);
+        profile.setItemLabelGenerator(Profile::getFullName);
         subject.setItemLabelGenerator(Subject::getName);
 
-        student.setItems(Application.getService(StudentRepository.class).findAll());
+        profile.setItems(Application.getService(ProfileRepository.class).findAll());
         subject.setItems(Application.getService(SubjectRepository.class).findAll());
 
         binder.forField(grade)
                 .withValidator(g -> g > 0 && g < 11, "Enter a valid grade (1-10)")
                 .bind(Grade::getValue, Grade::setValue);
 
-        binder.forField(student)
-                .bind(Grade::getStudent, Grade::setStudent);
+        binder.forField(profile)
+                .bind(Grade::getProfile, Grade::setProfile);
 
         binder.forField(subject)
                 .bind(Grade::getSubject, Grade::setSubject);
 
-        modifyDialog.addFields(grade, student, subject);
+        modifyDialog.addFields(grade, profile, subject);
     }
 }

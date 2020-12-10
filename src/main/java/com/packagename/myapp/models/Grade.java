@@ -22,7 +22,7 @@ public class Grade extends BaseModel {
 
     // TODO: 09-Oct-20 Need parents?
     @ManyToOne(cascade = CascadeType.REMOVE)
-    private Student student;
+    private Profile profile;
 
     @ManyToOne(cascade = CascadeType.REMOVE)
     private Subject subject;
@@ -42,15 +42,14 @@ public class Grade extends BaseModel {
 
     @Override
     public void setName(String name) {
-
     }
 
-    public Student getStudent() {
-        return student;
+    public Profile getProfile() {
+        return profile;
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 
     public Subject getSubject() {

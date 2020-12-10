@@ -37,7 +37,7 @@ public class CatalogView extends GradeView {
     protected void addGrid() {
         super.addGrid();
 
-        List<Grade> studentGrades = gradeRepository.findALlByStudent_Id(loginService.getAuthenticatedUser().getId());
+        List<Grade> studentGrades = gradeRepository.findALlByProfile_Student_Id(loginService.getAuthenticatedUser().getId());
         grid.setItems(new ArrayList<>(studentGrades));
     }
 
