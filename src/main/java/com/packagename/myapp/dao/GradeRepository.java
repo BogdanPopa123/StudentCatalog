@@ -6,5 +6,5 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
 public interface GradeRepository extends CrudRepository<Grade, Integer> {
-    List<Grade> findALlByStudent_Id(int student_id);
+    List<Grade> findALlByProfile_Student_Id(int student_id);
 }

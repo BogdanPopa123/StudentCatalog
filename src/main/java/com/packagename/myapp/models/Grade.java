@@ -18,11 +18,11 @@ public class Grade extends BaseModel {
     private int id;
 
     @NotNull
-    private int mark;
+    private int value;
 
     // TODO: 09-Oct-20 Need parents?
     @ManyToOne(cascade = CascadeType.REMOVE)
-    private Student student;
+    private Profile profile;
 
     @ManyToOne(cascade = CascadeType.REMOVE)
     private Subject subject;
@@ -42,15 +42,14 @@ public class Grade extends BaseModel {
 
     @Override
     public void setName(String name) {
-
     }
 
-    public Student getStudent() {
-        return student;
+    public Profile getProfile() {
+        return profile;
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 
     public Subject getSubject() {
@@ -80,11 +79,11 @@ public class Grade extends BaseModel {
         return null;
     }
 
-    public int getMark() {
-        return mark;
+    public int getValue() {
+        return value;
     }
 
-    public void setMark(int mark) {
-        this.mark = mark;
+    public void setValue(int value) {
+        this.value = value;
     }
 }

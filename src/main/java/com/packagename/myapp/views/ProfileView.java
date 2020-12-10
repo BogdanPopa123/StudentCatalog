@@ -4,13 +4,9 @@ import com.google.common.collect.Lists;
 import com.packagename.myapp.dao.*;
 import com.packagename.myapp.models.*;
 import com.packagename.myapp.services.LoginService;
-import com.packagename.myapp.views.customComponents.BaseModelTreeGrid;
 import com.packagename.myapp.views.customComponents.manageButtons.ModifyDialog;
 import com.packagename.myapp.views.layouts.MainLayout;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -19,18 +15,9 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import org.apache.commons.compress.utils.Sets;
 
-import javax.annotation.PostConstruct;
-import javax.swing.*;
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
-
-import static com.google.common.collect.Sets.newHashSet;
 
 //import sun.rmi.runtime.Log;
 
@@ -68,13 +55,6 @@ public class ProfileView extends BaseModelView<Profile> {
         addClassName("profile-view");
     }
 
-    @PostConstruct
-    private void init() {
-
-
-    }
-
-
 
     @Override
     protected void addHeader() {
@@ -86,10 +66,12 @@ public class ProfileView extends BaseModelView<Profile> {
 
     @Override
     protected void addGrid() {
-          super.addGrid();
-          grid.removeAllColumns();
+        super.addGrid();
+        grid.removeAllColumns();
 //        facultyGrid.addColumn(Faculty::getId).setHeader("Id").setKey("id").setWidth("10px");
-        grid.addColumn(BaseModel::getName).setHeader("Name").setKey("name").setWidth("20px");
+        grid.addColumn(o -> Objects.toString(((Profile) o).getStudent().getName(), "empty")).setKey("student").setHeader("Student");
+        grid.addColumn(o -> Objects.toString(((Profile) o).getName(), "empty")).setKey("name").setHeader("Profile Name");
+        grid.addColumn(o -> Objects.toString(((Profile) o).getStudyYear(), "empty")).setKey("year").setHeader("Study year");
         //profileGrid.addColumn(Profile::getAbbreviation).setHeader("Abbreviation").setKey("abbreviation").setWidth("20px");
 
         add(grid);
@@ -98,7 +80,6 @@ public class ProfileView extends BaseModelView<Profile> {
 
     @Override
     protected void configureManageButtons() {
-
 
 
         ModifyDialog<Profile> modifyDialog = manageButtons.getModifyDialog();
@@ -152,7 +133,6 @@ public class ProfileView extends BaseModelView<Profile> {
         financingForm.setValue(FormaFinantare.Buget);
 
 
-
         Select<Statut> status = new Select<>();
         status.setLabel("Status");
         status.setItems(Statut.values());
@@ -177,17 +157,16 @@ public class ProfileView extends BaseModelView<Profile> {
         students.setLabel("Student name");
         students.setItemLabelGenerator(Student::getName);
 
-        group.addValueChangeListener(e4-> students.setItems(studentRepository.findAll()));
+        group.addValueChangeListener(e4 -> students.setItems(studentRepository.findAll()));
 
         binder.forField(name).withValidator(name1 -> !profileRepository.existsByName(name1), "This name is already taken")
                 .bind(Profile::getName, Profile::setName);
 
 
-
-
         binder.forField(status).bind(Profile::getStatus, Profile::setStatus);
         binder.forField(financingForm).bind(Profile::getFinancingForm, Profile::setFinancingForm);
         binder.forField(scholarshipType).bind(Profile::getScholarshipType, Profile::setScholarshipType);
+        binder.forField(students).bind(Profile::getStudent, Profile::setStudent);
 
         binder.forField(year).bind(Profile::getStudyYear, Profile::setStudyYear);
 

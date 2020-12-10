@@ -4,6 +4,7 @@ import com.packagename.myapp.Application;
 import com.packagename.myapp.dao.UserRepository;
 import com.packagename.myapp.models.User;
 import com.packagename.myapp.models.UserRole;
+import com.packagename.myapp.services.HashingService;
 import com.packagename.myapp.views.customComponents.manageButtons.ModifyDialog;
 import com.vaadin.flow.component.listbox.ListBox;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -61,7 +62,7 @@ public abstract class UserDialog {
 
         binder.forField(password)
                 .asRequired("Enter a password")
-                .bind(T::getPassword, T::setPassword);
+                .bind(T::getPassword, (t, password1) -> t.setPassword(HashingService.hashThis(password1)));
 
         binder.forField(confirmPassword)
                 .asRequired("Confirm password")

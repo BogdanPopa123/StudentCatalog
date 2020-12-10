@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -24,7 +25,7 @@ public class ManageButtons<T extends BaseModel> extends HorizontalLayout {
     private ModifyDialog<T> modifyDialog;
 
     private Runnable onSuccessfulModify;
-    private Set<T> selectedItems = Collections.emptySet();
+    private Set<T> selectedItems = new LinkedHashSet<>();
 
     public ManageButtons(Class<T> clazz) {
         this.notificationService = NotificationService.getService();
@@ -55,7 +56,7 @@ public class ManageButtons<T extends BaseModel> extends HorizontalLayout {
     }
 
     private void create(ClickEvent<Button> event) {
-        modifyDialog.setNewBean();
+//        modifyDialog.setNewBean();
 
         modifyDialog.addOnSuccessfulModifyListener(this::runOnSuccessfulModifyEvent);
 
