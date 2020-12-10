@@ -77,7 +77,9 @@ public class LearningPlanView extends BaseModelView<LearningPlan> {
     @Override
     protected void configureManageButtons() {
 
-        ModifyDialog<LearningPlan> modifyDialog = manageButtons.getModifyDialog();
+
+        ModifyDialog<LearningPlan> modifyDialog = this.manageButtons.getModifyDialog();
+
         Binder<LearningPlan> binder = modifyDialog.getBinder();
 
         ComboBox<String> uy = new ComboBox<>("Academic year");
@@ -99,6 +101,8 @@ public class LearningPlanView extends BaseModelView<LearningPlan> {
         TwinColSelect<Course> courses = new TwinColSelect<>();
         courses.setLabel("Courses");
         courses.setItems(courseRepository.findAll());
+        courses.setItemLabelGenerator(Course::getName);
+        courses.setWidth("300px");
 
         NumberField credits = new NumberField("Credits");
         credits.setHasControls(true);
@@ -121,12 +125,14 @@ public class LearningPlanView extends BaseModelView<LearningPlan> {
         horizontalLayout.add(semester, credits);
 
         VerticalLayout form = new VerticalLayout();
+        form.add(years, horizontalLayout);
 
-        modifyDialog.addField(years, horizontalLayout);
+        HorizontalLayout hl = new HorizontalLayout();
+        hl.add(form,  courses);
 
-        form.add(modifyDialog, courses);
+        modifyDialog.addFields(hl);
 
-        manageButtons.addOnSuccessfulModifyListener(this::updateGrid);
+        this.manageButtons.addOnSuccessfulModifyListener(this::updateGrid);
     }
 
     @Override
