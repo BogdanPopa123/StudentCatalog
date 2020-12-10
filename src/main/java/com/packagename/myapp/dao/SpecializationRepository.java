@@ -12,4 +12,6 @@ public interface SpecializationRepository extends CrudRepository<Specialization,
     boolean existsByName(@NotNull String name);
 
     List<Specialization> findAllByDomain(Domain domain);
+
+    List<Specialization> findAll();
 }

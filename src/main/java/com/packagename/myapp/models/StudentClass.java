@@ -3,11 +3,12 @@ package com.packagename.myapp.models;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "class")
-public class StudentClass {
+public class StudentClass extends BaseModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -67,4 +68,18 @@ public class StudentClass {
     }
 
 
+    @Override
+    public BaseModel getParent() {
+        return specialization;
+    }
+
+    @Override
+    public void setParent(BaseModel parent) {
+
+    }
+
+    @Override
+    public List<BaseModel> getChildren() {
+        return null;
+    }
 }

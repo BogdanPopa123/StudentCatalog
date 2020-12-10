@@ -30,6 +30,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.vaadin.tatu</groupId>
+            <artifactId>twincolselect</artifactId>
+            <version>1.6.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <scope>runtime</scope>
@@ -103,6 +109,14 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>vaadin-addons</id>
+            <url>https://maven.vaadin.com/vaadin-addons</url>
+        </repository>
+    </repositories>
+
 
     <dependencyManagement>
         <dependencies>
