@@ -31,12 +31,12 @@ public class LearningPlan extends BaseModel {
 
     @Override
     public BaseModel getParent() {
-        return null;
+        return specialization;
     }
 
     @Override
     public void setParent(BaseModel parent) {
-
+        this.specialization = (Specialization) parent;
     }
 
     @Override
