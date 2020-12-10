@@ -30,7 +30,7 @@ public class Professor extends User  {
     //
   //  @OneToOne(cascade = CascadeType.ALL)
   //  @JoinColumn(name="user_id", referencedColumnName = "id")
-  //  private User user;
+  //  private User User;
 
 
 

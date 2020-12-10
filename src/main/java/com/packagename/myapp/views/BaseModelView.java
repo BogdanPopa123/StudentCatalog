@@ -4,6 +4,7 @@ import com.packagename.myapp.models.BaseModel;
 import com.packagename.myapp.views.customComponents.BaseModelTreeGrid;
 import com.packagename.myapp.views.customComponents.manageButtons.ManageButtons;
 import com.packagename.myapp.views.layouts.VerticalLayoutAuthRestricted;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.treegrid.TreeGrid;
@@ -23,6 +24,7 @@ public abstract class BaseModelView<T extends BaseModel> extends VerticalLayoutA
     public BaseModelView(Class<T> clazz) {
         this.clazz = clazz;
         manageButtons = new ManageButtons<>(this.clazz);
+
     }
 
     @PostConstruct
@@ -83,9 +85,15 @@ public abstract class BaseModelView<T extends BaseModel> extends VerticalLayoutA
     }
 
     protected void updateGrid() {
-        if (grid instanceof BaseModelTreeGrid) {
-            ((BaseModelTreeGrid) grid).updateDataAndExpandAll();
-        }
+        // TODO: 09-Dec-20 fix update grid ( not updating on create new items
+//        if (grid instanceof BaseModelTreeGrid) {
+//            ((BaseModelTreeGrid) grid).updateDataAndExpandAll();
+//        }
+        UI.getCurrent().getPage().reload();
+    }
+
+    protected String getTableNameCapitalized() {
+        return Objects.requireNonNull(createNewInstanceOfT()).getEntityTableNameCapitalized();
     }
 
     private T createNewInstanceOfT() {

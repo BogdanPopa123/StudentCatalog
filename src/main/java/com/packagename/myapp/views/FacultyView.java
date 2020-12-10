@@ -18,24 +18,68 @@ import com.vaadin.flow.router.Route;
 public class FacultyView extends BaseModelView<Faculty> {
 
     private final FacultyRepository repository;
+//    BaseModelTreeGrid grid;
+
     public FacultyView(FacultyRepository repository) {
         super(Faculty.class);
         this.repository = repository;
     }
 
+//    @Override
+//    protected void addGrid() {
+//        super.addGrid();
+
+//        List<CrudRepository<? extends BaseModel, Integer>> repositories = Collections.singletonList(Application.getService(FacultyRepository.class));
+
+//        grid = new BaseModelTreeGrid(repositories);
+//
+//
+//        grid = new BaseModelTreeGrid(Faculty.class);
+//        grid = new BaseModelTreeGrid(repositories);
+
+//        grid.addHierarchyColumn(BaseModel::getName).setHeader(getTableNameCapitalized());
+//        grid.addColumn(BaseModel -> BaseModel.getClass().getSimpleName()).setHeader("Category");
+
+//        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
+//        grid.setHeight("70vh");
+
+//        grid.addSelectionListener(event -> {
+//            Set<Faculty> selectedItems = event.getAllSelectedItems().stream()
+//                    .filter(Faculty.class::isInstance)
+//                    .map(Faculty.class::cast)
+//                    .collect(Collectors.toSet());
+//
+//            manageButtons.setSelectedItems(selectedItems);
+//        });
+
+//        add(grid);
+//        grid.ex();
+//    }
+
     protected void configureManageButtons() {
-        ModifyDialog<Faculty> modifyDialog = manageButtons.getModifyDialog();
+//        super.configureManageButtons();
+
+        ModifyDialog<Faculty> modifyDialog = this.manageButtons.getModifyDialog();
         Binder<Faculty> binder = modifyDialog.getBinder();
 
         TextField abbreviation = new TextField("Abbreviation");
 
-        modifyDialog.addField(abbreviation);
+        modifyDialog.addFields(abbreviation);
+
         binder.forField(abbreviation)
                 .asRequired("Enter abbreviation!")
                 .withValidator(s -> !repository.existsByAbbreviation(s), "Abbreviation already taken!")
                 .bind(Faculty::getAbbreviation, Faculty::setAbbreviation);
 
+
+//        this.manageButtons.addOnSuccessfulModifyListener(this::updateGrid);
         super.configureManageButtons();
     }
+
+//    @Override
+//    protected void updateGrid() {
+//        grid.updateDataAndExpandAll();
+////        UI.getCurrent().getPage().reload();
+//    }
 }
 

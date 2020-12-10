@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 
@@ -23,7 +24,7 @@ public class ManageButtons<T extends BaseModel> extends HorizontalLayout {
     private ModifyDialog<T> modifyDialog;
 
     private Runnable onSuccessfulModify;
-    private Set<T> selectedItems;
+    private Set<T> selectedItems = Collections.emptySet();
 
     public ManageButtons(Class<T> clazz) {
         this.notificationService = NotificationService.getService();
@@ -32,6 +33,8 @@ public class ManageButtons<T extends BaseModel> extends HorizontalLayout {
         this.tableName = this.getTableName();
 
         modifyDialog = new ModifyDialog<>(clazz);
+
+        this.selectedItems = Collections.emptySet();
 
         init();
     }
@@ -129,5 +132,9 @@ public class ManageButtons<T extends BaseModel> extends HorizontalLayout {
 
     public ModifyDialog<T> getModifyDialog() {
         return modifyDialog;
+    }
+
+    public void setModifyDialog(ModifyDialog<T> modifyDialog) {
+        this.modifyDialog = modifyDialog;
     }
 }

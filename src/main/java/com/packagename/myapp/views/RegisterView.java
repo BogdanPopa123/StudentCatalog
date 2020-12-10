@@ -107,7 +107,7 @@ public class RegisterView extends VerticalLayoutAuthRestricted {
         userData.addClassName("register-column-style");
 
         Button registerButton = new Button("Register");
-        registerButton.addClassName("register-user-button-style");
+        registerButton.addClassName("register-User-button-style");
         registerButton.addClickListener(this::register);
         registerButton.addClickShortcut(Key.ENTER);
 

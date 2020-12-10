@@ -136,7 +136,8 @@ public abstract class BaseModel extends ParentaleModel {
     public boolean existsByName(String name) {
         return StreamSupport
                 .stream(this.getRepository().findAll().spliterator(), false)
-                .noneMatch(t -> t.getName().equals(name) && t.getId() == this.getId());
+                .noneMatch(t -> t.getName().equals(name) && t.getId() != this.getId());
+//                .noneMatch(t -> t.getName().equals(name));
     }
 
     @JsonIgnore

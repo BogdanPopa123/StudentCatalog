@@ -40,7 +40,7 @@
 //        button.click();
 //        Assert.assertTrue($(NotificationElement.class).exists());
 //        NotificationElement notification = $(NotificationElement.class).first();
-//        Assert.assertEquals("Hello anonymous user", notification.getText());
+//        Assert.assertEquals("Hello anonymous User", notification.getText());
 //    }
 //
 //    @Test
