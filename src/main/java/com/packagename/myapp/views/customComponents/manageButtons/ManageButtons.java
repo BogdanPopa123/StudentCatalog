@@ -24,7 +24,7 @@ public class ManageButtons<T extends BaseModel> extends HorizontalLayout {
     private ModifyDialog<T> modifyDialog;
 
     private Runnable onSuccessfulModify;
-    private Set<T> selectedItems;
+    private Set<T> selectedItems = Collections.emptySet();
 
     public ManageButtons(Class<T> clazz) {
         this.notificationService = NotificationService.getService();
@@ -132,5 +132,9 @@ public class ManageButtons<T extends BaseModel> extends HorizontalLayout {
 
     public ModifyDialog<T> getModifyDialog() {
         return modifyDialog;
+    }
+
+    public void setModifyDialog(ModifyDialog<T> modifyDialog) {
+        this.modifyDialog = modifyDialog;
     }
 }

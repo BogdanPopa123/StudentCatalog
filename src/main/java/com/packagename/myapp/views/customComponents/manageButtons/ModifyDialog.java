@@ -15,7 +15,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.binder.BinderValidationStatus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.repository.CrudRepository;
@@ -32,10 +31,10 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
     private final Class<T> clazz;
     private final TextField name = new TextField("Name");
     private final T instance;
+    protected Binder<T> binder;
     private Optional<HierarchicalCombobox> parent = Optional.empty();
     private String tableName;
     private Runnable onSuccessfulModify;
-    protected Binder<T> binder;
     private VerticalLayout formFields;
 
 
@@ -101,13 +100,12 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
                     parentFromRepository.ifPresent(t::setParent);
                 }));
 
-//        binder.bindInstanceFields(this);
     }
 
     private void save(ComponentEvent<? extends Component> event) {
         logger.debug("Submit new " + instance.getEntityTableNameCapitalized() + " data");
 
-        BinderValidationStatus<T> validate = binder.validate();
+        binder.validate();
         if (!binder.isValid()) {
             logger.debug("Not valid " + instance.getEntityTableNameCapitalized() + " data");
             return;
@@ -124,7 +122,6 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
 
 
         runOnSuccessfulModifyEvent();
-
 
         close();
     }
@@ -171,7 +168,7 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
         return instance.getParentNewInstance().getRepository();
     }
 
-    public void addField(Component ...field) {
+    public void addFields(Component... field) {
         formFields.add(field);
     }
 

@@ -1,20 +1,16 @@
 package com.packagename.myapp.views;
 
-import com.google.common.collect.Lists;
 import com.packagename.myapp.dao.DepartmentRepository;
 import com.packagename.myapp.dao.DomainRepository;
 import com.packagename.myapp.dao.FacultyRepository;
 import com.packagename.myapp.models.BaseModel;
 import com.packagename.myapp.models.Domain;
-import com.packagename.myapp.models.Specialization;
-import com.packagename.myapp.models.Subject;
 import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.views.customComponents.BaseModelTreeGrid;
 import com.packagename.myapp.views.customComponents.DomainViewManageButtons;
 import com.packagename.myapp.views.layouts.MainLayout;
 import com.packagename.myapp.views.layouts.VerticalLayoutAuthRestricted;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.router.PageTitle;
@@ -22,7 +18,6 @@ import com.vaadin.flow.router.Route;
 import org.springframework.data.repository.CrudRepository;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;

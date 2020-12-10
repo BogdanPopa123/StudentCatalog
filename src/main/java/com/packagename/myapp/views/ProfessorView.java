@@ -1,31 +1,21 @@
 package com.packagename.myapp.views;
 
-import com.packagename.myapp.Application;
 import com.packagename.myapp.dao.DepartmentRepository;
 import com.packagename.myapp.dao.ProfessorRepository;
 import com.packagename.myapp.dao.UserRepository;
 import com.packagename.myapp.models.Department;
 import com.packagename.myapp.models.Professor;
-import com.packagename.myapp.models.Student;
-import com.packagename.myapp.models.User;
 import com.packagename.myapp.models.UserRole;
 import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.views.customComponents.UserDialog;
-import com.packagename.myapp.views.customComponents.manageButtons.ModifyDialog;
 import com.packagename.myapp.views.layouts.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.EmailField;
-import com.vaadin.flow.component.textfield.PasswordField;
-import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -82,8 +72,8 @@ public class ProfessorView extends VerticalLayout {
                     grid.setItems(professors);
                 };
 
-                UserDialog userDialog = new UserDialog();
-                userDialog.open();
+//                UserDialog userDialog = new Stud();
+//                userDialog.open();
 
                 departmentComboBox.setValue(departments.get(0));
             });

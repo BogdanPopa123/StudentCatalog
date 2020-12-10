@@ -96,7 +96,14 @@ public class MainLayout extends AppLayout {
     @Override
     protected void onAttach(AttachEvent attachEvent) {
         if (loginService.getAuthenticatedUser().isAdmin()) {
-            addToDrawer(new VerticalLayout(new NavigateButton("AdminPanel", AdminPanelView.class)));
+
+            NavigateButton adminPanel = new NavigateButton("AdminPanel", AdminPanelView.class);
+            NavigateButton grade = new NavigateButton("Grade", GradeView.class);
+
+
+            VerticalLayout adminButtons = new VerticalLayout(adminPanel, grade);
+
+            addToDrawer(adminButtons);
         }
 //        // Check current link
 //        UI.getCurrent().getPage().executeJs(

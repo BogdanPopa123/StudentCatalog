@@ -6,8 +6,6 @@ import java.util.Set;
 @Entity
 @PrimaryKeyJoinColumn(name = "student_id")
 @Table(name = "student")
-
-
 public class Student extends User  {
 
     @OneToMany(mappedBy = "student", fetch = FetchType.EAGER)

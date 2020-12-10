@@ -50,14 +50,14 @@ public class AdminPanelView extends VerticalLayoutAuthRestricted {
             ListBox<UserRole> newUserRoleListBox = new ListBox<>();
             newUserRoleListBox.setItems(UserRole.TEACHER, UserRole.STUDENT);
             RadioButtonGroup<String> newUserIsAdmin = new RadioButtonGroup<>();
-            newUserIsAdmin.setLabel("Give this user Admin privileges?");
+            newUserIsAdmin.setLabel("Give this User Admin privileges?");
             newUserIsAdmin.setItems("Yes", "No");
             newUserIsAdmin.setValue("No");
 
 
         String warningText = "";
 
-        Button addUserButton = new Button("Add user", event -> {
+        Button addUserButton = new Button("Add User", event -> {
             User user = new User();
             User testUser = new User();
 
@@ -68,7 +68,7 @@ public class AdminPanelView extends VerticalLayoutAuthRestricted {
                 user.setPhoneNumber(newPhoneNumber.getValue());
                 user.setPassword(HashingService.hashThis(newPasswordField.getValue()));
                 user.setBirthDay(newDateOfBirthField.getValue());
-                //   user.setRole(newUserRoleListBox.getValue());
+                //   User.setRole(newUserRoleListBox.getValue());
                 if(newUserIsAdmin.getValue().equals("Yes")){
                     user.setAdmin(true);
                 }
@@ -154,7 +154,7 @@ public class AdminPanelView extends VerticalLayoutAuthRestricted {
 
             VerticalLayout addUserLayout = new VerticalLayout();
 
-            addUserLayout.add(new H3("Add a new user"),
+            addUserLayout.add(new H3("Add a new User"),
                     newUsernameField,
                     newEmailField,
                     newNameField,
