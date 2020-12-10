@@ -1,10 +1,7 @@
 package com.packagename.myapp.views;
 
 import com.google.common.collect.Lists;
-import com.packagename.myapp.dao.CourseRepository;
-import com.packagename.myapp.dao.LearningPlanRepository;
-import com.packagename.myapp.dao.ProfessorRepository;
-import com.packagename.myapp.dao.SpecializationRepository;
+import com.packagename.myapp.dao.*;
 import com.packagename.myapp.models.*;
 import com.packagename.myapp.views.customComponents.BaseModelTreeGrid;
 import com.packagename.myapp.views.customComponents.manageButtons.ModifyDialog;
@@ -13,12 +10,17 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,25 +31,37 @@ import java.util.stream.Collectors;
 @CssImport("./styles/shared-styles.css")
 public class LearningPlanView extends BaseModelView<LearningPlan> {
 
+    private final CourseRepository courseRepository;
     private final LearningPlanRepository learningPlanRepository;
-    private final SpecializationRepository specializationRepository;
     private Grid<LearningPlan> grid;
+    private final List<CrudRepository<? extends BaseModel, Integer>> repositories;
 
-    public LearningPlanView(LearningPlanRepository learningPlanRepository,
-                            SpecializationRepository specializationRepository) {
+    public LearningPlanView(FacultyRepository facultyRepository,
+                            SpecializationRepository specializationRepository,
+                            LearningPlanRepository learningPlanRepository,
+                            CourseRepository courseRepository) {
         super(LearningPlan.class);
-        this.learningPlanRepository = learningPlanRepository;
-        this.specializationRepository = specializationRepository;
+    this.learningPlanRepository = learningPlanRepository;
+    this.courseRepository = courseRepository;
+    repositories = Arrays.asList(facultyRepository, learningPlanRepository, courseRepository);
+    }
+
+    @Override
+    protected void addHeader() {
+        H1 header = new H1("Learning Plans");
+        add(header);
     }
 
     @Override
     protected void addGrid() {
+
         grid = new Grid<>();
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS, GridVariant.LUMO_ROW_STRIPES);
 
         grid.addColumn(LearningPlan::getName).setHeader("Name");
-//        grid.addColumn(learningPlan -> learningPlan.getSpecialization().getName()).setHeader("Specialization");
-        grid.addColumn(learningPlan -> learningPlan.getSpecialization() != null ? learningPlan.getSpecialization().getName() : "Not assigned").setHeader("Specs");
+        grid.addColumn(plan -> plan.getUni_year()).setHeader("Academic Year");
+        grid.addColumn(plan -> plan.getCourses()).setHeader("Course");
+        grid.addColumn(plan -> plan.getSpecialization() != null ? plan.getSpecialization().getName() : "Not assigned").setHeader("Specialization");
 
         grid.addSelectionListener(event -> {
             Set<LearningPlan> selectedItems = event.getAllSelectedItems();
@@ -61,18 +75,48 @@ public class LearningPlanView extends BaseModelView<LearningPlan> {
 
     @Override
     protected void configureManageButtons() {
+
         ModifyDialog<LearningPlan> modifyDialog = manageButtons.getModifyDialog();
         Binder<LearningPlan> binder = modifyDialog.getBinder();
 
-        ComboBox<Specialization> specs = new ComboBox<>("Specialization");
-        specs.setItems(specializationRepository.findAll());
-        specs.setWidth("300px");
+        ComboBox<String> uy = new ComboBox<>("Academic year");
+        uy.setItems("2020-2021", "2021-2022");
+        uy.setWidth("140px");
 
-        binder.forField(specs)
-                .withValidator(p -> p == null || specializationRepository.existsByName(p.getName()), "Select a valid specialization")
-                .bind(LearningPlan::getSpecialization, LearningPlan::setSpecialization);
+        ComboBox<Integer> ay = new ComboBox<>("Study year");
+        ay.setItems(1, 2, 3, 4, 5, 6);
+        ay.setWidth("140px");
 
-        modifyDialog.addField(specs);
+        ComboBox<Integer> semester = new ComboBox<>("Semester");
+        semester.setItems(1, 2);
+        semester.setWidth("140px");
+
+        ComboBox<Course> course = new ComboBox<>("Course");
+        course.setItems(courseRepository.findAll());
+        course.setWidth("300px");
+
+        NumberField credits = new NumberField("Credits");
+        credits.setHasControls(true);
+        credits.setMax(30);
+        credits.setMin(0);
+        credits.setWidth("140px");
+
+        binder.forField(uy).bind(LearningPlan::getUni_year, LearningPlan::setUni_year);
+        binder.forField(ay).bind(LearningPlan::getStudy_year, LearningPlan::setStudy_year);
+        binder.forField(semester).bind(LearningPlan::getSemester, LearningPlan::setSemester);
+        binder.forField(credits).bind(LearningPlan::getCredits, LearningPlan::setCredits);
+
+//                binder.forField(course)
+//                .withValidator(p -> p == null || courseRepository.existsByName(p.getName()), "Select a valid specialization")
+//                .bind(LearningPlan::getCourses, LearningPlan::setCourses);
+
+        HorizontalLayout years = new HorizontalLayout();
+        years.add(uy, ay);
+
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
+        horizontalLayout.add(semester, credits);
+
+        modifyDialog.addField(course, years, horizontalLayout);
 
         manageButtons.addOnSuccessfulModifyListener(this::updateGrid);
     }
