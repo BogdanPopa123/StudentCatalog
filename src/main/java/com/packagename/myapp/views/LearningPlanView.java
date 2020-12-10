@@ -117,11 +117,14 @@ public class LearningPlanView extends BaseModelView<LearningPlan> {
         HorizontalLayout years = new HorizontalLayout();
         years.add(uy, ay);
 
-
         HorizontalLayout horizontalLayout = new HorizontalLayout();
         horizontalLayout.add(semester, credits);
 
-        modifyDialog.addField(years, horizontalLayout, courses);
+        VerticalLayout form = new VerticalLayout();
+
+        modifyDialog.addField(years, horizontalLayout);
+
+        form.add(modifyDialog, courses);
 
         manageButtons.addOnSuccessfulModifyListener(this::updateGrid);
     }
