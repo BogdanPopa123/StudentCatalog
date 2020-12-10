@@ -18,6 +18,7 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.data.repository.CrudRepository;
+import org.vaadin.tatu.TwinColSelect;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -91,9 +92,13 @@ public class LearningPlanView extends BaseModelView<LearningPlan> {
         semester.setItems(1, 2);
         semester.setWidth("140px");
 
-        ComboBox<Course> course = new ComboBox<>("Course");
-        course.setItems(courseRepository.findAll());
-        course.setWidth("300px");
+//        ComboBox<Course> course = new ComboBox<>("Course");
+//        course.setItems(courseRepository.findAll());
+//        course.setWidth("300px");
+
+        TwinColSelect<Course> courses = new TwinColSelect<>();
+        courses.setLabel("Courses");
+        courses.setItems(courseRepository.findAll());
 
         NumberField credits = new NumberField("Credits");
         credits.setHasControls(true);
@@ -106,17 +111,17 @@ public class LearningPlanView extends BaseModelView<LearningPlan> {
         binder.forField(semester).bind(LearningPlan::getSemester, LearningPlan::setSemester);
         binder.forField(credits).bind(LearningPlan::getCredits, LearningPlan::setCredits);
 
-//                binder.forField(course)
-//                .withValidator(p -> p == null || courseRepository.existsByName(p.getName()), "Select a valid specialization")
-//                .bind(LearningPlan::getCourses, LearningPlan::setCourses);
+        binder.forField(courses)
+                .bind(LearningPlan::getCourses, LearningPlan::setCourses);
 
         HorizontalLayout years = new HorizontalLayout();
         years.add(uy, ay);
 
+
         HorizontalLayout horizontalLayout = new HorizontalLayout();
         horizontalLayout.add(semester, credits);
 
-        modifyDialog.addField(course, years, horizontalLayout);
+        modifyDialog.addField(years, horizontalLayout, courses);
 
         manageButtons.addOnSuccessfulModifyListener(this::updateGrid);
     }
