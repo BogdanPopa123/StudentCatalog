@@ -4,22 +4,37 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.text.MessageFormat;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "profile")
 public class Profile extends BaseModel {
 
+    @JsonIgnore
+    @NotNull
+    FormaFinantare financingForm = FormaFinantare.Buget;
+    @JsonIgnore
+    @NotNull
+    Statut status = Statut.Inscris;
+    @JsonIgnore
+    @NotNull
+    TipBursa scholarshipType = TipBursa.Niciuna;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "profile_id")
     private int id;
-
     @JsonIgnore
     private Integer studyYear = 1;
-
     @NotNull
     private String name;
+    @ManyToOne
+    private Student student;
+    @OneToMany(mappedBy = "profile", fetch = FetchType.EAGER)
+    private Set<Grade> grades;
+    @ManyToOne
+    private StudentClass studentClass;
 
     public Integer getStudyYear() {
         return studyYear;
@@ -28,16 +43,6 @@ public class Profile extends BaseModel {
     public void setStudyYear(Integer studyYear) {
         this.studyYear = studyYear;
     }
-
-    @ManyToOne
-    private Student student;
-
-    @ManyToOne
-    private StudentClass studentClass;
-
-    @JsonIgnore
-    @NotNull
-    FormaFinantare financingForm = FormaFinantare.Buget;
 
     public FormaFinantare getFinancingForm() {
         return financingForm;
@@ -63,16 +68,12 @@ public class Profile extends BaseModel {
         this.scholarshipType = scholarshipType;
     }
 
-    @JsonIgnore
-    @NotNull
-    Statut status = Statut.Inscris;
-
-    @JsonIgnore
-    @NotNull
-    TipBursa scholarshipType = TipBursa.Niciuna;
-
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override
@@ -85,12 +86,8 @@ public class Profile extends BaseModel {
         this.name = name;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public Student getStudent() {
-        return student;
+        return student != null ? student : Student.getNotExistingStudent();
     }
 
     public void setStudent(Student student) {
@@ -118,5 +115,20 @@ public class Profile extends BaseModel {
     @Override
     public List<BaseModel> getChildren() {
         return null;
+    }
+
+    public Set<Grade> getGrades() {
+        return grades;
+    }
+
+    public void setGrades(Set<Grade> grades) {
+        this.grades = grades;
+    }
+
+    @JsonIgnore
+    public String getFullName() {
+        return MessageFormat.format("{0} - {1}",
+                this.getName(),
+                this.getStudent().getFullName());
     }
 }
