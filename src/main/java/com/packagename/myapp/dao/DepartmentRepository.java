@@ -23,5 +23,7 @@ public interface DepartmentRepository extends CrudRepository<Department, Integer
 
     List<Department> findAllByFaculty(Faculty faculty);
 
+    Department findByName(String name);
+
 
 }
