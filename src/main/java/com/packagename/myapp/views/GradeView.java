@@ -2,11 +2,14 @@ package com.packagename.myapp.views;
 
 
 import com.packagename.myapp.Application;
+import com.packagename.myapp.dao.ProfessorRepository;
 import com.packagename.myapp.dao.ProfileRepository;
 import com.packagename.myapp.dao.SubjectRepository;
 import com.packagename.myapp.models.Grade;
 import com.packagename.myapp.models.Profile;
 import com.packagename.myapp.models.Subject;
+import com.packagename.myapp.models.User;
+import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.views.customComponents.manageButtons.ModifyDialog;
 import com.packagename.myapp.views.layouts.MainLayout;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -26,6 +29,17 @@ import java.util.Objects;
 public class GradeView extends BaseModelView<Grade> {
     public GradeView() {
         super(Grade.class);
+    }
+
+    @Override
+    protected void addManageButtons() {
+        LoginService loginService = Application.getService(LoginService.class);
+        ProfessorRepository professorRepository = Application.getService(ProfessorRepository.class);
+
+        User user = loginService.getAuthenticatedUser();
+        if (user.isAdmin() || professorRepository.existsById(user.getId())) {
+            add(manageButtons);
+        }
     }
 
     @Override

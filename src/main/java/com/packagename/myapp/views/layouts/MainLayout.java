@@ -1,5 +1,8 @@
 package com.packagename.myapp.views.layouts;
 
+import com.packagename.myapp.Application;
+import com.packagename.myapp.dao.ProfessorRepository;
+import com.packagename.myapp.models.User;
 import com.packagename.myapp.services.LoginService;
 import com.packagename.myapp.views.*;
 import com.packagename.myapp.views.customComponents.NavigateButton;
@@ -95,16 +98,27 @@ public class MainLayout extends AppLayout {
 
     @Override
     protected void onAttach(AttachEvent attachEvent) {
-        if (loginService.getAuthenticatedUser().isAdmin()) {
+        VerticalLayout specialButtons = new VerticalLayout();
 
-            NavigateButton adminPanel = new NavigateButton("AdminPanel", AdminPanelView.class);
+
+        LoginService loginService = Application.getService(LoginService.class);
+        ProfessorRepository professorRepository = Application.getService(ProfessorRepository.class);
+
+        User user = loginService.getAuthenticatedUser();
+        if (user.isAdmin() || professorRepository.existsById(user.getId())) {
             NavigateButton grade = new NavigateButton("Grade", GradeView.class);
 
-
-            VerticalLayout adminButtons = new VerticalLayout(adminPanel, grade);
-
-            addToDrawer(adminButtons);
+            specialButtons.add(grade);
         }
+
+        if (user.isAdmin()) {
+            NavigateButton adminPanel = new NavigateButton("AdminPanel", AdminPanelView.class);
+
+            specialButtons.add(adminPanel);
+        }
+
+        addToDrawer(specialButtons);
+
 //        // Check current link
 //        UI.getCurrent().getPage().executeJs(
 //                 "var links = document.getElementsByTagName(\"a\");\n" +

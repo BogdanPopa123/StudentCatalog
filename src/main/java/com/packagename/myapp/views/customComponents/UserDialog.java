@@ -15,6 +15,7 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.validator.EmailValidator;
+import org.apache.commons.lang3.StringUtils;
 
 public abstract class UserDialog {
 
@@ -22,6 +23,7 @@ public abstract class UserDialog {
 
     public static <T extends User> void addUserFieldsToManageButtons(ModifyDialog<T> modifyDialog) {
         Binder<T> binder = modifyDialog.getBinder();
+
 
         TextField username = new TextField("Username");
         EmailField email = new EmailField("Email");
@@ -44,7 +46,7 @@ public abstract class UserDialog {
 
         binder.forField(username)
                 .asRequired("Enter a name")
-                .withValidator(username1 -> !userRepository.existsByUsername(username1), "Not a valid username!")
+//                .withValidator(username1 -> !userRepository.existsByUsername(username1), "Not a valid username!")
                 .bind(T::getUsername, T::setUsername);
 
         binder.forField(surname)
@@ -53,7 +55,7 @@ public abstract class UserDialog {
 
         binder.forField(phoneNumber)
                 .asRequired("Enter a phone number")
-                .bind(T::getUsername, T::setUsername);
+                .bind(T::getPhoneNumber, T::setPhoneNumber);
 
         binder.forField(email)
                 .asRequired("Enter an email")
@@ -66,7 +68,8 @@ public abstract class UserDialog {
 
         binder.forField(confirmPassword)
                 .asRequired("Confirm password")
-                .withValidator(p -> p.equals(password.getValue()), "Password does not match");
+                .withValidator(p -> StringUtils.isNotBlank(p) && p.equals(password.getValue()), "Password does not match")
+                .bind(T::getPassword, (t, password1) -> t.setPassword(HashingService.hashThis(password1)));
 
         binder.forField(cnp)
                 .asRequired("Enter a CNP")

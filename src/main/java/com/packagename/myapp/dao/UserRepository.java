@@ -29,6 +29,8 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 
     User findById(int id);
 
+    boolean existsByName(String name);
+
     @Query("SELECT u FROM User u where u.role = 0")
     Collection<User> findAllStudents();
 }

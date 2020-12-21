@@ -56,7 +56,7 @@ public class ManageButtons<T extends BaseModel> extends HorizontalLayout {
     }
 
     private void create(ClickEvent<Button> event) {
-//        modifyDialog.setNewBean();
+        modifyDialog.setNewBean();
 
         modifyDialog.addOnSuccessfulModifyListener(this::runOnSuccessfulModifyEvent);
 
