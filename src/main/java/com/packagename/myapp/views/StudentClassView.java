@@ -18,8 +18,8 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 import javax.annotation.PostConstruct;
-import java.awt.*;
 import java.util.List;
+import java.util.Objects;
 
 @Route(value = "StudentClasses", layout = MainLayout.class)
 @PageTitle("Student classes")
@@ -45,97 +45,97 @@ public class StudentClassView extends VerticalLayout {
         this.studentClassRepository = studentClassRepository;
     }
 
-        @PostConstruct
-    private void init(){
+    @PostConstruct
+    private void init() {
 
-            H1 header = new H1("Student Classes");
-            add(header);
+        H1 header = new H1("Student Classes");
+        add(header);
 
         Grid<StudentClass> grid = new Grid<>(StudentClass.class);
         List<StudentClass> list = studentClassRepository.findAll();
         grid.setItems(list);
 
-            if(loginService.getAuthenticatedUser().isAdmin()){
-                TextField textField = new TextField("Group Name", "Insert a name");
-                Select<Integer> studyYear = new Select<>();
-                studyYear.setLabel("Select study year");
-                studyYear.setItems(1, 2, 3, 4);
-                studyYear.setValue(1);
-                Select<Faculty> facultySelect = new Select<>();
-                facultySelect.setLabel("Faculty");
-                Select<Department> departmentSelect = new Select<>();
-                departmentSelect.setLabel("Department");
-                Select<Domain> domainSelect = new Select<>();
-                domainSelect.setLabel("Domain");
-                Select<Specialization> specializationSelect = new Select<>();
-                specializationSelect.setLabel("Specialization");
-                Button addButton = new Button("Save");
-                addButton.setEnabled(false);
+        if (loginService.getAuthenticatedUser().isAdmin()) {
+            TextField textField = new TextField("Group Name", "Insert a name");
+            Select<Integer> studyYear = new Select<>();
+            studyYear.setLabel("Select study year");
+            studyYear.setItems(1, 2, 3, 4);
+            studyYear.setValue(1);
+            Select<Faculty> facultySelect = new Select<>();
+            facultySelect.setLabel("Faculty");
+            Select<Department> departmentSelect = new Select<>();
+            departmentSelect.setLabel("Department");
+            Select<Domain> domainSelect = new Select<>();
+            domainSelect.setLabel("Domain");
+            Select<Specialization> specializationSelect = new Select<>();
+            specializationSelect.setLabel("Specialization");
+            Button addButton = new Button("Save");
+            addButton.setEnabled(false);
 
-                textField.setValueChangeMode(ValueChangeMode.EAGER);
-                textField.addValueChangeListener(e->{
-                    if(textField.getValue().trim().isEmpty()){
-                        addButton.setEnabled(false);
-                    }
-                    else{
-                        addButton.setEnabled(true);
-                    }
-                });
+            textField.setValueChangeMode(ValueChangeMode.EAGER);
+            textField.addValueChangeListener(e -> {
+                if (textField.getValue().trim().isEmpty()) {
+                    addButton.setEnabled(false);
+                } else {
+                    addButton.setEnabled(true);
+                }
+            });
 
-                facultySelect.setItemLabelGenerator(Faculty::getName);
-                departmentSelect.setItemLabelGenerator(Department::getName);
-                domainSelect.setItemLabelGenerator(Domain::getName);
-                specializationSelect.setItemLabelGenerator(Specialization::getName);
+            facultySelect.setItemLabelGenerator(Faculty::getName);
+            departmentSelect.setItemLabelGenerator(Department::getName);
+            domainSelect.setItemLabelGenerator(Domain::getName);
+            specializationSelect.setItemLabelGenerator(Specialization::getName);
 
 
-                facultySelect.setItems(facultyRepository.findAll());
-                facultySelect.addValueChangeListener(e->{
+            facultySelect.setItems(facultyRepository.findAll());
+            facultySelect.addValueChangeListener(e -> {
 
-                    departmentSelect.setValue(null);
-                    domainSelect.setValue(null);
-                    specializationSelect.setValue(null);
+                departmentSelect.setValue(null);
+                domainSelect.setValue(null);
+                specializationSelect.setValue(null);
 
-                    departmentSelect.setItems(departmentRepository.findAllByFaculty(facultySelect.getValue()));
-                });
+                departmentSelect.setItems(departmentRepository.findAllByFaculty(facultySelect.getValue()));
+            });
 
-                departmentSelect.addValueChangeListener(e2->{
+            departmentSelect.addValueChangeListener(e2 -> {
 
-                    domainSelect.setValue(null);
-                    specializationSelect.setValue(null);
+                domainSelect.setValue(null);
+                specializationSelect.setValue(null);
 
-                    domainSelect.setItems(domainRepository.findAllByDepartment(departmentSelect.getValue()));
-                });
+                domainSelect.setItems(domainRepository.findAllByDepartment(departmentSelect.getValue()));
+            });
 
-                domainSelect.addValueChangeListener(e3->{
+            domainSelect.addValueChangeListener(e3 -> {
 
-                    specializationSelect.setValue(null);
+                specializationSelect.setValue(null);
 
-                    specializationSelect.setItems(specializationRepository.findAllByDomain(domainSelect.getValue()));
-                });
+                specializationSelect.setItems(specializationRepository.findAllByDomain(domainSelect.getValue()));
+            });
 
-                addButton.addClickListener(e->{
-                    if(!facultySelect.isEmpty() && !departmentSelect.isEmpty() && !domainSelect.isEmpty()
-                    && !specializationSelect.isEmpty()){
-                        StudentClass studentClass = new StudentClass();
-                        studentClass.setName(textField.getValue());
-                        studentClass.setStudyYear(studyYear.getValue());
-                        studentClass.setSpecialization(specializationSelect.getValue());
-                        studentClassRepository.save(studentClass);
-                        list.add(studentClass);
-                        grid.setItems(list);
-                        Notification.show("Group saved successfully");
-                    }
-                    else{
-                        Notification.show("All fields are mandatory");
-                    }
-                });
+            addButton.addClickListener(e -> {
+                if (!facultySelect.isEmpty() && !departmentSelect.isEmpty() && !domainSelect.isEmpty()
+                        && !specializationSelect.isEmpty()) {
+                    StudentClass studentClass = new StudentClass();
+                    studentClass.setName(textField.getValue());
+                    studentClass.setStudyYear(studyYear.getValue());
+                    studentClass.setSpecialization(specializationSelect.getValue());
+                    studentClassRepository.save(studentClass);
+                    list.add(studentClass);
+                    grid.setItems(list);
+                    Notification.show("Group saved successfully");
+                } else {
+                    Notification.show("All fields are mandatory");
+                }
+            });
 
-                VerticalLayout verticalLayout = new VerticalLayout(textField, studyYear, facultySelect,
-                        departmentSelect, domainSelect, specializationSelect, addButton);
-                add(verticalLayout, grid);
-            }
-            grid.setColumns("id", "name", "specialization");
-            add(grid);
+            VerticalLayout verticalLayout = new VerticalLayout(textField, studyYear, facultySelect,
+                    departmentSelect, domainSelect, specializationSelect, addButton);
+            add(verticalLayout, grid);
         }
+        grid.setColumns("id", "name");
+        grid.addColumn(o -> Objects.toString(((StudentClass) o).getSpecialization().getName(), "empty")).setKey("spec").setHeader("Specialization");
+
+        add(grid);
+    }
 
 }

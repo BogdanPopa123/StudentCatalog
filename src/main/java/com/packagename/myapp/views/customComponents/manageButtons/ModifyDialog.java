@@ -80,7 +80,7 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
     private void setBinder() {
         binder = new BeanValidationBinder<>(clazz);
 
-        binder.setBean(createInstance());
+//        binder.setBean(createInstance());
 
         binder.forField(name)
                 .asRequired("Enter name")
@@ -112,6 +112,11 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
         }
 
         T item = binder.getBean();
+
+        if (item == null) {
+            logger.error("Trying to save a null item");
+            return;
+        }
 
         repository.save(item);
 
@@ -173,9 +178,21 @@ public class ModifyDialog<T extends BaseModel> extends Dialog {
     }
 
 
+    public Binder<T> setNewBinder() {
+        removeAllFields();
+        binder = new BeanValidationBinder<>(clazz);
+
+        return binder;
+    }
+
     public Binder<T> getBinder() {
         return binder;
     }
+
+    public void setBinder(Binder<T> binder) {
+        this.binder = binder;
+    }
+
 
     public void setNewBean() {
         this.binder.setBean(createInstance());

@@ -71,6 +71,7 @@ public class ProfileView extends BaseModelView<Profile> {
 //        facultyGrid.addColumn(Faculty::getId).setHeader("Id").setKey("id").setWidth("10px");
         grid.addColumn(o -> Objects.toString(((Profile) o).getStudent().getName(), "empty")).setKey("student").setHeader("Student");
         grid.addColumn(o -> Objects.toString(((Profile) o).getName(), "empty")).setKey("name").setHeader("Profile Name");
+        grid.addColumn(o -> Objects.toString(((Profile) o).getStudentClass() != null ? ((Profile) o).getStudentClass().getName() : null, "empty")).setKey("group").setHeader("Group");
         grid.addColumn(o -> Objects.toString(((Profile) o).getStudyYear(), "empty")).setKey("year").setHeader("Study year");
         //profileGrid.addColumn(Profile::getAbbreviation).setHeader("Abbreviation").setKey("abbreviation").setWidth("20px");
 
@@ -167,6 +168,7 @@ public class ProfileView extends BaseModelView<Profile> {
         binder.forField(financingForm).bind(Profile::getFinancingForm, Profile::setFinancingForm);
         binder.forField(scholarshipType).bind(Profile::getScholarshipType, Profile::setScholarshipType);
         binder.forField(students).bind(Profile::getStudent, Profile::setStudent);
+        binder.forField(group).bind(Profile::getStudentClass, Profile::setStudentClass);
 
         binder.forField(year).bind(Profile::getStudyYear, Profile::setStudyYear);
 
